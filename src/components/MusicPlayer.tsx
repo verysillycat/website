@@ -57,6 +57,7 @@ export default function MusicPlayer() {
   const isDraggingVolume = useRef(false);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
     const loadSongs = async () => {
@@ -226,6 +227,10 @@ export default function MusicPlayer() {
     };
   }, [duration, handleMouseMove]);
 
+  useEffect(() => {
+    setIsImageLoaded(false);
+  }, [currentSong.cover]);
+
   return (
     <motion.div
       className="pt-2.5"
@@ -251,10 +256,13 @@ export default function MusicPlayer() {
             ) : (
               currentSong.cover ? (
                 <div className="relative h-12 w-12 rounded-lg overflow-hidden">
+                  <div className="absolute inset-0 skeleton-bg animate-pulse" />
                   <Image 
                     src={currentSong.cover} 
                     alt="Album Art" 
-                    className="object-cover"
+                    className="object-cover relative z-10 transition-opacity duration-300"
+                    style={{ opacity: isImageLoaded ? 1 : 0 }}
+                    onLoad={() => setIsImageLoaded(true)}
                     fill
                     sizes="48px"
                     priority
