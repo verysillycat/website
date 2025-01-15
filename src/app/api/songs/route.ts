@@ -15,15 +15,10 @@ export async function GET() {
         const [artist, ...titleParts] = rest.replace('.mp3', '').split('-');
         const title = titleParts.join('-').trim();
         
-        const encodedTitle = encodeURIComponent(title);
-        const encodedFile = encodeURIComponent(file);
-        
         return {
           number: trackNumber,
           title,
-          artist: artist.trim(),
-          cover: `/songs/covers/${encodedTitle}.png`,
-          file: `/songs/${encodedFile}`
+          artist: artist.trim()
         };
       })
     );

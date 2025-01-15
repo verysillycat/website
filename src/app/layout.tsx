@@ -1,6 +1,4 @@
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata = {
 	title: "Cortex",
@@ -29,9 +27,7 @@ export default function RootLayout({
 				<meta name="theme-color" content="#686868" />
 			</head>
 				<body className="min-h-screen flex flex-col">
-				<SpeedInsights />
 					{children}
-				<Analytics />
 			</body>
 		</html>
 	);

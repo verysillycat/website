@@ -8,6 +8,9 @@ import Projects from "@/components/Projects";
 import { BackgroundBeams } from "@/components/Background";
 import { Footer } from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from '@vercel/speed-insights/next';
+
 export default function Home() {
 	return (
 		<Layout>
@@ -22,6 +25,8 @@ export default function Home() {
 				<Cat />
 			</div>
 			<Footer />
+			<Analytics />
+			<SpeedInsights />
 		</Layout>
 	);
 }

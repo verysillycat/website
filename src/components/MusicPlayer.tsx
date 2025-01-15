@@ -9,8 +9,7 @@ import Image from 'next/image';
 interface Song {
   title: string;
   artist: string;
-  cover: string;
-  file: string;
+  number: number;
 }
 
 interface PlayerState {
@@ -158,7 +157,11 @@ export default function MusicPlayer() {
   };
 
   const currentSong = songs.length > 0 
-    ? songs[currentSongIndex % songs.length]
+    ? {
+        ...songs[currentSongIndex % songs.length],
+        cover: `/songs/covers/${encodeURIComponent(songs[currentSongIndex].title)}.png`,
+        file: `/songs/${encodeURIComponent(`${songs[currentSongIndex].number} | ${songs[currentSongIndex].artist} - ${songs[currentSongIndex].title}.mp3`)}`
+      }
     : {
         title: 'Loading...',
         artist: 'Please wait',
