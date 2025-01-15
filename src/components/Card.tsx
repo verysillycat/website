@@ -141,7 +141,7 @@ export default function CardComponent() {
 								href={link.href}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="border p-1 rounded-md bg-[#121212]/40 border-[#dbdbdb] hover:bg-[#1a1a1a]/60 mr-2 last:mr-0 transition duration-300 ease-in-out hover:shadow-[0_0_1px_rgba(255,255,255,0.15),0_0_2px_rgba(255,255,255,0.05)]"
+								className="border p-1 rounded-md bg-[#121212]/40 border-[#BFBFBF] hover:bg-[#1a1a1a]/60 mr-2 last:mr-0 transition duration-300 ease-in-out hover:shadow-[0_0_1px_rgba(255,255,255,0.15),0_0_2px_rgba(255,255,255,0.05)]"
 								initial={{ 
 									opacity: 0,
 									y: -10, 
@@ -164,7 +164,7 @@ export default function CardComponent() {
 										alt={link.alt}
 										width={24}
 										height={24}
-										className="w-6 h-6 sm:w-7 sm:h-7 text-[#c9c9c9] transition duration-300 ease-in-out icon-fade-in"
+										className="w-6 h-6 sm:w-7 sm:h-7 text-[#b7b7b7] transition duration-300 ease-in-out icon-fade-in"
 										style={{
 											opacity: iconsLoaded ? 1 : 0,
 											transition: "opacity 0.3s ease-in-out",
@@ -173,7 +173,7 @@ export default function CardComponent() {
 								) : (
 									<Icon
 										icon={link.icon}
-										className="text-[#c9c9c9] text-2xl sm:text-3xl transition duration-300 ease-in-out icon-fade-in"
+										className="text-[#b7b7b7] text-2xl sm:text-3xl transition duration-300 ease-in-out icon-fade-in"
 										style={{
 											opacity: iconsLoaded ? 1 : 0,
 											transition: "opacity 0.3s ease-in-out",

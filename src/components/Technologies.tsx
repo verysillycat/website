@@ -44,7 +44,7 @@ export default function Technologies() {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.5, ease: "easeInOut" }}
 					>
-						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-15 py-3 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-60">
+						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-3 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-60">
 							<CardBody>
 								<div
 									className="pointer-events-none absolute inset-0"
@@ -66,11 +66,11 @@ export default function Technologies() {
 														x: { duration: 0.5, ease: "easeOut" },
 														opacity: { duration: 0.5, ease: "easeOut" },
 													}}
-													className="border-white-500 flex items-center gap-2 rounded-lg border bg-black bg-opacity-20 px-3 py-2 whitespace-nowrap"
+													className="border-[#bfbfbf] flex items-center gap-2 rounded-lg border bg-black bg-opacity-25 px-3 py-2 whitespace-nowrap"
 												>
 													<Icon
 														icon={tech.icon}
-														className="h-6 w-6 text-[#c9c9c9]"
+														className="h-6 w-6 text-[#b7b7b7]"
 														aria-label={`${tech.name}`}
 													/>
 													<span className="text-gray-300">{tech.name}</span>
