@@ -4,14 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: #ededed;
+  background: #0a0a0a;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -86,12 +81,12 @@ body {
 
 .slider-fade::before {
   left: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), transparent);
 }
 
 .slider-fade::after {
   right: 0;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.9), transparent);
 }
 
 .card-background {
@@ -127,18 +122,12 @@ body {
   transition: animation-play-state 0.5s ease;
 }
 
-.hover-pause-parent:hover {
-  animation-play-state: running;
-}
 
-.hover-pause-parent .hover-effect:hover > div {
+.hover-effect:hover > div {
   background-color: rgba(128, 128, 128, 0.1);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
   transform: scale(1.02);
   transition: all 0.2s ease;
-}
-
-.hover-pause-parent *:hover ~ * {
   animation-play-state: paused;
 }
 

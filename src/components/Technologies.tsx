@@ -44,7 +44,7 @@ export default function Technologies() {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.5, ease: "easeInOut" }}
 					>
-						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-3 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-60">
+						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-3 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-60 slider-fade">
 							<CardBody>
 								<div
 									className="pointer-events-none absolute inset-0"
@@ -57,14 +57,14 @@ export default function Technologies() {
 												key={tech.name}
 												href={tech.href}
 												target="_blank"
-												className="hover-effect block"
+												className="hover-effect"
 											>
 												<motion.div
-													initial={{ x: 50, opacity: 0 }}
-													animate={{ x: -50, opacity: 1 }}
+													initial={{ opacity: 0 }}
+													animate={{ opacity: 1 }}
 													transition={{
-														x: { duration: 0.5, ease: "easeOut" },
-														opacity: { duration: 0.5, ease: "easeOut" },
+														duration: 0.5,
+														ease: "easeOut"
 													}}
 													className="border-[#bfbfbf] flex items-center gap-2 rounded-lg border bg-black bg-opacity-25 px-3 py-2 whitespace-nowrap"
 												>
