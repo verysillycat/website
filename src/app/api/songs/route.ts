@@ -9,21 +9,15 @@ export async function GET() {
     
     const songs = await Promise.all(
       files.filter(file => file.endsWith('.mp3')).map(async (file) => {
-        const [numberStr, rest] = file.split('|');
-        const trackNumber = parseInt(numberStr.trim());
-        
-        const [artist, ...titleParts] = rest.replace('.mp3', '').split('-');
+        const [artist, ...titleParts] = file.replace('.mp3', '').split('-');
         const title = titleParts.join('-').trim();
         
         return {
-          number: trackNumber,
           title,
           artist: artist.trim()
         };
       })
     );
-    
-    songs.sort((a, b) => a.number - b.number);
     
     return NextResponse.json(songs);
   } catch (error) {

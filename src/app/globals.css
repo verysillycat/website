@@ -21,29 +21,36 @@ body {
 .hamburger-icon {
 	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .hamburger-icon.open {
 	transform: rotate(90deg) scale(1.1);
 }
+
 .hamburger-line {
 	transition:
 		transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
 		opacity 0.2s ease;
 }
+
 .hamburger-line.top {
 	transform-origin: top left;
 }
+
 .hamburger-line.middle {
 	opacity: 1;
 }
 .hamburger-line.bottom {
 	transform-origin: bottom left;
 }
+
 .open .hamburger-line.top {
 	transform: rotate(45deg) translate(5px, 5px);
 }
+
 .open .hamburger-line.middle {
 	opacity: 0;
 }
+
 .open .hamburger-line.bottom {
 	transform: rotate(-45deg) translate(5px, -5px);
 }
@@ -131,12 +138,6 @@ body {
   animation-play-state: paused;
 }
 
-@keyframes slider {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 .glow-effect:hover {
   box-shadow: 0 0 12px #0C0C0C;
   transition: box-shadow 0.3s ease-in-out;
@@ -190,3 +191,33 @@ body {
 .skeleton-bg {
   @apply bg-[#141415];
 } 
+
+.fadeIn {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  75% {
+    opacity: 0.75;
+  }
+
+  90% {
+    opacity: 0.9;
+  }
+  
+  100% {
+    opacity: 1;
+  }
+}

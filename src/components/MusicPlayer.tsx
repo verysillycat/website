@@ -9,7 +9,6 @@ import Image from 'next/image';
 interface Song {
   title: string;
   artist: string;
-  number: number;
 }
 
 interface PlayerState {
@@ -66,6 +65,7 @@ export default function MusicPlayer() {
         const response = await fetch('/api/songs');
         const songList = await response.json();
         setSongs(songList);
+        setCurrentSongIndex(Math.floor(Math.random() * songList.length));
       } catch (error) {
         console.error('Error loading songs:', error);
       } finally {
@@ -74,7 +74,7 @@ export default function MusicPlayer() {
     };
 
     loadSongs();
-  }, [setSongs]);
+  }, [setSongs, setCurrentSongIndex]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -161,7 +161,7 @@ export default function MusicPlayer() {
     ? {
         ...songs[currentSongIndex % songs.length],
         cover: `/songs/covers/${encodeURIComponent(songs[currentSongIndex].title)}.png`,
-        file: `/songs/${encodeURIComponent(`${songs[currentSongIndex].number} | ${songs[currentSongIndex].artist} - ${songs[currentSongIndex].title}.mp3`)}`
+        file: `/songs/${encodeURIComponent(`${songs[currentSongIndex].artist} - ${songs[currentSongIndex].title}.mp3`)}`
       }
     : {
         title: 'Loading...',
