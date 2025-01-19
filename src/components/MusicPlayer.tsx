@@ -57,6 +57,32 @@ export default function MusicPlayer() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [hoverProgress, setHoverProgress] = useState(0);
+  const [slideDirection, setSlideDirection] = useState(0);
+
+  const loadedImages = useRef<Record<string, boolean>>({});
+
+  const currentSong = songs.length > 0 
+    ? {
+        ...songs[currentSongIndex % songs.length],
+        cover: `/songs/covers/${encodeURIComponent(songs[currentSongIndex].title)}.png`,
+        file: `/songs/${encodeURIComponent(`${songs[currentSongIndex].artist} - ${songs[currentSongIndex].title}.mp3`)}`
+      }
+    : {
+        title: 'Loading...',
+        artist: 'Please wait',
+        file: null,
+        cover: ''
+      };
+
+  useEffect(() => {
+    setIsImageLoaded(!!loadedImages.current[currentSong.cover]);
+  }, [currentSong.cover]);
+
+  const handleImageLoad = () => {
+    loadedImages.current[currentSong.cover] = true;
+    setIsImageLoaded(true);
+  };
 
   useEffect(() => {
     const loadSongs = async () => {
@@ -133,6 +159,7 @@ export default function MusicPlayer() {
 
   const playNextSong = () => {
     if (songs.length > 0) {
+      setSlideDirection(1);
       const nextIndex = (currentSongIndex + 1) % songs.length;
       setCurrentSongIndex(nextIndex);
       if (isPlaying && audioRef.current) {
@@ -143,6 +170,7 @@ export default function MusicPlayer() {
 
   const playPreviousSong = () => {
     if (songs.length > 0) {
+      setSlideDirection(-1);
       const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
       setCurrentSongIndex(prevIndex);
       if (isPlaying && audioRef.current) {
@@ -156,19 +184,6 @@ export default function MusicPlayer() {
     const seconds = Math.floor(totalSeconds % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
-
-  const currentSong = songs.length > 0 
-    ? {
-        ...songs[currentSongIndex % songs.length],
-        cover: `/songs/covers/${encodeURIComponent(songs[currentSongIndex].title)}.png`,
-        file: `/songs/${encodeURIComponent(`${songs[currentSongIndex].artist} - ${songs[currentSongIndex].title}.mp3`)}`
-      }
-    : {
-        title: 'Loading...',
-        artist: 'Please wait',
-        file: null,
-        cover: ''
-      };
 
   const handleMouseDown = (type: 'progress' | 'volume') => (e: React.MouseEvent<HTMLDivElement>) => {
     if (type === 'progress') {
@@ -194,6 +209,9 @@ export default function MusicPlayer() {
         if (audioRef.current) {
           audioRef.current.currentTime = newTime;
           setCurrentTime(newTime);
+          if (isPlaying && newTime === 0) {
+            audioRef.current.play();
+          }
         }
       }
     } else if (isDraggingVolume.current) {
@@ -205,17 +223,17 @@ export default function MusicPlayer() {
         setVolume(newVolume);
       }
     }
-  }, [duration, isDraggingProgress, isDraggingVolume, audioRef, setCurrentTime, setVolume]);
+  }, [duration, isDraggingProgress, isDraggingVolume, audioRef, setCurrentTime, setVolume, isPlaying]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     if (isDraggingProgress.current) {
-      if (audioRef.current) {
+      if (audioRef.current && isPlaying) {
         audioRef.current.play();
       }
       isDraggingProgress.current = false;
     }
     isDraggingVolume.current = false;
-  };
+  }, [isPlaying]);
 
   useEffect(() => {
     document.addEventListener('pointermove', handleMouseMove);
@@ -225,18 +243,20 @@ export default function MusicPlayer() {
       document.removeEventListener('pointermove', handleMouseMove);
       document.removeEventListener('pointerup', handleMouseUp);
     };
-  }, [duration, handleMouseMove]);
+  }, [duration, handleMouseMove, handleMouseUp]);
 
-  useEffect(() => {
-    setIsImageLoaded(false);
-  }, [currentSong.cover]);
+  const handleProgressHover = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    setHoverProgress((x / rect.width) * 100);
+  };
 
   return (
     <motion.div
       className="pt-2.5"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      transition={{ duration: 0.25, ease: "easeInOut" }}
     >
       {currentSong.file && (
         <audio
@@ -255,19 +275,27 @@ export default function MusicPlayer() {
               <div className="skeleton-bg animate-pulse rounded-lg w-12 h-12" />
             ) : (
               currentSong.cover ? (
-                <div className="relative h-12 w-12 rounded-lg overflow-hidden">
-                  <div className="absolute inset-0 skeleton-bg animate-pulse" />
+                <motion.div 
+                  key={currentSongIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="relative h-12 w-12 rounded-lg overflow-hidden"
+                >
+                  {!isImageLoaded && (
+                    <div className="absolute inset-0 skeleton-bg animate-pulse" />
+                  )}
                   <Image 
                     src={currentSong.cover} 
                     alt="Album Art" 
-                    className="object-cover relative z-10 transition-opacity duration-300"
+                    className="object-cover relative z-10 transition-opacity duration-300 ease-in-out"
                     style={{ opacity: isImageLoaded ? 1 : 0 }}
-                    onLoad={() => setIsImageLoaded(true)}
+                    onLoad={handleImageLoad}
                     fill
                     sizes="48px"
                     priority
                   />
-                </div>
+                </motion.div>
               ) : (
                 <div className="skeleton-bg animate-pulse rounded-lg w-12 h-12" />
               )
@@ -306,11 +334,20 @@ export default function MusicPlayer() {
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center gap-2">
-                    <span className="truncate text-sm text-white">{currentSong.title}</span>
-                    <span className="text-zinc-400 text-sm">•</span>
-                    <span className="truncate text-sm text-zinc-400">{currentSong.artist}</span>
-                  </div>
+                  <motion.div
+                    key={currentSongIndex}
+                    initial={{ x: 15 * slideDirection, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    onAnimationComplete={() => setSlideDirection(0)}
+                    className="overflow-hidden"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="truncate text-sm text-white flex-shrink min-w-0">{currentSong.title}</span>
+                      <span className="text-zinc-400 text-sm flex-shrink-0">•</span>
+                      <span className="truncate text-sm text-zinc-400 flex-shrink min-w-0">{currentSong.artist}</span>
+                    </div>
+                  </motion.div>
                   
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-3">
@@ -330,9 +367,22 @@ export default function MusicPlayer() {
                         <div className="flex items-center w-full">
                           <span className="mr-2 text-xs text-zinc-400">{formatTime(currentTime)}</span>
                           <div className="relative flex-1 progress-bar">
-                            <div className="absolute inset-0 -top-2 -bottom-2 cursor-pointer" onClick={handleProgressClick} onMouseDown={handleMouseDown('progress')}></div>
+                            <div 
+                              className="absolute inset-0 -top-2 -bottom-2 cursor-pointer" 
+                              onClick={handleProgressClick} 
+                              onMouseDown={handleMouseDown('progress')}
+                              onMouseMove={handleProgressHover}
+                              onMouseLeave={() => setHoverProgress(0)}
+                            ></div>
                             <div className="h-[3px] w-full bg-zinc-800 rounded-full overflow-hidden">
-                              <div className="h-full transition-[width] duration-75 bg-white rounded-full" style={{ width: `${(currentTime / duration) * 100}%` }}></div>
+                              <div 
+                                className="absolute h-full bg-white/10 rounded-full transition-[width] duration-75" 
+                                style={{ width: `${hoverProgress}%` }}
+                              />
+                              <div 
+                                className="h-full transition-[width] duration-75 bg-white rounded-full" 
+                                style={{ width: `${(currentTime / duration) * 100}%` }}
+                              />
                             </div>
                           </div>
                           <span className="ml-2 text-xs text-zinc-400">{formatTime(duration)}</span>
