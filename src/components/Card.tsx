@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardHeader, CardBody } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Typewriter from "typewriter-effect/dist/core";
 import { Icon, loadIcon } from "@iconify/react";
 import { shuffledQuotes } from "@/data/quotes";
@@ -9,6 +9,14 @@ import Image from 'next/image';
 
 export default function CardComponent() {
 	const [iconsLoaded, setIconsLoaded] = useState(false);
+	
+	const socialLinks = useMemo(() => [
+		{href: "https://discord.com/users/825069530376044594", icon: "ic:baseline-discord", alt: "Discord"},
+		{ href: "https://t.me/backdropped", icon: "mdi:telegram", alt: "Telegram" },
+		{ href: "https://github.com/verysillycat", icon: "mdi:github", alt: "GitHub" },
+		{ href: "https://steamcommunity.com/id/webassembly", icon: "mdi:steam", alt: "Steam" },
+		{ href: "https://stats.fm/Cortex", icon: "/assets/statsfm.png", alt: "stats.fm" },
+	], []);
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -43,15 +51,7 @@ export default function CardComponent() {
 		};
 
 		loadIcons();
-	}, []);
-
-	const socialLinks = [
-		{href: "https://discord.com/users/825069530376044594", icon: "ic:baseline-discord", alt: "Discord"},
-		{ href: "https://t.me/backdropped", icon: "mdi:telegram", alt: "Telegram" },
-		{ href: "https://github.com/verysillycat", icon: "mdi:github", alt: "GitHub" },
-		{ href: "https://steamcommunity.com/id/webassembly", icon: "mdi:steam", alt: "Steam" },
-		{ href: "https://stats.fm/Cortex", icon: "/assets/statsfm.png", alt: "stats.fm" },
-	];
+	}, [socialLinks]);
 
 	return (
 		<motion.div

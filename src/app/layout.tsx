@@ -9,9 +9,7 @@ export const metadata = {
 		url: "https://cortex.rest",
 		images: [
 			{ 
-				url: "https://cortex.rest/assets/embed.gif",
-				width: 528,
-				height: 511,
+				url: "https://cortex.rest/assets/embed.png",
 			},
 		],
 	},
