@@ -62,7 +62,7 @@ export default function Header() {
 				<div className="p-3.5 non-selectable">
 					<div className="flex justify-between items-center non-selectable">
 						<div className="flex items-center gap-2 non-selectable">
-							<h1 className="text-xl font-bold text-white/90 text-shadow-[0_0_15px_rgba(255,255,255,1)] hover:text-shadow-[0_0_20px_rgba(255,255,255,1)] transition-all duration-300 non-selectable">
+							<h1 className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable">
 								Cortex
 							</h1>
 							<div

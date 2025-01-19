@@ -16,7 +16,7 @@ export default function Technologies() {
 		{ href: "https://www.python.org", icon: "simple-icons:python", name: "Python" },
 		{ href: "https://pnpm.io", icon: "simple-icons:pnpm", name: "pnpm" },
 		{ href: "https://www.kernel.org", icon: "simple-icons:linux", name: "Linux" },
-		{ href: "https://vercel.com", icon: "simple-icons:vercel", name: "Vercel" },
+		{ href: "https://www.markdownguide.org", icon: "simple-icons:markdown", name: "Markdown" },
 	];
 
 	return (
@@ -44,14 +44,14 @@ export default function Technologies() {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.5, ease: "easeInOut" }}
 					>
-						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-3 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-60 slider-fade">
+						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-3 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 slider-fade">
 							<CardBody>
 								<div
 									className="pointer-events-none absolute inset-0"
 									style={{ zIndex: 0 }}
 								></div>
 								<Slider>
-									<div className="animate-slide font-semibold flex justify-center gap-4">
+									<div className="font-semibold flex justify-center gap-4">
 										{technologies.map((tech) => (
 											<a
 												key={tech.name}

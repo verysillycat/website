@@ -66,7 +66,7 @@ export default function CardComponent() {
 				rotateX: { duration: 0.6 }
 			}}
 		>
-			<Card className="card-background bg-black bg-opacity-25 mt-4 mx-auto py-6 w-[95%] min-w-[320px] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 sm:px-6 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-60">
+			<Card className="card-background bg-black bg-opacity-25 mt-4 mx-auto py-6 w-[95%] min-w-[320px] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 sm:px-6 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60">
 				<video autoPlay loop muted playsInline disablePictureInPicture>
 					<source src="/assets/banner.mp4" type="video/mp4" />
 					Your browser does not support the video tag.
@@ -135,26 +135,26 @@ export default function CardComponent() {
 						<span id="typewriter"></span>
 					</p>
 					<div className="flex justify-end mt-4">
-						{socialLinks.map((link, index) => (
+						{iconsLoaded && socialLinks.map((link, index) => (
 							<motion.a
 								key={link.icon}
 								href={link.href}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="border p-1 rounded-md bg-[#121212]/40 border-[#BFBFBF] hover:bg-[#1a1a1a]/60 mr-2 last:mr-0 transition duration-300 ease-in-out hover:shadow-[0_0_1px_rgba(255,255,255,0.15),0_0_2px_rgba(255,255,255,0.05)]"
+								className="border p-1 rounded-md bg-[#121212]/40 border-[#BFBFBF] hover:bg-[#1a1a1a]/60 mr-2 last:mr-0 transition duration-300 ease-in-out hover:shadow-[0_0_4px_rgba(180,180,180,0.15),0_0_4px_rgba(180,180,180,0.05)]"
 								initial={{ 
 									opacity: 0,
 									y: -10, 
 									scale: 0.95
 								}}
 								animate={{ 
-									opacity: iconsLoaded ? 1 : 0,
-									y: iconsLoaded ? 0 : -10, 
-									scale: iconsLoaded ? 1 : 0.95
+									opacity: 1,
+									y: 0, 
+									scale: 1
 								}}
 								transition={{
-									duration: 0.3,
-									delay: iconsLoaded ? index * 0.1 : 0,
+									duration: 0.2,
+									delay: index * 0.05,
 									ease: "easeInOut"
 								}}
 							>

@@ -47,7 +47,7 @@ export default function Projects() {
                             rotateX: { duration: 0.6 }
                         }}
                     >
-                        <Card className="bg-black bg-opacity-25 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-60">
+                        <Card className="bg-black bg-opacity-25 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60">
                             <CardHeader className="px-4 pt-4 flex gap-3 justify-between">
                                 <div className="flex gap-3">
                                     {project.icon && (

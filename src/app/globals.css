@@ -129,18 +129,15 @@ body {
   transition: animation-play-state 0.5s ease;
 }
 
+.animate-slider .hover-effect {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 .hover-effect:hover > div {
   background-color: rgba(128, 128, 128, 0.1);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
   transform: scale(1.02);
   transition: all 0.2s ease;
-  animation-play-state: paused;
-}
-
-.glow-effect:hover {
-  box-shadow: 0 0 12px #0C0C0C;
-  transition: box-shadow 0.3s ease-in-out;
 }
 
 .nav-link {
@@ -161,6 +158,7 @@ body {
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: -1;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 .nav-link:hover::before {
@@ -176,6 +174,7 @@ body {
 .hamburger-navlink:hover {
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(4px);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 @keyframes pulse {
@@ -219,5 +218,11 @@ body {
   
   100% {
     opacity: 1;
+  }
+}
+
+@layer utilities {
+  .pause-animation {
+    animation-play-state: paused !important;
   }
 }

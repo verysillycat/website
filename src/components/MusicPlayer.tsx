@@ -268,7 +268,7 @@ export default function MusicPlayer() {
           onError={(e) => console.error('Audio playback error:', e)}
         />
       )}
-      <Card className="bg-black/30 backdrop-blur-md border border-[#dbdbdb]/20 rounded-lg w-[90%] max-w-md mx-auto h-auto transition-all duration-300 hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:border-opacity-30">
+      <Card className="bg-black/30 backdrop-blur-md border border-[#dbdbdb]/20 rounded-lg w-[90%] max-w-md mx-auto h-auto transition-all duration-300 hover:shadow-[0_0_10px_rgba(22,22,22,15)] hover:border-opacity-30">
         <CardBody className="p-2">
           <div className="flex items-start gap-3">
             {isLoading ? (
@@ -336,8 +336,8 @@ export default function MusicPlayer() {
                 <>
                   <motion.div
                     key={currentSongIndex}
-                    initial={{ x: 15 * slideDirection, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
+                    initial={{ x: 10 * slideDirection, opacity: 0, y: 0 }}
+                    animate={{ x: 0, opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
                     onAnimationComplete={() => setSlideDirection(0)}
                     className="overflow-hidden"

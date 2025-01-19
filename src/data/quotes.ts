@@ -1,7 +1,7 @@
 export const quotes = [
 	"Developer making modern interfaces and designs.",
 	"Creating websites while being focused on aesthetics and user experience.",
-	"Programming, UI/UX design, and making intuitive user experiences.",
+	"Programming, UI/UX design and making intuitive user experiences.",
 ];
 
 export const shuffleArray = (array: string[]) => {
