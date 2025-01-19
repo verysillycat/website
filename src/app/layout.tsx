@@ -22,7 +22,7 @@ export default function RootLayout({
 		<html lang="en">
 			<head>
 				<meta name="darkreader-lock" />
-				<meta name="theme-color" content="#686868" />
+				<meta name="theme-color" content="#232121" />
 			</head>
 				<body className="min-h-screen flex flex-col">
 					{children}
