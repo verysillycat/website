@@ -50,11 +50,21 @@ export default function Projects() {
 
     return (
         <div className="mt-10 flex flex-col items-center">
-            <TextFade
-                duration={1.2}
-                words="Projects"
-                className="text-xl font-bold text-white"
-            />
+            <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                    duration: 0.2, 
+                    ease: "easeInOut",
+                    delay: 0.7
+                }}
+            >
+                <TextFade
+                    duration={1.2}
+                    words="Projects"
+                    className="text-xl font-bold text-white"
+                />
+            </motion.div>
 
             <div className={`grid ${
                 projects.length < 3 
@@ -68,7 +78,7 @@ export default function Projects() {
                         animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
                         transition={{ 
                             duration: 0.5,
-                            delay: index * 0.1,
+                            delay: 0.8 + (index * 0.1),
                             ease: [0.23, 1, 0.32, 1],
                             opacity: { duration: 0.4 },
                             y: { duration: 0.4 },
@@ -149,11 +159,20 @@ export default function Projects() {
                 ))}
             </div>
             
-            <TextFade
-                duration={1.4}
-                words="... and have contributed to multiple frontend projects"
-                className="text-sm text-gray-400 mb-16 italic text-center w-full px-3"
-            />
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                    duration: 0.5, 
+                    delay: 1.2
+                }}
+            >
+                <TextFade
+                    duration={1.4}
+                    words="... and have contributed to multiple frontend projects"
+                    className="text-sm text-gray-400 mb-16 italic text-center w-full px-3"
+                />
+            </motion.div>
         </div>
     )
 }
