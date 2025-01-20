@@ -50,21 +50,11 @@ export default function Projects() {
 
     return (
         <div className="mt-10 flex flex-col items-center">
-            <motion.div
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                    duration: 0.2, 
-                    ease: "easeInOut",
-                    delay: 0.7
-                }}
-            >
-                <TextFade
-                    duration={1.2}
+            <TextFade
+                duration={1.2}
                     words="Projects"
                     className="text-xl font-bold text-white"
                 />
-            </motion.div>
 
             <div className={`grid ${
                 projects.length < 3 
