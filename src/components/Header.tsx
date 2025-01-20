@@ -127,18 +127,32 @@ export default function Header() {
 								Home
 							</a>
 							<a
-								href="#about"
+								href="https://github.com/verysillycat/website"
 								onClick={() => setHamburgerTriggered(false)}
 								className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
+								target="_blank"
+								rel="noopener noreferrer"
 							>
-								About
+								Source
 							</a>
 							<a
-								href="#contact"
+								href="mailto:me@cortex.rest"
 								onClick={() => setHamburgerTriggered(false)}
 								className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
 							>
-								Contact
+								<svg 
+									className="w-5 h-5"
+									fill="none" 
+									stroke="currentColor" 
+									viewBox="0 0 24 24"
+								>
+									<path 
+										strokeLinecap="round" 
+										strokeLinejoin="round" 
+										strokeWidth="2" 
+										d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+									/>
+								</svg>
 							</a>
 						</nav>
 					</div>
@@ -162,16 +176,33 @@ export default function Header() {
 										Home
 									</a>
 									<a
-										href="#about"
+										href="https://github.com/verysillycat/website"
 										className="hamburger-navlink text-white/80 hover:text-white py-2 hover:bg-white/10 transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
+										target="_blank"
+										rel="noopener noreferrer"
 									>
-										About
+										Source
 									</a>
 									<a
-										href="#contact"
+										href="mailto:me@cortex.rest"
 										className="hamburger-navlink text-white/80 hover:text-white py-2 hover:bg-white/10 transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
 									>
-										Contact
+										<div className="flex items-center">
+											<svg 
+												className="w-5 h-5 mr-2"
+												fill="none" 
+												stroke="currentColor" 
+												viewBox="0 0 24 24"
+											>
+												<path 
+													strokeLinecap="round" 
+													strokeLinejoin="round" 
+													strokeWidth="2" 
+													d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+												/>
+											</svg>
+											Contact
+										</div>
 									</a>
 								</div>
 							</nav>
