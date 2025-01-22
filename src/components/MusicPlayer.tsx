@@ -109,21 +109,22 @@ export default function MusicPlayer() {
     }
   }, [volume, isMuted]);
 
-  const togglePlayPause = async () => {
+  const togglePlayPause = useCallback(async () => {
     if (audioRef.current) {
       try {
-        if (isPlaying) {
-          await audioRef.current.pause();
-        } else {
+        if (audioRef.current.paused) {
           await audioRef.current.play();
+          setIsPlaying(true);
+        } else {
+          await audioRef.current.pause();
+          setIsPlaying(false);
         }
-        setIsPlaying(!isPlaying);
       } catch (error) {
         console.error('Error playing/pausing audio:', error);
         setIsPlaying(false);
       }
     }
-  };
+  }, [setIsPlaying]);
 
   const toggleMute = () => setIsMuted(!isMuted);
 
@@ -251,6 +252,21 @@ export default function MusicPlayer() {
     setHoverProgress((x / rect.width) * 100);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === 'Space') {
+        event.preventDefault();
+        togglePlayPause();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [togglePlayPause]);
+
   return (
     <motion.div
       className="pt-2.5"
@@ -355,7 +371,7 @@ export default function MusicPlayer() {
                         <SkipBack className="h-4 w-4" />
                       </button>
                       <button className="text-zinc-400 hover:text-white transition-colors" onClick={togglePlayPause}>
-                        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        {audioRef.current && !audioRef.current.paused ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                       </button>
                       <button className="text-zinc-400 hover:text-white transition-colors" onClick={playNextSong}>
                         <SkipForward className="h-4 w-4" />
