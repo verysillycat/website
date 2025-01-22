@@ -284,7 +284,7 @@ export default function MusicPlayer() {
           onError={(e) => console.error('Audio playback error:', e)}
         />
       )}
-      <Card className="bg-black/30 backdrop-blur-md border border-[#dbdbdb]/20 rounded-lg w-[90%] max-w-md mx-auto h-auto transition-all duration-300 hover:shadow-[0_0_10px_rgba(22,22,22,15)] hover:border-opacity-30 hover:scale-[1.02]">
+      <Card className="bg-black/35 backdrop-blur-md border border-[#dbdbdb]/20 rounded-lg w-[90%] max-w-md mx-auto h-auto transition-all duration-300 hover:shadow-[0_0_10px_rgba(22,22,22,15)] hover:border-opacity-30 hover:scale-[1.02] hover:backdrop-filter-none">
         <CardBody className="p-2">
           <div className="flex items-start gap-3">
             {isLoading ? (
