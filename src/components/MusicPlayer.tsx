@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardBody } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Volume1, Volume, VolumeX } from 'lucide-react';
 import { create } from 'zustand';
 import { useRef, useEffect, useState, useCallback } from "react";
 import Image from 'next/image';
@@ -408,7 +408,12 @@ export default function MusicPlayer() {
                     
                     <div className="group flex items-center gap-2">
                       <button className="text-zinc-400 hover:text-white transition-colors" onClick={toggleMute}>
-                        {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                        {isMuted ? <VolumeX className="h-4 w-4" /> : 
+                          volume === 0 ? <VolumeX className="h-4 w-4" /> :
+                          volume < 30 ? <Volume className="h-4 w-4" /> :
+                          volume < 60 ? <Volume1 className="h-4 w-4" /> :
+                          <Volume2 className="h-4 w-4" />
+                        }
                       </button>
                       <div className="w-16 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-left">
                         <div className="group relative h-6 flex items-center select-none">
