@@ -57,7 +57,6 @@ export default function Projects() {
                 duration={1.2}
                 words="Projects"
                 className="text-xl font-bold text-white"
-                animate={isInView}
             />
 
             <div className={`grid ${
@@ -161,7 +160,6 @@ export default function Projects() {
                     duration={1.4}
                     words="... and have contributed to multiple frontend projects"
                     className="text-sm text-gray-400 mb-16 italic text-center w-full px-3"
-                    animate={isInView}
                 />
             </motion.div>
         </div>
