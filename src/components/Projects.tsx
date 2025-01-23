@@ -3,8 +3,9 @@ import { Card, CardHeader, CardBody } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { TextFade } from "../app/structure/TextFade";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Icon } from "@iconify/react";
+import { useInview } from "../lib/animateInscroll";
 
 const projects = [
     {
@@ -29,6 +30,8 @@ interface GitHubRepo {
 
 export default function Projects() {
     const [stars, setStars] = useState<{[key: string]: number}>({});
+    const ref = useRef<HTMLDivElement>(null);
+    const isInView = useInview(ref);
 
     useEffect(() => {
         projects.forEach(project => {
@@ -49,12 +52,13 @@ export default function Projects() {
     }, []);
 
     return (
-        <div className="mt-10 flex flex-col items-center">
+        <div id="projects-section" ref={ref} className="mt-10 flex flex-col items-center">
             <TextFade
                 duration={1.2}
-                    words="Projects"
-                    className="text-xl font-bold text-white"
-                />
+                words="Projects"
+                className="text-xl font-bold text-white"
+                animate={isInView}
+            />
 
             <div className={`grid ${
                 projects.length < 3 
@@ -64,16 +68,12 @@ export default function Projects() {
                 {projects.map((project, index) => (
                     <motion.div
                         key={index}
-                        initial={{ opacity: 0, y: 20, scale: 0.98, rotateX: -10 }}
-                        animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+                        initial={{ opacity: 0, y: 25 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 25 }}
                         transition={{ 
-                            duration: 0.5,
-                            delay: 0.8 + (index * 0.1),
-                            ease: [0.23, 1, 0.32, 1],
-                            opacity: { duration: 0.4 },
-                            y: { duration: 0.4 },
-                            scale: { duration: 0.5 },
-                            rotateX: { duration: 0.6 }
+                            opacity: { duration: 0.8, delay: isInView ? index * 0.2 : 0 },
+                            y: { duration: 0.65, delay: isInView ? index * 0.2 : 0, ease: [0.2, 0.8, 0.2, 1] },
+                            ease: "easeOut"
                         }}
                     >
                         <Card className="bg-black bg-opacity-25 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02]">
@@ -151,16 +151,17 @@ export default function Projects() {
             
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ 
                     duration: 0.5, 
-                    delay: 1.2
+                    delay: isInView ? 1.2 : 0
                 }}
             >
                 <TextFade
                     duration={1.4}
                     words="... and have contributed to multiple frontend projects"
                     className="text-sm text-gray-400 mb-16 italic text-center w-full px-3"
+                    animate={isInView}
                 />
             </motion.div>
         </div>
