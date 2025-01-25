@@ -553,70 +553,54 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             </motion.div>
                                         )}
                                         
-                                        <AnimatePresence mode="sync">
-                                            {(data.activities?.length === 0 || data.activities?.every(activity => activity.type === 4)) && status !== 'offline' && (
+                                        <AnimatePresence mode="wait">
+                                            {(data.activities?.length === 0 || data.activities?.every(activity => activity.type === 4)) && status !== 'offline' ? (
                                                 <motion.div 
-                                                    layout
-                                                    initial={{ opacity: 0, y: 10, height: 0 }}
+                                                    key="nothing-happening"
+                                                    initial={{ opacity: 0 }}
                                                     animate={{ 
-                                                        opacity: 1, 
-                                                        y: 0,
-                                                        height: 'auto',
+                                                        opacity: 1,
                                                         transition: {
-                                                            height: {
-                                                                duration: 0.4,
-                                                                ease: [0.4, 0, 0.2, 1]
-                                                            },
-                                                            opacity: {
-                                                                duration: 0.3,
-                                                                delay: 0.2
-                                                            },
-                                                            y: {
-                                                                duration: 0.4,
-                                                                ease: [0.4, 0, 0.2, 1]
-                                                            }
+                                                            duration: 0.6,
+                                                            ease: [0.22, 1, 0.36, 1]
                                                         }
                                                     }}
                                                     exit={{ 
-                                                        opacity: 0, 
-                                                        y: -20,
-                                                        height: 0,
+                                                        opacity: 0,
                                                         transition: {
-                                                            height: {
-                                                                duration: 0.3,
-                                                                ease: [0.4, 0, 0.2, 1]
-                                                            },
-                                                            opacity: {
-                                                                duration: 0.2
-                                                            },
-                                                            y: {
-                                                                duration: 0.3,
-                                                                ease: [0.4, 0, 0.2, 1]
-                                                            }
+                                                            duration: 0.4,
+                                                            ease: [0.22, 1, 0.36, 1]
                                                         }
                                                     }}
                                                     className="bg-zinc-800/50 rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden"
+                                                    style={{
+                                                        willChange: 'opacity',
+                                                        transform: 'translateZ(0)',
+                                                        backfaceVisibility: 'hidden'
+                                                    }}
                                                 >
                                                     <motion.div 
-                                                        initial={{ scale: 0.9, opacity: 0 }}
+                                                        initial={{ opacity: 0 }}
                                                         animate={{ 
-                                                            scale: 1, 
                                                             opacity: 1,
                                                             transition: {
-                                                                delay: 0.3,
-                                                                duration: 0.4,
-                                                                ease: [0, 0.2, 0.2, 1]
+                                                                delay: 0.2,
+                                                                duration: 0.6,
+                                                                ease: [0.22, 1, 0.36, 1]
                                                             }
                                                         }}
                                                         exit={{ 
-                                                            scale: 0.9, 
                                                             opacity: 0,
                                                             transition: {
-                                                                duration: 0.2,
-                                                                ease: [0.4, 0, 1, 1]
+                                                                duration: 0.3,
+                                                                ease: [0.22, 1, 0.36, 1]
                                                             }
                                                         }}
                                                         className="text-center"
+                                                        style={{
+                                                            willChange: 'opacity',
+                                                            transform: 'translateZ(0)'
+                                                        }}
                                                     >
                                                         <svg 
                                                             xmlns="http://www.w3.org/2000/svg" 
@@ -634,51 +618,29 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                         <p className="text-xs text-zinc-500 mt-1">No active activity to display</p>
                                                     </motion.div>
                                                 </motion.div>
-                                            )}
+                                            ) : null}
 
                                             {data.activities
                                                 ?.filter(activity => activity.type !== 2 && activity.type !== 4)
                                                 .map((activity: any, index: number) => (
                                                     <AnimatePresence key={activity.application_id || activity.name}>
                                                         <motion.div 
-                                                            initial={{ opacity: 0, y: 20, height: 0 }}
+                                                            initial={{ opacity: 0, scale: 0.9 }}
                                                             animate={{ 
                                                                 opacity: 1, 
-                                                                y: 0,
-                                                                height: 'auto',
+                                                                scale: 1,
                                                                 transition: {
-                                                                    height: {
-                                                                        duration: 0.4,
-                                                                        delay: index * 0.1,
-                                                                        ease: [0.4, 0, 0.2, 1]
-                                                                    },
-                                                                    opacity: {
-                                                                        duration: 0.3,
-                                                                        delay: 0.1 + (index * 0.1)
-                                                                    },
-                                                                    y: {
-                                                                        duration: 0.4,
-                                                                        delay: index * 0.1,
-                                                                        ease: [0.4, 0, 0.2, 1]
-                                                                    }
+                                                                    duration: 0.2,
+                                                                    delay: index * 0.05,
+                                                                    ease: [0.4, 0, 0.2, 1]
                                                                 }
                                                             }}
                                                             exit={{ 
-                                                                opacity: 0, 
-                                                                y: -20,
-                                                                height: 0,
+                                                                opacity: 0,
+                                                                scale: 0.9,
                                                                 transition: {
-                                                                    height: {
-                                                                        duration: 0.3,
-                                                                        ease: [0.4, 0, 0.2, 1]
-                                                                    },
-                                                                    opacity: {
-                                                                        duration: 0.2
-                                                                    },
-                                                                    y: {
-                                                                        duration: 0.3,
-                                                                        ease: [0.4, 0, 0.2, 1]
-                                                                    }
+                                                                    duration: 0.15,
+                                                                    ease: [0.4, 0, 0.2, 1]
                                                                 }
                                                             }}
                                                             className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-all duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
@@ -780,32 +742,29 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             {data.spotify && (
                                                 <motion.div 
                                                     key="spotify"
-                                                    layout
-                                                    initial={{ opacity: 0, y: 10, height: 0 }}
+                                                    initial={{ opacity: 0 }}
                                                     animate={{ 
-                                                        opacity: 1, 
-                                                        y: 0,
-                                                        height: 'auto',
+                                                        opacity: 1,
                                                         transition: {
-                                                            height: {
-                                                                duration: 0.2,
-                                                                delay: 0.05,
-                                                                ease: [0.4, 0, 0.2, 1]
-                                                            },
-                                                            opacity: {
-                                                                delay: 0.1 + ((data.activities?.filter(a => a.type !== 2 && a.type !== 4).length || 0) * 0.05),
-                                                                duration: 0.25,
-                                                                ease: [0.4, 0, 0.2, 1]
-                                                            }
-
+                                                            duration: 0.6,
+                                                            delay: 0.1 + ((data.activities?.filter(a => a.type !== 2 && a.type !== 4).length || 0) * 0.05),
+                                                            ease: [0.22, 1, 0.36, 1]
                                                         }
                                                     }}
-                                                    exit={{ opacity: 0, height: 0 }}
-                                                    transition={{ duration: 0.15 }}
-                                                    className={`rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent transition-all duration-200 group relative min-h-[88px] overflow-hidden will-change-transform
+                                                    exit={{ 
+                                                        opacity: 0,
+                                                        transition: {
+                                                            duration: 0.4,
+                                                            ease: [0.22, 1, 0.36, 1]
+                                                        }
+                                                    }}
+                                                    className={`rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent transition-all duration-300 group relative min-h-[88px] overflow-hidden will-change-transform
                                                         ${data.spotify.track_id ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
                                                     style={{ 
                                                         backgroundColor: isCalculatingColor ? 'rgb(24, 24, 27)' : `color-mix(in srgb, ${dominantColor} 8%, rgb(39 39 42 / 0.5))`,
+                                                        willChange: 'transform, opacity',
+                                                        transform: 'translateZ(0)',
+                                                        backfaceVisibility: 'hidden'
                                                     }}
                                                     onMouseEnter={(e) => {
                                                         const target = e.currentTarget;
