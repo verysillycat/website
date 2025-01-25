@@ -26,6 +26,8 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
         primary: 'rgb(39, 39, 42)',
         secondary: 'rgb(24, 24, 27)'
     });
+    const [activityImagesLoaded, setActivityImagesLoaded] = useState<{[key: string]: boolean}>({});
+    const [smallActivityImagesLoaded, setSmallActivityImagesLoaded] = useState<{[key: string]: boolean}>({});
 
     const predefinedColors = useMemo(() => [
         { primary: 'rgb(66, 93, 68)', secondary: 'rgb(72, 85, 99)' },
@@ -648,13 +650,37 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             {(activity.application_id || activity.assets?.large_image) ? (
                                                                 <div className="relative">
                                                                     <div className="group/large">
-                                                                        <Image
-                                                                            src={getActivityImageUrl(activity)}
-                                                                            alt={activity.name}
-                                                                            width={needsWiderSpotifyCard ? 72 : 65}
-                                                                            height={needsWiderSpotifyCard ? 72 : 65}
-                                                                            className="rounded-md"
-                                                                        />
+                                                                        <div className="relative">
+                                                                            <Image
+                                                                                src={getActivityImageUrl(activity)}
+                                                                                alt={activity.name}
+                                                                                width={needsWiderSpotifyCard ? 72 : 65}
+                                                                                height={needsWiderSpotifyCard ? 72 : 65}
+                                                                                className="rounded-md"
+                                                                                onLoad={(e) => {
+                                                                                    const target = e.target as HTMLImageElement;
+                                                                                    target.style.opacity = '1';
+                                                                                    setActivityImagesLoaded(prev => ({
+                                                                                        ...prev,
+                                                                                        [activity.application_id]: true
+                                                                                    }));
+                                                                                }}
+                                                                                style={{ 
+                                                                                    opacity: activityImagesLoaded[activity.application_id] ? '1' : '0'
+                                                                                }}
+                                                                            />
+                                                                            {!activityImagesLoaded[activity.application_id] && (
+                                                                                <div 
+                                                                                    className="absolute inset-0 bg-zinc-700/50 rounded-md animate-pulse transition-opacity duration-300" 
+                                                                                    onTransitionEnd={(e) => {
+                                                                                        const target = e.target as HTMLElement;
+                                                                                        if (target.style.opacity === '0') {
+                                                                                            target.style.display = 'none';
+                                                                                        }
+                                                                                    }}
+                                                                                />
+                                                                            )}
+                                                                        </div>
                                                                         {activity.assets?.large_text && (
                                                                             <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
                                                                                 <div 
@@ -682,7 +708,29 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                                     width={28}
                                                                                     height={28}
                                                                                     className="rounded-full border-2 border-zinc-900"
+                                                                                    onLoad={(e) => {
+                                                                                        const target = e.target as HTMLImageElement;
+                                                                                        target.style.opacity = '1';
+                                                                                        setSmallActivityImagesLoaded(prev => ({
+                                                                                            ...prev,
+                                                                                            [activity.application_id]: true
+                                                                                        }));
+                                                                                    }}
+                                                                                    style={{ 
+                                                                                        opacity: smallActivityImagesLoaded[activity.application_id] ? '1' : '0'
+                                                                                    }}
                                                                                 />
+                                                                                {!smallActivityImagesLoaded[activity.application_id] && (
+                                                                                    <div 
+                                                                                        className="absolute inset-0 bg-zinc-700/50 rounded-full animate-pulse transition-opacity duration-300 border-2 border-zinc-900"
+                                                                                        onTransitionEnd={(e) => {
+                                                                                            const target = e.target as HTMLElement;
+                                                                                            if (target.style.opacity === '0') {
+                                                                                                target.style.display = 'none';
+                                                                                            }
+                                                                                        }}
+                                                                                    />
+                                                                                )}
                                                                                 {activity.assets?.small_text && (
                                                                                     <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
                                                                                         <div 
@@ -808,6 +856,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                     )}
                                                     <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
                                                         {data.spotify.album_art_url && data.spotify.track_id && (
+                                                            
                                                             <div className={`relative flex-shrink-0 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-4' : ''}`}>
                                                                 <Image
                                                                     src={data.spotify.album_art_url}
