@@ -554,14 +554,133 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                         )}
                                         
                                         <AnimatePresence mode="sync">
+                                            {(data.activities?.length === 0 || data.activities?.every(activity => activity.type === 4)) && status !== 'offline' && (
+                                                <motion.div 
+                                                    layout
+                                                    initial={{ opacity: 0, y: 10, height: 0 }}
+                                                    animate={{ 
+                                                        opacity: 1, 
+                                                        y: 0,
+                                                        height: 'auto',
+                                                        transition: {
+                                                            height: {
+                                                                duration: 0.4,
+                                                                ease: [0.4, 0, 0.2, 1]
+                                                            },
+                                                            opacity: {
+                                                                duration: 0.3,
+                                                                delay: 0.2
+                                                            },
+                                                            y: {
+                                                                duration: 0.4,
+                                                                ease: [0.4, 0, 0.2, 1]
+                                                            }
+                                                        }
+                                                    }}
+                                                    exit={{ 
+                                                        opacity: 0, 
+                                                        y: -20,
+                                                        height: 0,
+                                                        transition: {
+                                                            height: {
+                                                                duration: 0.3,
+                                                                ease: [0.4, 0, 0.2, 1]
+                                                            },
+                                                            opacity: {
+                                                                duration: 0.2
+                                                            },
+                                                            y: {
+                                                                duration: 0.3,
+                                                                ease: [0.4, 0, 0.2, 1]
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="bg-zinc-800/50 rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden"
+                                                >
+                                                    <motion.div 
+                                                        initial={{ scale: 0.9, opacity: 0 }}
+                                                        animate={{ 
+                                                            scale: 1, 
+                                                            opacity: 1,
+                                                            transition: {
+                                                                delay: 0.3,
+                                                                duration: 0.4,
+                                                                ease: [0, 0.2, 0.2, 1]
+                                                            }
+                                                        }}
+                                                        exit={{ 
+                                                            scale: 0.9, 
+                                                            opacity: 0,
+                                                            transition: {
+                                                                duration: 0.2,
+                                                                ease: [0.4, 0, 1, 1]
+                                                            }
+                                                        }}
+                                                        className="text-center"
+                                                    >
+                                                        <svg 
+                                                            xmlns="http://www.w3.org/2000/svg" 
+                                                            viewBox="0 0 24 24"
+                                                            className="w-8 h-8 text-zinc-500 mx-auto mb-2"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        >
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9.348 14.652a3.75 3.75 0 0 1 0-5.304m5.304 0a3.75 3.75 0 0 1 0 5.304m-7.425 2.121a6.75 6.75 0 0 1 0-9.546m9.546 0a6.75 6.75 0 0 1 0 9.546M5.106 18.894c-3.808-3.807-3.808-9.98 0-13.788m13.788 0c3.808 3.807 3.808 9.98 0 13.788M12 12h.008v.008H12V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                                        </svg>
+                                                        <p className="text-sm text-zinc-400">Nothing is happening</p>
+                                                        <p className="text-xs text-zinc-500 mt-1">No active activity to display</p>
+                                                    </motion.div>
+                                                </motion.div>
+                                            )}
+
                                             {data.activities
                                                 ?.filter(activity => activity.type !== 2 && activity.type !== 4)
                                                 .map((activity: any, index: number) => (
                                                     <AnimatePresence key={activity.application_id || activity.name}>
                                                         <motion.div 
-                                                            initial={{ opacity: 0 }}
-                                                            animate={{ opacity: 1 }}
-                                                            exit={{ opacity: 0 }}
+                                                            initial={{ opacity: 0, y: 20, height: 0 }}
+                                                            animate={{ 
+                                                                opacity: 1, 
+                                                                y: 0,
+                                                                height: 'auto',
+                                                                transition: {
+                                                                    height: {
+                                                                        duration: 0.4,
+                                                                        delay: index * 0.1,
+                                                                        ease: [0.4, 0, 0.2, 1]
+                                                                    },
+                                                                    opacity: {
+                                                                        duration: 0.3,
+                                                                        delay: 0.1 + (index * 0.1)
+                                                                    },
+                                                                    y: {
+                                                                        duration: 0.4,
+                                                                        delay: index * 0.1,
+                                                                        ease: [0.4, 0, 0.2, 1]
+                                                                    }
+                                                                }
+                                                            }}
+                                                            exit={{ 
+                                                                opacity: 0, 
+                                                                y: -20,
+                                                                height: 0,
+                                                                transition: {
+                                                                    height: {
+                                                                        duration: 0.3,
+                                                                        ease: [0.4, 0, 0.2, 1]
+                                                                    },
+                                                                    opacity: {
+                                                                        duration: 0.2
+                                                                    },
+                                                                    y: {
+                                                                        duration: 0.3,
+                                                                        ease: [0.4, 0, 0.2, 1]
+                                                                    }
+                                                                }
+                                                            }}
                                                             className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-all duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
                                                         >
                                                             {(activity.application_id || activity.assets?.large_image) ? (
