@@ -1,5 +1,5 @@
 'use client'
-import { Card, CardHeader, CardBody } from "@nextui-org/react";
+import { Card, CardHeader, CardBody } from "@heroui/react";
 import { motion } from "framer-motion";
 import { TextFade } from "../app/structure/TextFade";
 import Image from "next/image";

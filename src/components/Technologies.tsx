@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Slider } from "../app/structure/Slider";
 import { TextFade } from "../app/structure/TextFade";

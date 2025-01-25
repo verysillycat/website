@@ -1,20 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSocket } from "@/hooks/socket";
+import { useSocket } from "@/hooks/SocketContext";
 import { motion, AnimatePresence } from "framer-motion";
+import UserArea from './DiscordPresence';
 
 export default function Header() {
 	const [hamburgerTriggered, setHamburgerTriggered] = useState(false);
 	const { status } = useSocket();
+	const [showUserArea, setShowUserArea] = useState(false);
 
-	const statusColor =
-		{
-			online: "bg-green-500",
-			dnd: "bg-red-500",
-			idle: "bg-yellow-500",
-			offline: "bg-gray-500",
-		}[status] || "bg-gray-500";
+	const statusColor = {
+		online: "bg-green-500",
+		dnd: "bg-red-500",
+		idle: "bg-yellow-500",
+		offline: "bg-gray-500",
+	} as const;
+
+	const statusClass = statusColor[status as keyof typeof statusColor] || "bg-gray-500";
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -28,7 +31,6 @@ export default function Header() {
 	}, []);
 
 	useEffect(() => {
-		// Enable smooth scrolling for the entire page
 		document.documentElement.style.scrollBehavior = 'smooth';
 
 		return () => {
@@ -62,11 +64,14 @@ export default function Header() {
 				<div className="p-3.5 non-selectable">
 					<div className="flex justify-between items-center non-selectable">
 						<div className="flex items-center gap-2 non-selectable">
-							<h1 className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable">
+							<h1
+								className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable cursor-pointer"
+								onClick={() => setShowUserArea(!showUserArea)}
+							>
 								Cortex
 							</h1>
 							<div
-								className={`w-2 h-2 rounded-full ${statusColor} non-selectable`}
+								className={`w-2 h-2 rounded-full ${statusClass} non-selectable`}
 							></div>
 						</div>
 						<button
@@ -210,6 +215,8 @@ export default function Header() {
 					)}
 				</div>
 			</motion.div>
+
+			<UserArea isOpen={showUserArea} onClose={() => setShowUserArea(false)} />
 		</>
 	);
 }
