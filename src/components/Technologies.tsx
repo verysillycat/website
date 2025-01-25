@@ -44,7 +44,7 @@ export default function Technologies() {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.5, ease: "easeInOut" }}
 					>
-						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-3 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 slider-fade]">
+						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-0.5 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60">
 							<CardBody>
 								<div
 									className="pointer-events-none absolute inset-0"

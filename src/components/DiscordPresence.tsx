@@ -225,7 +225,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
     };
 
     useEffect(() => {
-        const needsWider = data?.spotify && (
+        const needsWider = hasOverflow && data?.spotify && (
             data.spotify.song.length > 35 || 
             data.spotify.artist.length > 35 || 
             data.spotify.album.length > 35 || 
@@ -235,7 +235,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
         if (needsWider !== needsWiderSpotifyCard) {
             setNeedsWiderSpotifyCard(needsWider);
         }
-    }, [data?.spotify, needsWiderSpotifyCard]);
+    }, [data?.spotify, hasOverflow, needsWiderSpotifyCard]);
 
     const extractAvatarColors = useCallback((imageData: Uint8ClampedArray) => {
         const colors: [number, number, number][] = [];
@@ -313,6 +313,18 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
         }
     }, [data?.activities, data?.spotify, hasOverflow]);
 
+    useEffect(() => {
+        const spotifyElement = document.querySelector('[data-hovering="true"]') as HTMLElement;
+        if (spotifyElement) {
+            spotifyElement.style.backgroundColor = isCalculatingColor 
+                ? 'rgb(24, 24, 27)' 
+                : `color-mix(in srgb, ${dominantColor} 25%, rgb(24 24 27 / 0.9))`;
+            spotifyElement.style.borderColor = isCalculatingColor 
+                ? 'rgb(63, 63, 70)' 
+                : `color-mix(in srgb, ${dominantColor} 30%, rgb(63, 63, 70))`;
+        }
+    }, [dominantColor, isCalculatingColor]);
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -320,7 +332,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                     className="fixed inset-0 flex items-center justify-center z-50"
                 >
                     <motion.div 
@@ -328,7 +340,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         initial={{ backdropFilter: "blur(0px)", backgroundColor: "rgba(0, 0, 0, 0)" }}
                         animate={{ backdropFilter: "blur(8px)", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                         exit={{ backdropFilter: "blur(0px)", backgroundColor: "rgba(0, 0, 0, 0)" }}
-                        transition={{ duration: 0.2 }}
+                        transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                         onClick={onClose}
                     />
                     <motion.div
@@ -337,15 +349,18 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         exit={{ scale: 0.95, opacity: 0 }}
                         transition={{ 
                             duration: 0.2, 
-                            ease: "easeOut",
+                            ease: [0.4, 0, 0.2, 1],
                         }}
-                        className={`relative z-10 w-[95%] transition-[max-width] duration-300 ease-in-out max-w-lg
+                        className={`relative z-10 w-[95%] transition-all duration-300 ease-in-out max-w-lg
                             data-[wider=true]:max-w-2xl 
                             data-[overflow=true]:max-w-4xl
                             data-[wider-spotify=true]:max-w-3xl`}
                         data-wider={false}
                         data-overflow={hasOverflow}
                         data-wider-spotify={needsWiderSpotifyCard}
+                        style={{
+                            willChange: "transform, max-width",
+                        }}
                     >
                         <Card className="rounded-lg bg-zinc-900/90 border border-zinc-800 bg-white/[0.05] relative overflow-hidden">
                             <div 
@@ -412,7 +427,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                         <motion.div 
                                             layout="position"
                                             className="flex items-center gap-4 w-full md:col-span-2"
-                                            transition={{ layout: { duration: 0.5, ease: [0.4, 0, 0.2, 1] } }}
+                                            transition={{ 
+                                                layout: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+                                                opacity: { duration: 0.3 }
+                                            }}
                                         >
                                             <div className="relative">
                                                 <Image
@@ -508,10 +526,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             href={`https://discord.com/users/${data.discord_user.id}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 transition-colors px-2 py-1 rounded-md flex mr-5 items-center gap-1 w-fit"
+                                                            className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 transition-colors px-2.5 py-1.5 rounded-md flex mr-5 items-center gap-1.5 w-fit"
                                                         >
                                                             Add on Discord
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
                                                                 <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
                                                             </svg>
                                                         </motion.a>
@@ -524,7 +542,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             <motion.div 
                                                 layout="position"
                                                 className={`relative py-1 ${hasOverflow ? 'md:col-span-2' : ''}`}
-                                                transition={{ layout: { duration: 0.5, ease: [0.4, 0, 0.2, 1] } }}
+                                                transition={{ 
+                                                    layout: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+                                                    opacity: { duration: 0.3 }
+                                                }}
                                             >
                                                 <div className="absolute inset-x-0 bottom-0" aria-hidden="true">
                                                     <div className="w-2/3 mx-auto h-[2px] bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
@@ -533,172 +554,190 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                         )}
                                         
                                         <AnimatePresence mode="wait">
-                                            {(!data.activities?.filter(activity => activity.type !== 2 && activity.type !== 4).length && !data.spotify && status !== 'offline') ? (
-                                                <motion.div
-                                                    key="nothing-playing"
-                                                    layout="position"
-                                                    initial={{ scale: 0.95, opacity: 0 }}
-                                                    animate={{ scale: 1, opacity: 1 }}
-                                                    exit={{ scale: 0.9, opacity: 0 }}
-                                                    transition={{ 
-                                                        layout: { duration: 0.5, ease: "easeInOut" },
-                                                        scale: { duration: 0.15 },
-                                                        opacity: { duration: 0.15 }
-                                                    }}
-                                                    className="bg-zinc-800/50 rounded-lg p-6 flex flex-col items-center justify-center gap-3 border-2 border-dotted border-zinc-700/25 text-center"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" />
-                                                    </svg>
-                                                    <div>
-                                                        <p className="text-zinc-300 font-medium">Currently Doing Nothing</p>
-                                                        <p className="text-zinc-500 text-sm mt-1">No active activity to display</p>
-                                                    </div>
-                                                </motion.div>
-                                            ) : (
-                                                data.activities
-                                                    ?.filter(activity => activity.type !== 2 && activity.type !== 4)
-                                                    .map((activity: any, index: number) => (
-                                                        <motion.div 
-                                                            key={activity.application_id || index}
-                                                            layout="position"
-                                                            initial={{ scale: 0.95, opacity: 0 }}
-                                                            animate={{ scale: 1, opacity: 1 }}
-                                                            exit={{ scale: 0.9, opacity: 0 }}
-                                                            transition={{ 
-                                                                layout: { duration: 0.5, ease: "easeInOut" },
-                                                                scale: { duration: 0.15 },
-                                                                opacity: { duration: 0.15 }
-                                                            }}
-                                                            className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-transparent transition-all duration-300 hover:scale-[1.02] hover:border-dashed hover:border-zinc-700/50"
-                                                        >
-                                                            {(activity.application_id || activity.assets?.large_image) ? (
-                                                                <div className="relative">
-                                                                    <div className="group/large">
-                                                                        <Image
-                                                                            src={getActivityImageUrl(activity)}
-                                                                            alt={activity.name}
-                                                                            width={needsWiderSpotifyCard ? 72 : 65}
-                                                                            height={needsWiderSpotifyCard ? 72 : 65}
-                                                                            className="rounded-md"
-                                                                        />
-                                                                        {activity.assets?.large_text && (
-                                                                            <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                                <div 
-                                                                                    className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                    style={{
-                                                                                        position: 'absolute',
-                                                                                        transform: 'translate(-50%, -100%)',
-                                                                                        left: '50%',
-                                                                                        bottom: needsWiderSpotifyCard ? '60px' : '55px',
-                                                                                        marginLeft: needsWiderSpotifyCard ? '35px' : '30px',
-                                                                                    }}
-                                                                                >
-                                                                                    {activity.assets.large_text}
-                                                                                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
-                                                                                </div>
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                    {getActivitySmallImageUrl(activity) && (
-                                                                        <div className="absolute -bottom-1.5 -right-1.5 group/small">
-                                                                            <div className="relative">
-                                                                                <Image
-                                                                                    src={getActivitySmallImageUrl(activity)}
-                                                                                    alt={activity.assets?.small_text || "Status"}
-                                                                                    width={28}
-                                                                                    height={28}
-                                                                                    className="rounded-full border-2 border-zinc-900"
-                                                                                />
-                                                                                {activity.assets?.small_text && (
-                                                                                    <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                                        <div 
-                                                                                            className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                            style={{
-                                                                                                position: 'absolute',
-                                                                                                transform: 'translate(-50%, -100%)',
-                                                                                                left: '50%',
-                                                                                                bottom: '50px',
-                                                                                                marginBottom: '-35px',
-                                                                                                marginLeft: '15px',
-                                                                                            }}
-                                                                                        >
-                                                                                            {activity.assets.small_text}
-                                                                                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
-                                                                                        </div>
-                                                                                    </div>
-                                                                                )}
+                                            {data.activities
+                                                ?.filter(activity => activity.type !== 2 && activity.type !== 4)
+                                                .map((activity: any, index: number) => (
+                                                    <motion.div 
+                                                        key={activity.application_id || index}
+                                                        layout="position"
+                                                        initial={{ opacity: 0, scale: 1 }}
+                                                        animate={{ 
+                                                            opacity: 1, 
+                                                            scale: 1,
+                                                            transition: {
+                                                                duration: 0.3,
+                                                                ease: "easeOut",
+                                                                delay: 0.10 + (index * 0.05),
+                                                            }
+                                                        }}
+                                                        exit={{ 
+                                                            opacity: 0,
+                                                            scale: 0.98,
+                                                            transition: {
+                                                                duration: 0.2,
+                                                                ease: "easeIn"
+                                                            }
+                                                        }}
+                                                        transition={{ 
+                                                            layout: {
+                                                                type: "spring",
+                                                                bounce: 0,
+                                                                duration: 0.85,
+                                                                delay: 0.2,
+                                                                stiffness: 75,
+                                                                damping: 25
+                                                            }
+                                                        }}
+                                                        style={{ 
+                                                            willChange: "transform, opacity",
+                                                            backfaceVisibility: "hidden",
+                                                            WebkitBackfaceVisibility: "hidden",
+                                                            transform: "translateZ(0)",
+                                                            WebkitTransform: "translateZ(0)",
+                                                            transformOrigin: "center center"
+                                                        }}
+                                                        className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-all duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
+                                                    >
+                                                        {(activity.application_id || activity.assets?.large_image) ? (
+                                                            <div className="relative">
+                                                                <div className="group/large">
+                                                                    <Image
+                                                                        src={getActivityImageUrl(activity)}
+                                                                        alt={activity.name}
+                                                                        width={needsWiderSpotifyCard ? 72 : 65}
+                                                                        height={needsWiderSpotifyCard ? 72 : 65}
+                                                                        className="rounded-md"
+                                                                    />
+                                                                    {activity.assets?.large_text && (
+                                                                        <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                                                            <div 
+                                                                                className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
+                                                                                style={{
+                                                                                    position: 'absolute',
+                                                                                    transform: 'translate(-50%, -100%)',
+                                                                                    left: '50%',
+                                                                                    bottom: needsWiderSpotifyCard ? '60px' : '55px',
+                                                                                    marginLeft: needsWiderSpotifyCard ? '35px' : '30px',
+                                                                                }}
+                                                                            >
+                                                                                {activity.assets.large_text}
+                                                                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
                                                                             </div>
                                                                         </div>
                                                                     )}
                                                                 </div>
-                                                            ) : (
-                                                                <div className="relative flex-shrink-0">
-                                                                    <div className="w-[65px] h-[65px] rounded-md bg-zinc-700/50 flex items-center justify-center">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                                                        </svg>
+                                                                {getActivitySmallImageUrl(activity) && (
+                                                                    <div className="absolute -bottom-1.5 -right-1.5 group/small">
+                                                                        <div className="relative">
+                                                                            <Image
+                                                                                src={getActivitySmallImageUrl(activity)}
+                                                                                alt={activity.assets?.small_text || "Status"}
+                                                                                width={28}
+                                                                                height={28}
+                                                                                className="rounded-full border-2 border-zinc-900"
+                                                                            />
+                                                                            {activity.assets?.small_text && (
+                                                                                <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                                                                    <div 
+                                                                                        className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
+                                                                                        style={{
+                                                                                            position: 'absolute',
+                                                                                            transform: 'translate(-50%, -100%)',
+                                                                                            left: '50%',
+                                                                                            bottom: '50px',
+                                                                                            marginBottom: '-35px',
+                                                                                            marginLeft: '15px',
+                                                                                        }}
+                                                                                    >
+                                                                                        {activity.assets.small_text}
+                                                                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            )}
-                                                            <div>
-                                                                <p className="text-base font-medium text-white">{activity.name}</p>
-                                                                {activity.details && (
-                                                                    <p className="text-xs font-normal text-zinc-400">{activity.details}</p>
-                                                                )}
-                                                                {activity.state && (
-                                                                    <p className="text-xs font-normal text-zinc-400">{activity.state}</p>
-                                                                )}
-                                                                {activity.timestamps?.start && (
-                                                                    <p className="text-xs text-zinc-500">
-                                                                        {(() => {
-                                                                            const elapsed = activityTimes[index] ? Math.floor(activityTimes[index] / 1000) : 0;
-                                                                            const hours = Math.floor(elapsed / 3600);
-                                                                            const minutes = Math.floor((elapsed % 3600) / 60);
-                                                                            const seconds = elapsed % 60;
-                                                                            
-                                                                            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} elapsed`;
-                                                                        })()}
-                                                                    </p>
                                                                 )}
                                                             </div>
-                                                        </motion.div>
-                                                    ))
-                                            )}
-                                            
+                                                        ) : (
+                                                            <div className="relative flex-shrink-0">
+                                                                <div className="w-[65px] h-[65px] rounded-md bg-zinc-700/50 flex items-center justify-center">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        <div>
+                                                            <p className="text-base font-medium text-white">{activity.name}</p>
+                                                            {activity.details && (
+                                                                <p className="text-xs font-normal text-zinc-400">{activity.details}</p>
+                                                            )}
+                                                            {activity.state && (
+                                                                <p className="text-xs font-normal text-zinc-400">{activity.state}</p>
+                                                            )}
+                                                            {activity.timestamps?.start && (
+                                                                <p className="text-xs text-zinc-500">
+                                                                    {(() => {
+                                                                        const elapsed = activityTimes[index] ? Math.floor(activityTimes[index] / 1000) : 0;
+                                                                        const hours = Math.floor(elapsed / 3600);
+                                                                        const minutes = Math.floor((elapsed % 3600) / 60);
+                                                                        const seconds = elapsed % 60;
+                                                                        
+                                                                        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} elapsed`;
+                                                                    })()}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+
                                             {data.spotify && (
                                                 <motion.div 
                                                     key="spotify"
-                                                    layout="position"
-                                                    initial={{ scale: 0.95, opacity: 0 }}
-                                                    animate={{ scale: 1, opacity: 1 }}
-                                                    exit={{ scale: 0.9, opacity: 0 }}
-                                                    transition={{ 
-                                                        layout: { duration: 0.5, ease: "easeInOut" },
-                                                        scale: { duration: 0.15 },
-                                                        opacity: { duration: 0.15 }
+                                                    layout
+                                                    initial={{ opacity: 0, y: 10, height: 0 }}
+                                                    animate={{ 
+                                                        opacity: 1, 
+                                                        y: 0,
+                                                        height: 'auto',
+                                                        transition: {
+                                                            height: {
+                                                                duration: 0.2,
+                                                                delay: 0.05,
+                                                                ease: [0.4, 0, 0.2, 1]
+                                                            },
+                                                            opacity: {
+                                                                delay: 0.1 + ((data.activities?.filter(a => a.type !== 2 && a.type !== 4).length || 0) * 0.05),
+                                                                duration: 0.25,
+                                                                ease: [0.4, 0, 0.2, 1]
+                                                            }
+
+                                                        }
                                                     }}
-                                                    onClick={() => data.spotify.track_id && window.open(`https://open.spotify.com/track/${data.spotify.track_id}`, '_blank')}
-                                                    className={`rounded-lg p-3 flex items-center gap-3 border-2 border-transparent transition-all duration-300 group relative
-                                                        ${data.spotify.track_id ? 'cursor-pointer hover:scale-[1.02] hover:border-dashed' : ''}`}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    transition={{ duration: 0.15 }}
+                                                    className={`rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent transition-all duration-200 group relative min-h-[88px] overflow-hidden will-change-transform
+                                                        ${data.spotify.track_id ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
                                                     style={{ 
                                                         backgroundColor: isCalculatingColor ? 'rgb(24, 24, 27)' : `color-mix(in srgb, ${dominantColor} 8%, rgb(39 39 42 / 0.5))`,
-                                                        ['--hover-bg' as string]: isCalculatingColor ? 'rgb(39, 39, 42)' : `color-mix(in srgb, ${dominantColor} 40%, black)`,
-                                                        ['--hover-border' as string]: isCalculatingColor ? 'rgb(63, 63, 70)' : `color-mix(in srgb, ${dominantColor} 30%, rgb(63, 63, 70))`,
-                                                    } as React.CSSProperties}
+                                                    }}
                                                     onMouseEnter={(e) => {
-                                                        if (!data.spotify.track_id) return;
                                                         const target = e.currentTarget;
-                                                        target.style.backgroundColor = target.style.getPropertyValue('--hover-bg');
-                                                        target.style.borderColor = target.style.getPropertyValue('--hover-border');
+                                                        target.style.backgroundColor = isCalculatingColor 
+                                                            ? 'rgb(39, 39, 42)' 
+                                                            : `color-mix(in srgb, ${dominantColor} 25%, rgb(24 24 27 / 0.9))`;
+                                                        target.style.borderColor = isCalculatingColor 
+                                                            ? 'rgb(63, 63, 70)' 
+                                                            : `color-mix(in srgb, ${dominantColor} 30%, rgb(63, 63, 70))`;
+                                                        target.dataset.hovering = 'true';
                                                     }}
                                                     onMouseLeave={(e) => {
-                                                        if (!data.spotify.track_id) return;
                                                         const target = e.currentTarget;
                                                         target.style.backgroundColor = isCalculatingColor 
                                                             ? 'rgb(24, 24, 27)' 
                                                             : `color-mix(in srgb, ${dominantColor} 8%, rgb(39 39 42 / 0.5))`;
                                                         target.style.borderColor = 'transparent';
+                                                        target.dataset.hovering = 'false';
                                                     }}
                                                 >
                                                     {(!needsWiderSpotifyCard || !data.spotify.album_art_url || !data.spotify.track_id) && (
@@ -722,9 +761,9 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             )}
                                                         </div>
                                                     )}
-                                                    <div className={`flex items-start gap-3 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'w-full justify-center' : ''}`}>
+                                                    <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
                                                         {data.spotify.album_art_url && data.spotify.track_id && (
-                                                            <div className={`relative flex-shrink-0 ${needsWiderSpotifyCard && (data.spotify.song.length > 50 || data.spotify.artist.length > 50) ? 'mt-4' : ''}`}>
+                                                            <div className={`relative flex-shrink-0 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-4' : ''}`}>
                                                                 <Image
                                                                     src={data.spotify.album_art_url}
                                                                     alt={data.spotify.album}
@@ -740,7 +779,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                         )}
                                                         <div className={`${!data.spotify.album_art_url || !data.spotify.track_id ? 'text-center flex-1' : 'flex-1'}`}>
                                                             <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
-                                                                <p className="text-sm font-medium text-white">{data.spotify.song}</p>
+                                                                <p className="text-sm font-medium text-white pr-6">{data.spotify.song}</p>
                                                                 {needsWiderSpotifyCard && data.spotify.track_id && (
                                                                     <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                                         <svg
@@ -761,7 +800,9 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                     return `${artist}, `;
                                                                 })}
                                                             </p>
-                                                            <p className="text-xs text-zinc-500">on {data.spotify.album}</p>
+                                                            <p className={`text-xs text-zinc-500 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-1' : ''}`}>
+                                                                on {data.spotify.album}
+                                                            </p>
                                                             <div className={`mt-3 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'flex justify-center' : ''}`}>
                                                                 <div className="flex items-center gap-2">
                                                                     <span className="text-xs text-zinc-500">
@@ -802,3 +843,4 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
         </AnimatePresence>
     );
 }
+

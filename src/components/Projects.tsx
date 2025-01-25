@@ -88,12 +88,12 @@ export default function Projects() {
                                         />
                                     )}
                                     <div>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 mt-1">
                                             <h2 className="text-lg font-bold tracking-tight text-white">
                                                 {project.name}
                                             </h2>
                                             {project.url.includes('github.com') && stars[project.url] !== undefined && (
-                                                <div className="non-selectable flex items-center gap-1 text-sm text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full">
+                                                <div className="non-selectable flex items-center gap-1 text-sm text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full mt-1">
                                                     <svg className="w-3.5 h-3.5 fill-current text-amber-400" viewBox="0 0 16 16">
                                                         <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z" />
                                                     </svg>
@@ -107,7 +107,7 @@ export default function Projects() {
                                     href={project.url} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="non-selectable flex bg-zinc-900 p-2 rounded-full duration-200 ease-in-out hover:bg-zinc-800 hover:scale-105 -mt-1 overflow-visible"
+                                    className="non-selectable flex bg-zinc-900 p-2 rounded-full duration-200 ease-in-out hover:bg-zinc-800 hover:scale-105 overflow-visible"
                                 >
                                     {project.url.includes('github.com') ? (
                                         <svg 
@@ -129,8 +129,8 @@ export default function Projects() {
                                     )}
                                 </a>
                             </CardHeader>
-                            <CardBody className="px-4 pb-4">
-                                <p className="text-gray-300 text-sm mb-3">
+                            <CardBody className="px-4 py-0.5 pb-4">
+                                <p className="text-gray-300 text-sm mb-3 -mt-2">
                                     {project.description}
                                 </p>
                                 {project.language && (

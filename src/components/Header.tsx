@@ -39,7 +39,7 @@ export default function Header() {
 	}, []);
 
 	return (
-		<>
+		<div>
 			<div className="h-20" />
 
 			<AnimatePresence>
@@ -58,7 +58,7 @@ export default function Header() {
 				initial={{ y: -100 }}
 				animate={{ y: 0 }}
 				transition={{ type: "spring", stiffness: 150, damping: 20 }}
-				className="fixed top-0 left-0 right-0 mx-10 mt-4 bg-dark/70 text-white border border-[#898c91] backdrop-blur-lg opacity-75 rounded-2xl shadow-md shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] transition-shadow duration-300 non-selectable relative z-50"
+				className="fixed top-0 left-0 right-0 mx-20 mt-4 bg-dark/70 text-white border border-[#898c91] backdrop-blur-lg opacity-75 rounded-2xl shadow-md shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] transition-shadow duration-300 non-selectable relative z-50"
 				style={{ position: "fixed", top: 0, left: 0, right: 0 }}
 			>
 				<div className="p-3.5 non-selectable">
@@ -217,6 +217,6 @@ export default function Header() {
 			</motion.div>
 
 			<UserArea isOpen={showUserArea} onClose={() => setShowUserArea(false)} />
-		</>
+		</div>
 	);
 }
