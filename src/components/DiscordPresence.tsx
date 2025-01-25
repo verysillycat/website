@@ -553,142 +553,109 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             </motion.div>
                                         )}
                                         
-                                        <AnimatePresence mode="wait">
+                                        <AnimatePresence mode="sync">
                                             {data.activities
                                                 ?.filter(activity => activity.type !== 2 && activity.type !== 4)
                                                 .map((activity: any, index: number) => (
-                                                    <motion.div 
-                                                        key={activity.application_id || index}
-                                                        layout="position"
-                                                        initial={{ opacity: 0, scale: 1 }}
-                                                        animate={{ 
-                                                            opacity: 1, 
-                                                            scale: 1,
-                                                            transition: {
-                                                                duration: 0.3,
-                                                                ease: "easeOut",
-                                                                delay: 0.10 + (index * 0.05),
-                                                            }
-                                                        }}
-                                                        exit={{ 
-                                                            opacity: 0,
-                                                            scale: 0.98,
-                                                            transition: {
-                                                                duration: 0.2,
-                                                                ease: "easeIn"
-                                                            }
-                                                        }}
-                                                        transition={{ 
-                                                            layout: {
-                                                                type: "spring",
-                                                                bounce: 0,
-                                                                duration: 0.85,
-                                                                delay: 0.2,
-                                                                stiffness: 75,
-                                                                damping: 25
-                                                            }
-                                                        }}
-                                                        style={{ 
-                                                            willChange: "transform, opacity",
-                                                            backfaceVisibility: "hidden",
-                                                            WebkitBackfaceVisibility: "hidden",
-                                                            transform: "translateZ(0)",
-                                                            WebkitTransform: "translateZ(0)",
-                                                            transformOrigin: "center center"
-                                                        }}
-                                                        className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-all duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
-                                                    >
-                                                        {(activity.application_id || activity.assets?.large_image) ? (
-                                                            <div className="relative">
-                                                                <div className="group/large">
-                                                                    <Image
-                                                                        src={getActivityImageUrl(activity)}
-                                                                        alt={activity.name}
-                                                                        width={needsWiderSpotifyCard ? 72 : 65}
-                                                                        height={needsWiderSpotifyCard ? 72 : 65}
-                                                                        className="rounded-md"
-                                                                    />
-                                                                    {activity.assets?.large_text && (
-                                                                        <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                            <div 
-                                                                                className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                style={{
-                                                                                    position: 'absolute',
-                                                                                    transform: 'translate(-50%, -100%)',
-                                                                                    left: '50%',
-                                                                                    bottom: needsWiderSpotifyCard ? '60px' : '55px',
-                                                                                    marginLeft: needsWiderSpotifyCard ? '35px' : '30px',
-                                                                                }}
-                                                                            >
-                                                                                {activity.assets.large_text}
-                                                                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
+                                                    <AnimatePresence key={activity.application_id || activity.name}>
+                                                        <motion.div 
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            exit={{ opacity: 0 }}
+                                                            className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-all duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
+                                                        >
+                                                            {(activity.application_id || activity.assets?.large_image) ? (
+                                                                <div className="relative">
+                                                                    <div className="group/large">
+                                                                        <Image
+                                                                            src={getActivityImageUrl(activity)}
+                                                                            alt={activity.name}
+                                                                            width={needsWiderSpotifyCard ? 72 : 65}
+                                                                            height={needsWiderSpotifyCard ? 72 : 65}
+                                                                            className="rounded-md"
+                                                                        />
+                                                                        {activity.assets?.large_text && (
+                                                                            <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                                                                <div 
+                                                                                    className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
+                                                                                    style={{
+                                                                                        position: 'absolute',
+                                                                                        transform: 'translate(-50%, -100%)',
+                                                                                        left: '50%',
+                                                                                        bottom: needsWiderSpotifyCard ? '60px' : '55px',
+                                                                                        marginLeft: needsWiderSpotifyCard ? '35px' : '30px',
+                                                                                    }}
+                                                                                >
+                                                                                    {activity.assets.large_text}
+                                                                                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                    {getActivitySmallImageUrl(activity) && (
+                                                                        <div className="absolute -bottom-1.5 -right-1.5 group/small">
+                                                                            <div className="relative">
+                                                                                <Image
+                                                                                    src={getActivitySmallImageUrl(activity)}
+                                                                                    alt={activity.assets?.small_text || "Status"}
+                                                                                    width={28}
+                                                                                    height={28}
+                                                                                    className="rounded-full border-2 border-zinc-900"
+                                                                                />
+                                                                                {activity.assets?.small_text && (
+                                                                                    <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                                                                        <div 
+                                                                                            className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
+                                                                                            style={{
+                                                                                                position: 'absolute',
+                                                                                                transform: 'translate(-50%, -100%)',
+                                                                                                left: '50%',
+                                                                                                bottom: '50px',
+                                                                                                marginBottom: '-35px',
+                                                                                                marginLeft: '15px',
+                                                                                            }}
+                                                                                        >
+                                                                                            {activity.assets.small_text}
+                                                                                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                )}
                                                                             </div>
                                                                         </div>
                                                                     )}
                                                                 </div>
-                                                                {getActivitySmallImageUrl(activity) && (
-                                                                    <div className="absolute -bottom-1.5 -right-1.5 group/small">
-                                                                        <div className="relative">
-                                                                            <Image
-                                                                                src={getActivitySmallImageUrl(activity)}
-                                                                                alt={activity.assets?.small_text || "Status"}
-                                                                                width={28}
-                                                                                height={28}
-                                                                                className="rounded-full border-2 border-zinc-900"
-                                                                            />
-                                                                            {activity.assets?.small_text && (
-                                                                                <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                                    <div 
-                                                                                        className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                        style={{
-                                                                                            position: 'absolute',
-                                                                                            transform: 'translate(-50%, -100%)',
-                                                                                            left: '50%',
-                                                                                            bottom: '50px',
-                                                                                            marginBottom: '-35px',
-                                                                                            marginLeft: '15px',
-                                                                                        }}
-                                                                                    >
-                                                                                        {activity.assets.small_text}
-                                                                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
+                                                            ) : (
+                                                                <div className="relative flex-shrink-0">
+                                                                    <div className="w-[65px] h-[65px] rounded-md bg-zinc-700/50 flex items-center justify-center">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                                                        </svg>
                                                                     </div>
+                                                                </div>
+                                                            )}
+                                                            <div>
+                                                                <p className="text-base font-medium text-white">{activity.name}</p>
+                                                                {activity.details && (
+                                                                    <p className="text-xs font-normal text-zinc-400">{activity.details}</p>
+                                                                )}
+                                                                {activity.state && (
+                                                                    <p className="text-xs font-normal text-zinc-400">{activity.state}</p>
+                                                                )}
+                                                                {activity.timestamps?.start && (
+                                                                    <p className="text-xs text-zinc-500">
+                                                                        {(() => {
+                                                                            const elapsed = activityTimes[index] ? Math.floor(activityTimes[index] / 1000) : 0;
+                                                                            const hours = Math.floor(elapsed / 3600);
+                                                                            const minutes = Math.floor((elapsed % 3600) / 60);
+                                                                            const seconds = elapsed % 60;
+                                                                            
+                                                                            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} elapsed`;
+                                                                        })()}
+                                                                    </p>
                                                                 )}
                                                             </div>
-                                                        ) : (
-                                                            <div className="relative flex-shrink-0">
-                                                                <div className="w-[65px] h-[65px] rounded-md bg-zinc-700/50 flex items-center justify-center">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                                                    </svg>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                        <div>
-                                                            <p className="text-base font-medium text-white">{activity.name}</p>
-                                                            {activity.details && (
-                                                                <p className="text-xs font-normal text-zinc-400">{activity.details}</p>
-                                                            )}
-                                                            {activity.state && (
-                                                                <p className="text-xs font-normal text-zinc-400">{activity.state}</p>
-                                                            )}
-                                                            {activity.timestamps?.start && (
-                                                                <p className="text-xs text-zinc-500">
-                                                                    {(() => {
-                                                                        const elapsed = activityTimes[index] ? Math.floor(activityTimes[index] / 1000) : 0;
-                                                                        const hours = Math.floor(elapsed / 3600);
-                                                                        const minutes = Math.floor((elapsed % 3600) / 60);
-                                                                        const seconds = elapsed % 60;
-                                                                        
-                                                                        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} elapsed`;
-                                                                    })()}
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                    </motion.div>
+                                                        </motion.div>
+                                                    </AnimatePresence>
                                                 ))}
 
                                             {data.spotify && (
