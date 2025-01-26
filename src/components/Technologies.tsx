@@ -44,20 +44,20 @@ export default function Technologies() {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.5, ease: "easeInOut" }}
 					>
-						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-hidden bg-black bg-opacity-20 py-0.5 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60">
-							<CardBody>
+						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-visible bg-black bg-opacity-20 py-0.5 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 slider-fade">
+							<CardBody className="overflow-visible px-0">
 								<div
 									className="pointer-events-none absolute inset-0"
 									style={{ zIndex: 0 }}
 								></div>
 								<Slider>
-									<div className="font-semibold flex justify-center gap-4">
+									<div className="font-semibold flex justify-center gap-4 px-4 -mr-8">
 										{technologies.map((tech) => (
 											<a
 												key={tech.name}
 												href={tech.href}
 												target="_blank"
-												className="hover-effect"
+												className="hover-effect shrink-0"
 											>
 												<motion.div
 													initial={{ opacity: 0 }}
