@@ -531,10 +531,11 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             href={`https://discord.com/users/${data.discord_user.id}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 transition-colors px-2.5 py-1.5 rounded-md flex mr-5 items-center gap-1.5 w-fit"
+                                                            className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 transition-colors px-2.5 py-1.5 rounded-md flex mr-5 items-center gap-1.5 w-fit sm:text-xs sm:px-2.5 sm:py-1.5 xs:text-[10px] xs:px-2 xs:py-1"
                                                         >
-                                                            Add on Discord
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                                                            <span className="sm:inline xs:hidden">Add on Discord</span>
+                                                            <span className="sm:hidden xs:inline text-sm">Discord</span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 xs:w-3 xs:h-3">
                                                                 <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
                                                             </svg>
                                                         </motion.a>

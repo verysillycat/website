@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSocket } from "@/hooks/SocketContext";
 import { motion, AnimatePresence } from "framer-motion";
 import UserArea from './DiscordPresence';
+import Weather from './Weather';
 
 export default function Header() {
 	const [hamburgerTriggered, setHamburgerTriggered] = useState(false);
@@ -31,7 +32,7 @@ export default function Header() {
 	}, []);
 
 	useEffect(() => {
-		document.documentElement.style.scrollBehavior = 'smooth';
+		document.documentElement.style.scrollBehavior = 'xsmooth';
 
 		return () => {
 			document.documentElement.style.scrollBehavior = 'auto';
@@ -63,7 +64,7 @@ export default function Header() {
 			>
 				<div className="p-3.5 non-selectable">
 					<div className="flex justify-between items-center non-selectable">
-						<div className="flex items-center gap-2 non-selectable">
+						<div className="flex items-center gap-2 non-selectable w-1/4">
 							<h1
 								className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable cursor-pointer"
 								onClick={() => setShowUserArea(!showUserArea)}
@@ -74,100 +75,109 @@ export default function Header() {
 								className={`w-2 h-2 rounded-full ${statusClass} non-selectable`}
 							></div>
 						</div>
-						<button
-							className="sm:hidden flex items-center justify-center non-selectable"
-							onClick={() => setHamburgerTriggered(!hamburgerTriggered)}
-							aria-label="Toggle menu"
-						>
-							<svg
-								className={`w-8 h-8 hamburger-icon ${hamburgerTriggered ? "open" : ""} non-selectable`}
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
+
+						<div className="flex-grow flex justify-center xxsm:w-2/4">
+							<div className="pl-4 xsm:pl-0 xsm:mx-auto w-full flex justify-center">
+								<Weather />
+							</div>
+						</div>
+
+						<div className="flex items-center w-1/4 justify-end">
+							<button
+								className="xsm:hidden flex items-center justify-center non-selectable"
+								onClick={() => setHamburgerTriggered(!hamburgerTriggered)}
+								aria-label="Toggle menu"
 							>
-								{!hamburgerTriggered ? (
-									<>
-										<path
-											className="hamburger-line top non-selectable"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											d="M4 6h16"
-										/>
-										<path
-											className="hamburger-line middle non-selectable"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											d="M4 12h16"
-										/>
-										<path
-											className="hamburger-line bottom non-selectable"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											d="M4 18h16"
-										/>
-									</>
-								) : (
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-									/>
-								)}
-							</svg>
-						</button>
-						<nav className="hidden sm:flex gap-4 items-center non-selectable">
-							<a
-								href="#"
-								onClick={(e) => {
-									e.preventDefault();
-									window.scrollTo({ top: 0 });
-									setHamburgerTriggered(false);
-								}}
-								className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
-							>
-								Home
-							</a>
-							<a
-								href="https://github.com/verysillycat/website"
-								onClick={() => setHamburgerTriggered(false)}
-								className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								Source
-							</a>
-							<a
-								href="mailto:me@cortex.rest"
-								onClick={() => setHamburgerTriggered(false)}
-								className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
-							>
-								<svg 
-									className="w-5 h-5"
-									fill="none" 
-									stroke="currentColor" 
+								<svg
+									className={`w-8 h-8 hamburger-icon ${hamburgerTriggered ? "open" : ""} non-selectable`}
+									fill="none"
+									stroke="currentColor"
 									viewBox="0 0 24 24"
 								>
-									<path 
-										strokeLinecap="round" 
-										strokeLinejoin="round" 
-										strokeWidth="2" 
-										d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-									/>
+									{!hamburgerTriggered ? (
+										<>
+											<path
+												className="hamburger-line top non-selectable"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M4 6h16"
+											/>
+											<path
+												className="hamburger-line middle non-selectable"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M4 12h16"
+											/>
+											<path
+												className="hamburger-line bottom non-selectable"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M4 18h16"
+											/>
+										</>
+									) : (
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+										/>
+									)}
 								</svg>
-							</a>
-						</nav>
+							</button>
+							<nav className="hidden xsm:flex gap-4 items-center non-selectable">
+								<a
+									href="#"
+									onClick={(e) => {
+										e.preventDefault();
+										window.scrollTo({ top: 0 });
+										setHamburgerTriggered(false);
+									}}
+									className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
+								>
+									Home
+								</a>
+								<a
+									href="https://github.com/verysillycat/website"
+									onClick={() => setHamburgerTriggered(false)}
+									className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Source
+								</a>
+								<a
+									href="mailto:me@cortex.rest"
+									onClick={() => setHamburgerTriggered(false)}
+									className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
+								>
+									<svg 
+										className="w-5 h-5"
+										fill="none" 
+										stroke="currentColor" 
+										viewBox="0 0 24 24"
+									>
+										<path 
+											strokeLinecap="round" 
+											strokeLinejoin="round" 
+											strokeWidth="2" 
+											d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+										/>
+									</svg>
+								</a>
+							</nav>
+						</div>
 					</div>
 
 					{hamburgerTriggered && (
 						<div
-							className="absolute left-0 right-0 mt-6 mx-4 bg-dark/70 text-white border border-[#898c91] opacity-75 rounded-2xl shadow-md shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] transition-all duration-300 sm:hidden non-selectable z-30"
+							className="absolute left-0 right-0 mt-6 mx-4 bg-dark/70 text-white border border-[#898c91] opacity-75 rounded-2xl shadow-md shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] transition-all duration-300 xsm:hidden non-selectable z-30"
 							style={{ boxShadow: "0 0 15px rgba(255, 255, 255, 0.05)" }}
 						>
-							<nav className="index-nav sm:hidden p-4 non-selectable">
+							<nav className="index-nav xsm:hidden p-4 non-selectable">
 								<div className="flex flex-col non-selectable">
 									<a
 										href="#"

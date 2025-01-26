@@ -21,16 +21,25 @@ const config: Config = {
 	darkMode: "class",
 	theme: {
 		extend: {
+			screens: {
+				'xs': {'max': '639px'},
+				'zsm': '490px',
+				'xsm': '730px',
+			},
 			colors: {
 				background: "var(--background)",
 				foreground: "var(--foreground)",
 			},
 			animation: {
 				slider: "slider var(--duration, 30s) linear infinite",
+				shimmer: "shimmer 1.5s infinite",
 			},
 			keyframes: {
 				slider: {
 					to: { transform: "translateX(-50%)" },
+				},
+				shimmer: {
+					"100%": { transform: "translateX(100%)" },
 				},
 			},
 		},

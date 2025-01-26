@@ -10,6 +10,7 @@ import { Footer } from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Weather from "@/components/Weather";
 
 export default function Home() {
 	return (
