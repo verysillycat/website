@@ -64,7 +64,7 @@ export default function Header() {
 			>
 				<div className="p-3.5 non-selectable">
 					<div className="flex justify-between items-center non-selectable">
-						<div className="flex items-center gap-2 non-selectable w-1/4">
+						<div className="flex items-center gap-2 non-selectable min-w-fit xsm:w-1/4">
 							<h1
 								className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable cursor-pointer"
 								onClick={() => setShowUserArea(!showUserArea)}

@@ -855,7 +855,14 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                     <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center w-full' : ''}`}>
                                                         {data.spotify.album_art_url && data.spotify.track_id && (
                                                             
-                                                            <div className={`relative flex-shrink-0 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-4' : ''}`}>
+                                                            <div className={`relative flex-shrink-0 ${
+                                                                !hasOverflow && 
+                                                                ((data.spotify.song.length > 35 && data.spotify.artist.length > 25) || 
+                                                                 data.spotify.song.length > 45 || 
+                                                                 data.spotify.artist.length > 45) 
+                                                                ? 'mt-4' 
+                                                                : ''
+                                                            }`}>
                                                                 <Image
                                                                     src={data.spotify.album_art_url}
                                                                     alt={data.spotify.album}
