@@ -52,11 +52,28 @@ const WEATHER_ICONS: Record<string, { icon: LucideIcon; color: string }> = {
   "default": { icon: SunDim, color: 'text-gray-300' },
 };
 
-const LoadingSkeleton = () => (
-  <div className="relative overflow-hidden bg-white/10 backdrop-blur-sm px-3 py-1 rounded-2xl h-[28px] w-[80px] shadow-lg">
-    <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-  </div>
-);
+const WeatherSkeleton = () => {
+  const [windowWidth, setWindowWidth] = useState(0);
+  
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const showIconOnly = windowWidth < 415;
+
+  return (
+    <div className={`relative overflow-hidden bg-white/5 backdrop-blur-sm px-3 py-1 rounded-2xl flex items-center gap-2 shadow-lg ${
+      showIconOnly ? 'w-[42px]' : 'w-[80px]'
+    }`}>
+      <div className="w-4 h-4" />
+      {!showIconOnly && <div className="h-4 w-[32px]" />}
+      <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+    </div>
+  );
+};
 
 const Weather = () => {
   const [weatherState, setWeatherState] = useState<WeatherState>({
@@ -66,11 +83,10 @@ const Weather = () => {
     lastUpdated: null,
   });
   const [loading, setLoading] = useState(true);
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 0
-  );
+  const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
+    setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -108,16 +124,18 @@ const Weather = () => {
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) return <LoadingSkeleton />;
+  const showIconOnly = windowWidth < 415;
+
+  if (loading) return <WeatherSkeleton />;
   if (weatherState.error) {
     return (
       <div className="bg-red-500/10 backdrop-blur-sm px-3 py-1 rounded-2xl flex items-center gap-2 shadow-lg">
-        <span className="text-sm text-red-500">{weatherState.error}</span>
+        <span className="text-sm text-red-500">
+          {windowWidth < 465 ? 'Error' : weatherState.error}
+        </span>
       </div>
     );
   }
-
-  const showIconOnly = windowWidth < 415;
 
   return (
     <div className="bg-white/5 backdrop-blur-sm px-3 py-1 rounded-2xl flex items-center gap-2 shadow-lg hover:bg-white/10 transition-all duration-300">
