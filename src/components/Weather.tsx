@@ -65,12 +65,11 @@ const WeatherSkeleton = () => {
   const showIconOnly = windowWidth < 415;
 
   return (
-    <div className={`relative overflow-hidden bg-white/5 backdrop-blur-sm px-3 py-1 rounded-2xl flex items-center gap-2 shadow-lg ${
+    <div className={`animate-pulse bg-white/5 backdrop-blur-sm px-3 py-1 rounded-2xl flex items-center gap-2 shadow-lg ${
       showIconOnly ? 'w-[42px]' : 'w-[80px]'
     }`}>
       <div className="w-4 h-4" />
       {!showIconOnly && <div className="h-4 w-[32px]" />}
-      <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
     </div>
   );
 };

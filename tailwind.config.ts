@@ -31,15 +31,23 @@ const config: Config = {
 				foreground: "var(--foreground)",
 			},
 			animation: {
+				pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
 				slider: "slider var(--duration, 30s) linear infinite",
-				shimmer: "shimmer 1.5s infinite",
+				fadeIn: "fadeIn 2s ease-in-out",
 			},
 			keyframes: {
 				slider: {
 					to: { transform: "translateX(-50%)" },
 				},
-				shimmer: {
-					"100%": { transform: "translateX(100%)" },
+				pulse: {
+					"50%": { opacity: "0.5" },
+				},
+				fadeIn: {
+					"0%": { opacity: "0" },
+					"25%": { opacity: "0.25" },
+					"50%": { opacity: "0.5" },
+					"75%": { opacity: "0.85" },
+					"100%": { opacity: "1" },
 				},
 			},
 		},

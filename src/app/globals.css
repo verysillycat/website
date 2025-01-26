@@ -10,6 +10,15 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+.skeleton-bg {
+  @apply bg-[#141415];
+} 
+
+@layer utilities {
+  .pause-animation {
+    animation-play-state: paused !important;
+  }
+}
 
 .hover-effect:hover {
 	transform: scale(1.05);
@@ -176,54 +185,4 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(4px);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
-}
-
-@keyframes pulse {
-  50% {
-    opacity: .5;
-  }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.skeleton-bg {
-  @apply bg-[#141415];
-} 
-
-.fadeIn {
-  animation: fadeIn 2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  25% {
-    opacity: 0.25;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-
-  75% {
-    opacity: 0.75;
-  }
-
-  90% {
-    opacity: 0.9;
-  }
-  
-  100% {
-    opacity: 1;
-  }
-}
-
-@layer utilities {
-  .pause-animation {
-    animation-play-state: paused !important;
-  }
 }

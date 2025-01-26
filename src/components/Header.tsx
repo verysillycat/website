@@ -88,45 +88,57 @@ export default function Header() {
 								onClick={() => setHamburgerTriggered(!hamburgerTriggered)}
 								aria-label="Toggle menu"
 							>
-								<svg
-									className={`w-8 h-8 hamburger-icon ${hamburgerTriggered ? "open" : ""} non-selectable`}
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									{!hamburgerTriggered ? (
-										<>
-											<path
-												className="hamburger-line top non-selectable"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth="2"
-												d="M4 6h16"
-											/>
-											<path
-												className="hamburger-line middle non-selectable"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth="2"
-												d="M4 12h16"
-											/>
-											<path
-												className="hamburger-line bottom non-selectable"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth="2"
-												d="M4 18h16"
-											/>
-										</>
-									) : (
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-										/>
-									)}
-								</svg>
+								<div className="relative w-8 h-8 flex items-center justify-center">
+									<motion.span
+										className="absolute w-6 h-0.5 bg-white rounded-full"
+										initial={false}
+										animate={{
+											rotate: hamburgerTriggered ? 45 : 0,
+											y: hamburgerTriggered ? 0 : -8,
+											width: hamburgerTriggered ? "20px" : "25px",
+										}}
+										transition={{ duration: 0.2, ease: "easeInOut" }}
+									/>
+									<motion.span
+										className="absolute w-6 h-0.5 bg-white rounded-full"
+										initial={false}
+										animate={{
+											opacity: hamburgerTriggered ? 0 : 1,
+											scale: hamburgerTriggered ? 0 : 1,
+										}}
+										transition={{ duration: 0.1, ease: "easeInOut" }}
+									/>
+									<motion.span
+										className="absolute w-6 h-0.5 bg-white rounded-full"
+										initial={false}
+										animate={{
+											rotate: hamburgerTriggered ? -45 : 0,
+											y: hamburgerTriggered ? 0 : 8,
+											width: hamburgerTriggered ? "20px" : "24px",
+										}}
+										transition={{ duration: 0.2, ease: "easeInOut" }}
+									/>
+									<motion.span
+										className="absolute w-0.5 h-5 bg-white rounded-full"
+										initial={false}
+										animate={{
+											opacity: hamburgerTriggered ? 1 : 0,
+											scale: hamburgerTriggered ? 1 : 0,
+											height: "20px",
+										}}
+										transition={{ duration: 0.2, ease: "easeInOut" }}
+									/>
+									<motion.span
+										className="absolute w-5 h-0.5 bg-white rounded-full"
+										initial={false}
+										animate={{
+											opacity: hamburgerTriggered ? 1 : 0,
+											scale: hamburgerTriggered ? 1 : 0,
+											width: "20px",
+										}}
+										transition={{ duration: 0.2, ease: "easeInOut" }}
+									/>
+								</div>
 							</button>
 							<nav className="hidden xsm:flex gap-4 items-center non-selectable">
 								<a
