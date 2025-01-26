@@ -392,7 +392,9 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                         <div className="flex items-center gap-4">
                                             <div className="relative">
                                                 <div className="w-20 h-20 rounded-full bg-zinc-800/50" />
-                                                <div className="absolute -inset-y-2 -right-3 left-0 w-24 h-24 rounded-full bg-zinc-800/30" />
+                                                {!avatarLoaded && (
+                                                    <div className="absolute inset-0 w-20 h-20 rounded-full bg-zinc-800/50 animate-pulse" />
+                                                )}
                                                 <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-zinc-900 bg-zinc-800/50" />
                                             </div>
                                             <div className="flex-1">
@@ -449,7 +451,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                 {!avatarLoaded && (
                                                     <div className="absolute inset-0 w-20 h-20 rounded-full bg-zinc-800/50 animate-pulse" />
                                                 )}
-                                                {data.discord_user.avatar_decoration_data && (
+                                                {avatarLoaded && data.discord_user.avatar_decoration_data && (
                                                     <Image
                                                         src={`https://cdn.discordapp.com/avatar-decoration-presets/${data.discord_user.avatar_decoration_data.asset}.png`}
                                                         alt="Avatar Decoration"
@@ -668,7 +670,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
                                                         >
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m3 3 8.735 8.735m0 0a.374.374 0 1 1 .53.53m-.53-.53.53.53m0 0L21 21M14.652 9.348a3.75 3.75 0 0 1 0 5.304m2.121-7.425a6.75 6.75 0 0 1 0 9.546m2.121-11.667c3.808 3.807 3.808 9.98 0 13.788m-9.546-4.242a3.733 3.733 0 0 1-1.06-2.122m-1.061 4.243a6.75 6.75 0 0 1-1.625-6.929m-.496 9.05c-3.068-3.067-3.664-7.67-1.79-11.334M12 12h.008v.008H12V12Z" />                                                        </svg>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m3 3 8.735 8.735m0 0a.374.374 0 1 1 .53.53m-.53-.53.53.53m0 0L21 21M14.652 9.348a3.75 3.75 0 0 1 0 5.304m2.121-7.425a6.75 6.75 0 0 1 0 9.546m2.121-11.667c3.808 3.807 3.808 9.98 0 13.788m-9.546-4.242a3.733 3.733 0 0 1-1.06-2.122m-1.061 4.243a6.75 6.75 0 0 1-1.625-6.929m-.496 9.05c-3.068-3.067-3.664-7.67-1.79-11.334M12 12h.008v.008H12V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />                                                        </svg>
                                                         <p className="text-sm text-zinc-400">Currently offline</p>
                                                         <p className="text-xs text-zinc-500 mt-1">No connection to Discord</p>
                                                     </motion.div>
