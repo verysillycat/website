@@ -331,30 +331,29 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
         <AnimatePresence mode="wait">
             {isOpen && (
                 <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    initial={{ scale: 0.97, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.97, opacity: 0 }}
                     transition={{ 
                         duration: 0.15,
-                        ease: [0.4, 0, 0.2, 1],
-                        opacity: { duration: 0.1 }
+                        ease: [0.4, 0, 0.2, 1]
                     }}
-                    className="fixed inset-0 flex items-center justify-center z-50"
+                    className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-[8px]"
                     style={{ 
                         pointerEvents: 'auto',
                         willChange: 'opacity, transform',
-                        transform: 'translateZ(0)'
+                        transform: 'translateZ(0)',
+                        WebkitBackdropFilter: 'blur(8px)'
                     }}
                 >
                     <motion.div 
-                        className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-[8px]"
-                        initial={{ backdropFilter: "blur(0px)", backgroundColor: "rgba(0, 0, 0, 0)" }}
-                        animate={{ backdropFilter: "blur(8px)", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                        exit={{ backdropFilter: "blur(0px)", backgroundColor: "rgba(0, 0, 0, 0)" }}
+                        className="absolute inset-0 bg-black/50"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={{ 
-                            duration: 0.15,
-                            ease: [0.4, 0, 0.2, 1],
-                            opacity: { duration: 0.1 }
+                            duration: 0.3,
+                            ease: [0.4, 0, 0.2, 1]
                         }}
                         onClick={onClose}
                     />
@@ -363,9 +362,9 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.98, opacity: 0 }}
                         transition={{ 
-                            duration: 0.15,
+                            duration: 0.3,
                             ease: [0.4, 0, 0.2, 1],
-                            opacity: { duration: 0.1 }
+                            opacity: { duration: 0.2 }
                         }}
                         className={`relative z-10 w-[95%] transition-colors duration-300 ease-in-out max-w-lg
                             data-[wider=true]:max-w-2xl 
@@ -376,7 +375,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         data-wider-spotify={needsWiderSpotifyCard}
                         style={{ willChange: 'transform, opacity' }}
                     >
-                        <Card className="rounded-lg bg-zinc-900/90 border border-zinc-800 bg-white/[0.05] relative overflow-hidden">
+                        <Card className="rounded-lg bg-zinc-900/90 border border-zinc-800 bg-white/[0.05] relative overflow-visible">
                             <div 
                                 className="absolute top-0 left-0 right-0 h-32 opacity-40 pointer-events-none"
                                 style={{
@@ -395,7 +394,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                     </svg>
                                 </button>
                             </CardHeader>
-                            <CardBody>
+                            <CardBody className="overflow-visible">
                                 {isLoading || !data?.discord_user ? (
                                     <div className="flex flex-col gap-4 animate-pulse">
                                         <div className="flex items-center gap-4">
@@ -439,12 +438,14 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                         }`}
                                     >
                                         <motion.div 
-                                            layout="position"
-                                            className="flex items-center gap-4 w-full md:col-span-2"
+                                            initial={{ scale: 0.97, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            exit={{ scale: 0.97, opacity: 0 }}
                                             transition={{ 
-                                                layout: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-                                                opacity: { duration: 0.3 }
+                                                duration: 0.15,
+                                                ease: [0.4, 0, 0.2, 1]
                                             }}
+                                            className="flex items-center gap-4 w-full md:col-span-2"
                                         >
                                             <div className="relative">
                                                 <Image
@@ -525,18 +526,8 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             )}
                                                         </AnimatePresence>
                                                     </div>
-                                                    <motion.div 
-                                                        layout="position"
-                                                        className="ml-auto mt-2"
-                                                        transition={{ 
-                                                            layout: { 
-                                                                duration: 0.2,
-                                                                ease: [0.4, 0, 0.2, 1]
-                                                            }
-                                                        }}
-                                                    >
-                                                        <motion.a
-                                                            layout="position"
+                                                    <div className="ml-auto mt-2">
+                                                        <a
                                                             href={`https://discord.com/users/${data.discord_user.id}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
@@ -546,20 +537,15 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
                                                                 <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
                                                             </svg>
-                                                        </motion.a>
-                                                    </motion.div>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </motion.div>
                                         
                                         {(data.activities?.length > 0 || data.spotify || status !== 'offline') && (
                                             <motion.div 
-                                                layout="position"
                                                 className={`relative py-1 ${hasOverflow ? 'md:col-span-2' : ''}`}
-                                                transition={{ 
-                                                    layout: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-                                                    opacity: { duration: 0.3 }
-                                                }}
                                             >
                                                 <div className="absolute inset-x-0 bottom-0" aria-hidden="true">
                                                     <div className="w-2/3 mx-auto h-[2px] bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
@@ -649,7 +635,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                 opacity: { duration: 0.1 }
                                                             }
                                                         }}
-                                                        className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-colors duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
+                                                        className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-colors duration-200 min-h-[88px] overflow-visible"
                                                     >
                                                         {(activity.application_id || activity.assets?.large_image) ? (
                                                             <div className="relative">
@@ -686,19 +672,12 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                         )}
                                                                     </div>
                                                                     {activity.assets?.large_text && (
-                                                                        <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                            <div 
-                                                                                className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                style={{
-                                                                                    position: 'absolute',
-                                                                                    transform: 'translate(-50%, -100%)',
-                                                                                    left: '50%',
-                                                                                    bottom: needsWiderSpotifyCard ? '60px' : '55px',
-                                                                                    marginLeft: needsWiderSpotifyCard ? '35px' : '30px',
-                                                                                }}
-                                                                            >
-                                                                                {activity.assets.large_text}
-                                                                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
+                                                                        <div className="absolute top-0 left-0 w-full overflow-visible">
+                                                                            <div className="absolute left-1/2 -translate-x-1/2 -translate-y-full -mt-2 opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 overflow-visible">
+                                                                                <div className="bg-zinc-800/90 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative">
+                                                                                    {activity.assets.large_text}
+                                                                                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800/90 transform rotate-45" />
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     )}
@@ -714,7 +693,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                                 className="rounded-full border-2 border-zinc-900"
                                                                                 onLoad={(e) => {
                                                                                     const target = e.target as HTMLImageElement;
-                                                                                    target.style.opacity = '1';
+                                                                                        target.style.opacity = '1';
                                                                                     setSmallActivityImagesLoaded(prev => ({
                                                                                         ...prev,
                                                                                         [activity.application_id]: true
@@ -736,20 +715,12 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                                 />
                                                                             )}
                                                                             {activity.assets?.small_text && (
-                                                                                <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                                    <div 
-                                                                                        className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                        style={{
-                                                                                            position: 'absolute',
-                                                                                            transform: 'translate(-50%, -100%)',
-                                                                                            left: '50%',
-                                                                                            bottom: '50px',
-                                                                                            marginBottom: '-35px',
-                                                                                            marginLeft: '15px',
-                                                                                        }}
-                                                                                    >
-                                                                                        {activity.assets.small_text}
-                                                                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
+                                                                                <div className="absolute top-0 left-0 w-full overflow-visible">
+                                                                                    <div className="absolute left-1/2 -translate-x-1/2 -translate-y-full -mt-2 opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 overflow-visible">
+                                                                                        <div className="bg-zinc-800/90 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative">
+                                                                                            {activity.assets.small_text}
+                                                                                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800/90 transform rotate-45" />
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             )}
@@ -811,14 +782,23 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                 ease: [0.4, 0, 1, 1]
                                                             }
                                                         }}
-                                                        className={`rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent transition-all duration-300 group relative min-h-[88px] overflow-hidden
-                                                            ${data.spotify.track_id ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
+                                                        className={`rounded-lg p-3 flex items-center gap-3 border-2 border-transparent border-dashed transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group relative min-h-[88px] overflow-visible
+                                                            ${data.spotify.track_id ? 'cursor-pointer' : ''}`}
                                                         style={{ 
-                                                            backgroundColor: isCalculatingColor ? 'rgb(24, 24, 27)' : `color-mix(in srgb, ${dominantColor} 8%, rgb(39 39 42 / 0.5))`
+                                                            backgroundColor: isCalculatingColor ? 'rgb(24, 24, 27)' : `color-mix(in srgb, ${dominantColor} 8%, rgb(39 39 42 / 0.5))`,
+                                                            '--hover-border-color': isCalculatingColor ? 'rgb(63, 63, 70)' : `color-mix(in srgb, ${dominantColor} 30%, rgb(63, 63, 70))`,
+                                                            transition: 'background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            const target = e.currentTarget;
+                                                            target.style.borderColor = 'var(--hover-border-color)';
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            e.currentTarget.style.borderColor = 'transparent';
                                                         }}
                                                     >
                                                         {(!needsWiderSpotifyCard || !data.spotify.album_art_url || !data.spotify.track_id) && (
-                                                            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                                 {!data.spotify.track_id || !data.spotify.album_art_url ? (
                                                                     <svg
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -838,73 +818,46 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                 )}
                                                             </div>
                                                         )}
-                                                        <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
-                                                            {data.spotify.album_art_url && data.spotify.track_id && (
-                                                                
-                                                                <div className={`relative flex-shrink-0 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-4' : ''}`}>
-                                                                    <Image
-                                                                        src={data.spotify.album_art_url}
-                                                                        alt={data.spotify.album}
-                                                                        width={80}
-                                                                        height={80}
-                                                                        className="rounded-md"
-                                                                        onLoad={() => setSpotifyImageLoaded(true)}
-                                                                    />
-                                                                    {!spotifyImageLoaded && (
-                                                                        <div className="absolute inset-0 w-20 h-20 rounded-md bg-zinc-700/50 animate-pulse" />
-                                                                    )}
-                                                                </div>
-                                                            )}
-                                                            <div className={`${!data.spotify.album_art_url || !data.spotify.track_id ? 'text-center flex-1' : 'flex-1'}`}>
-                                                                <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
-                                                                    <p className="text-sm font-medium text-white pr-6">{data.spotify.song}</p>
-                                                                    {needsWiderSpotifyCard && data.spotify.track_id && (
-                                                                        <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                                            <svg
-                                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                                className="fill-white/50 h-4 w-4 mx-auto"
-                                                                                viewBox="0 0 24 24"
-                                                                            >
-                                                                                <path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3 6 4 6H10ZM21 3V11H19V6.413L11.207 14.207L9.793 12.793L17.585 5H13V3H21Z" />
-                                                                            </svg>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                                <p className="text-xs text-zinc-400">
-                                                                    by {data.spotify.artist.split('; ').map((artist: string, index: number, array: string[]) => {
-                                                                        if (array.length === 1) return artist;
-                                                                        if (index === array.length - 2) return `${artist} `;
-                                                                        if (index === array.length - 1) return `& ${artist}`;
-                                                                        return `${artist}, `;
-                                                                    })}
+                                                        <div className={`${!data.spotify.album_art_url || !data.spotify.track_id ? 'text-center flex-1' : 'flex-1'}`}>
+                                                            <div className={`flex ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
+                                                                <p className="text-sm font-medium text-white">
+                                                                    {data.spotify.song}
                                                                 </p>
-                                                                <p className={`text-xs text-zinc-500 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-1' : ''}`}>
-                                                                    on {data.spotify.album}
-                                                                </p>
-                                                                <div className={`mt-3 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'flex justify-center' : ''}`}>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="text-xs text-zinc-500">
-                                                                            {Math.floor(currentTime / 1000 / 60)}:
-                                                                            {String(Math.floor(currentTime / 1000 % 60)).padStart(2, '0')}
-                                                                        </span>
-                                                                        <div className="w-40 bg-zinc-700/50 rounded-full h-1">
-                                                                            {isCalculatingColor ? (
-                                                                                <div className="h-full w-full animate-pulse bg-gradient-to-r from-zinc-600/50 via-zinc-500/50 to-zinc-600/50 rounded-full" />
-                                                                            ) : (
-                                                                                <div 
-                                                                                    className="h-1 rounded-full transition-all duration-1000"
-                                                                                    style={{ 
-                                                                                        width: `${Math.min(progress, 100)}%`,
-                                                                                        backgroundColor: dominantColor
-                                                                                    }}
-                                                                                />
-                                                                            )}
-                                                                        </div>
-                                                                        <span className="text-xs text-zinc-500">
-                                                                            {Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 / 60)}:
-                                                                            {String(Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 % 60)).padStart(2, '0')}
-                                                                        </span>
+                                                            </div>
+                                                            <p className="text-xs text-zinc-400">
+                                                                by {data.spotify.artist.split('; ').map((artist: string, index: number, array: string[]) => {
+                                                                    if (array.length === 1) return artist;
+                                                                    if (index === array.length - 2) return `${artist} `;
+                                                                    if (index === array.length - 1) return `& ${artist}`;
+                                                                    return `${artist}, `;
+                                                                })}
+                                                            </p>
+                                                            <p className={`text-xs text-zinc-500 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-1' : ''}`}>
+                                                                on {data.spotify.album}
+                                                            </p>
+                                                            <div className={`mt-3 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'flex justify-center' : ''}`}>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-xs text-zinc-500">
+                                                                        {Math.floor(currentTime / 1000 / 60)}:
+                                                                        {String(Math.floor(currentTime / 1000 % 60)).padStart(2, '0')}
+                                                                    </span>
+                                                                    <div className="w-40 bg-zinc-700/50 rounded-full h-1">
+                                                                        {isCalculatingColor ? (
+                                                                            <div className="h-full w-full animate-pulse bg-gradient-to-r from-zinc-600/50 via-zinc-500/50 to-zinc-600/50 rounded-full" />
+                                                                        ) : (
+                                                                            <div 
+                                                                                className="h-1 rounded-full transition-all duration-1000"
+                                                                                style={{ 
+                                                                                    width: `${Math.min(progress, 100)}%`,
+                                                                                    backgroundColor: dominantColor
+                                                                                }}
+                                                                            />
+                                                                        )}
                                                                     </div>
+                                                                    <span className="text-xs text-zinc-500">
+                                                                        {Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 / 60)}:
+                                                                        {String(Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 % 60)).padStart(2, '0')}
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>
