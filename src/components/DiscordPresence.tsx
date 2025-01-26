@@ -640,7 +640,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                     ease: [0.25, 0.8, 0.25, 1]
                                                                 }
                                                             }}
-                                                            className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-colors duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
+                                                            className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 relative before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-dashed before:border-zinc-700/50 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 hover:scale-[1.02] min-h-[88px] overflow-hidden"
                                                         >
                                                             {(activity.application_id || activity.assets?.large_image) ? (
                                                                 <div className="relative">
@@ -802,7 +802,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ease: [0.25, 0.8, 0.25, 1]
                                                         }
                                                     }}
-                                                    className={`rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-[transform,border,background-color] duration-300 group relative min-h-[88px] overflow-hidden ${
+                                                    className={`rounded-lg p-3 flex items-center gap-3 relative before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-dashed before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:[border-color:var(--border-color)] group min-h-[88px] overflow-hidden ${
                                                         data.spotify.track_id ? 'cursor-pointer hover:scale-[1.02]' : ''
                                                     }`}
                                                     style={{ 
@@ -810,20 +810,19 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ? 'rgb(24, 24, 27)' 
                                                             : `color-mix(in srgb, ${dominantColor} ${data.spotify.track_id ? 'var(--bg-opacity, 8%)' : '8%'}, rgb(39 39 42 / 0.5))`,
                                                         '--bg-opacity': 'var(--bg-opacity, 8%)',
-                                                        borderColor: 'var(--border-color, transparent)'
+                                                        '--border-color': isCalculatingColor 
+                                                            ? 'transparent'
+                                                            : `color-mix(in srgb, ${dominantColor} var(--border-opacity, 30%), rgb(63, 63, 70))`,
                                                     } as any}
                                                     onMouseEnter={(e) => {
                                                         const target = e.currentTarget;
                                                         target.style.setProperty('--bg-opacity', '25%');
-                                                        target.style.setProperty('--border-color', isCalculatingColor 
-                                                            ? 'rgb(63, 63, 70)' 
-                                                            : `color-mix(in srgb, ${dominantColor} 30%, rgb(63, 63, 70))`
-                                                        );
+                                                        target.style.setProperty('--border-opacity', '30%');
                                                     }}
                                                     onMouseLeave={(e) => {
                                                         const target = e.currentTarget;
                                                         target.style.setProperty('--bg-opacity', '8%');
-                                                        target.style.setProperty('--border-color', 'transparent');
+                                                        target.style.setProperty('--border-opacity', '0%');
                                                     }}
                                                     onClick={() => {
                                                         if (data.spotify.track_id) {
