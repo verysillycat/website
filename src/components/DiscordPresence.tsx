@@ -618,6 +618,63 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                 </motion.div>
                                             ) : null}
 
+                                            {status === 'offline' && (
+                                                <motion.div 
+                                                    key="offline"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ 
+                                                        opacity: 1,
+                                                        transition: {
+                                                            duration: 0.3,
+                                                            delay: 0.15,
+                                                            ease: [0.32, 0.72, 0, 1]
+                                                        }
+                                                    }}
+                                                    exit={{ 
+                                                        opacity: 0,
+                                                        transition: {
+                                                            duration: 0.2,
+                                                            ease: [0.32, 0.72, 0, 1]
+                                                        }
+                                                    }}
+                                                    className="bg-zinc-800/50 rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden"
+                                                >
+                                                    <motion.div 
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ 
+                                                            opacity: 1,
+                                                            transition: {
+                                                                delay: 0.2,
+                                                                duration: 0.6,
+                                                                ease: [0.22, 1, 0.36, 1]
+                                                            }
+                                                        }}
+                                                        exit={{ 
+                                                            opacity: 0,
+                                                            transition: {
+                                                                duration: 0.3,
+                                                                ease: [0.22, 1, 0.36, 1]
+                                                            }
+                                                        }}
+                                                        className="text-center"
+                                                    >
+                                                        <svg 
+                                                            xmlns="http://www.w3.org/2000/svg" 
+                                                            viewBox="0 0 24 24"
+                                                            className="w-8 h-8 text-zinc-500 mx-auto mb-2"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        >
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m3 3 8.735 8.735m0 0a.374.374 0 1 1 .53.53m-.53-.53.53.53m0 0L21 21M14.652 9.348a3.75 3.75 0 0 1 0 5.304m2.121-7.425a6.75 6.75 0 0 1 0 9.546m2.121-11.667c3.808 3.807 3.808 9.98 0 13.788m-9.546-4.242a3.733 3.733 0 0 1-1.06-2.122m-1.061 4.243a6.75 6.75 0 0 1-1.625-6.929m-.496 9.05c-3.068-3.067-3.664-7.67-1.79-11.334M12 12h.008v.008H12V12Z" />                                                        </svg>
+                                                        <p className="text-sm text-zinc-400">Currently offline</p>
+                                                        <p className="text-xs text-zinc-500 mt-1">No connection to Discord</p>
+                                                    </motion.div>
+                                                </motion.div>
+                                            )}
+
                                             {data.activities
                                                 ?.filter(activity => activity.type !== 2 && activity.type !== 4)
                                                 .map((activity: any, index: number) => (
@@ -856,12 +913,19 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                         {data.spotify.album_art_url && data.spotify.track_id && (
                                                             
                                                             <div className={`relative flex-shrink-0 ${
-                                                                !hasOverflow && 
-                                                                ((data.spotify.song.length > 35 && data.spotify.artist.length > 25) || 
-                                                                 data.spotify.song.length > 45 || 
-                                                                 data.spotify.artist.length > 45) 
-                                                                ? 'mt-4' 
-                                                                : ''
+                                                                !hasOverflow && (() => {
+                                                                    const songLength = data.spotify.song.length;
+                                                                    const artistLength = data.spotify.artist.length;
+                                                                    const albumLength = data.spotify.album.length;
+                                                                    const totalLength = songLength + artistLength + albumLength;
+                                                                    
+                                                                    if (songLength > 80 || totalLength > 150 || 
+                                                                        (songLength > 65 && (artistLength > 65 || albumLength > 65))) {
+                                                                        return 'mt-4';
+                                                                    }
+                                                                    
+                                                                    return '';
+                                                                })()
                                                             }`}>
                                                                 <Image
                                                                     src={data.spotify.album_art_url}
