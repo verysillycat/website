@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import { motion } from "framer-motion";
 import { Play, Pause, SkipBack, SkipForward, Volume2, Volume1, Volume, VolumeX } from 'lucide-react';
 import { create } from 'zustand';

@@ -1,20 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSocket } from "@/hooks/socket";
+import { useSocket } from "@/hooks/SocketContext";
 import { motion, AnimatePresence } from "framer-motion";
+import UserArea from './DiscordPresence';
 
 export default function Header() {
 	const [hamburgerTriggered, setHamburgerTriggered] = useState(false);
 	const { status } = useSocket();
+	const [showUserArea, setShowUserArea] = useState(false);
 
-	const statusColor =
-		{
-			online: "bg-green-500",
-			dnd: "bg-red-500",
-			idle: "bg-yellow-500",
-			offline: "bg-gray-500",
-		}[status] || "bg-gray-500";
+	const statusColor = {
+		online: "bg-green-500",
+		dnd: "bg-red-500",
+		idle: "bg-yellow-500",
+		offline: "bg-gray-500",
+	} as const;
+
+	const statusClass = statusColor[status as keyof typeof statusColor] || "bg-gray-500";
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -28,7 +31,6 @@ export default function Header() {
 	}, []);
 
 	useEffect(() => {
-		// Enable smooth scrolling for the entire page
 		document.documentElement.style.scrollBehavior = 'smooth';
 
 		return () => {
@@ -37,7 +39,7 @@ export default function Header() {
 	}, []);
 
 	return (
-		<>
+		<div>
 			<div className="h-20" />
 
 			<AnimatePresence>
@@ -56,17 +58,20 @@ export default function Header() {
 				initial={{ y: -100 }}
 				animate={{ y: 0 }}
 				transition={{ type: "spring", stiffness: 150, damping: 20 }}
-				className="fixed top-0 left-0 right-0 mx-10 mt-4 bg-dark/70 text-white border border-[#898c91] backdrop-blur-lg opacity-75 rounded-2xl shadow-md shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] transition-shadow duration-300 non-selectable relative z-50"
+				className="fixed top-0 left-0 right-0 mx-20 mt-4 bg-dark/70 text-white border border-[#898c91] backdrop-blur-lg opacity-75 rounded-2xl shadow-md shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] transition-shadow duration-300 non-selectable relative z-50"
 				style={{ position: "fixed", top: 0, left: 0, right: 0 }}
 			>
 				<div className="p-3.5 non-selectable">
 					<div className="flex justify-between items-center non-selectable">
 						<div className="flex items-center gap-2 non-selectable">
-							<h1 className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable">
+							<h1
+								className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable cursor-pointer"
+								onClick={() => setShowUserArea(!showUserArea)}
+							>
 								Cortex
 							</h1>
 							<div
-								className={`w-2 h-2 rounded-full ${statusColor} non-selectable`}
+								className={`w-2 h-2 rounded-full ${statusClass} non-selectable`}
 							></div>
 						</div>
 						<button
@@ -210,6 +215,8 @@ export default function Header() {
 					)}
 				</div>
 			</motion.div>
-		</>
+
+			<UserArea isOpen={showUserArea} onClose={() => setShowUserArea(false)} />
+		</div>
 	);
 }

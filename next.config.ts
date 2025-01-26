@@ -6,6 +6,18 @@ const nextConfig: NextConfig = {
             {
                 hostname: 'github.com',
             },
+            {
+                hostname: 'cdn.discordapp.com',
+            },
+            {
+                hostname: 'i.scdn.co',
+            },
+            {
+                hostname: 'raw.githubusercontent.com',
+            },
+            {
+                hostname: 'dcdn.dstn.to',
+            },
         ],
     },
 };

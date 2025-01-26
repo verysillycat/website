@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardHeader, CardBody } from "@nextui-org/react";
+import { Card, CardHeader, CardBody } from "@heroui/react";
 import { motion } from "framer-motion";
 import { useEffect, useState, useMemo } from "react";
 import Typewriter from "typewriter-effect/dist/core";
@@ -11,7 +11,6 @@ export default function CardComponent() {
 	const [iconsLoaded, setIconsLoaded] = useState(false);
 	
 	const socialLinks = useMemo(() => [
-		{href: "https://discord.com/users/825069530376044594", icon: "ic:baseline-discord", alt: "Discord"},
 		{ href: "https://t.me/backdropped", icon: "mdi:telegram", alt: "Telegram" },
 		{ href: "https://github.com/verysillycat", icon: "mdi:github", alt: "GitHub" },
 		{ href: "https://steamcommunity.com/id/webassembly", icon: "mdi:steam", alt: "Steam" },
@@ -66,13 +65,13 @@ export default function CardComponent() {
 				rotateX: { duration: 0.6 }
 			}}
 		>
-			<Card className="card-background bg-black bg-opacity-25 mt-4 mx-auto py-6 w-[95%] min-w-[320px] max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-2xl xl:max-w-3xl px-4 sm:px-6 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02]">
+			<Card className="card-background bg-black bg-opacity-25 mt-4 mx-auto py-4 w-[95%] min-w-[320px] max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-2xl xl:max-w-3xl px-4 sm:px-6 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02]">
 				<video autoPlay loop muted playsInline disablePictureInPicture>
 					<source src="/assets/banner.mp4" type="video/mp4" />
 					Your browser does not support the video tag.
 				</video>
-				<CardHeader>
-					<h1 className="mb-1 text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white overflow-hidden">
+				<CardHeader className="pb-2">
+					<h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white overflow-hidden">
 						{["I'm a", "15 year old", "developer from", "Honduras"].map((text, index) => (
 							<div key={index} className="relative inline-block">
 								<motion.span
@@ -134,7 +133,7 @@ export default function CardComponent() {
 					<p className="font-normal text-gray-200 dark:text-gray-300 leading-tight text-sm sm:text-base">
 						<span id="typewriter"></span>
 					</p>
-					<div className="flex justify-end mt-4">
+					<div className="mr-2 flex justify-end mt-4">
 						{iconsLoaded && socialLinks.map((link, index) => (
 							<motion.a
 								key={link.icon}
