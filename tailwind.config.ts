@@ -33,7 +33,6 @@ const config: Config = {
 			animation: {
 				pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
 				slider: "slider var(--duration, 30s) linear infinite",
-				fadeIn: "fadeIn 2s ease-in-out",
 			},
 			keyframes: {
 				slider: {
@@ -41,13 +40,6 @@ const config: Config = {
 				},
 				pulse: {
 					"50%": { opacity: "0.5" },
-				},
-				fadeIn: {
-					"0%": { opacity: "0" },
-					"25%": { opacity: "0.25" },
-					"50%": { opacity: "0.5" },
-					"75%": { opacity: "0.85" },
-					"100%": { opacity: "1" },
 				},
 			},
 		},
