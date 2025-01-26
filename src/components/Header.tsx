@@ -76,9 +76,11 @@ export default function Header() {
 							></div>
 						</div>
 
-						<div className="flex-grow flex justify-center xxsm:w-2/4">
-							<div className="pl-4 xsm:pl-0 xsm:mx-auto w-full flex justify-center">
-								<Weather />
+						<div className="flex-grow flex justify-center zsm:w-2/4">
+							<div className="pl-4 zsm:pl-8 xsm:pl-0 xsm:mx-auto w-full flex justify-center items-center">
+								<div className="w-full max-w-[250px] flex justify-center">
+									<Weather />
+								</div>
 							</div>
 						</div>
 
