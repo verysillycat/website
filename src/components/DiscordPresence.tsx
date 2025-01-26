@@ -341,7 +341,9 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                     }}
                     className="fixed inset-0 flex items-center justify-center z-50"
                     style={{ 
-                        pointerEvents: 'auto'
+                        pointerEvents: 'auto',
+                        willChange: 'opacity, transform',
+                        transform: 'translateZ(0)'
                     }}
                 >
                     <motion.div 
@@ -372,6 +374,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         data-wider={false}
                         data-overflow={hasOverflow}
                         data-wider-spotify={needsWiderSpotifyCard}
+                        style={{ willChange: 'transform, opacity' }}
                     >
                         <Card className="rounded-lg bg-zinc-900/90 border border-zinc-800 bg-white/[0.05] relative overflow-hidden">
                             <div 
@@ -564,23 +567,25 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             </motion.div>
                                         )}
                                         
-                                        <AnimatePresence mode="wait">
+                                        <AnimatePresence mode="sync">
                                             {(data.activities?.length === 0 || data.activities?.every(activity => activity.type === 4)) && status !== 'offline' ? (
                                                 <motion.div 
                                                     key="nothing-happening"
-                                                    initial={{ opacity: 0 }}
+                                                    initial={{ opacity: 0, height: 0 }}
                                                     animate={{ 
                                                         opacity: 1,
+                                                        height: 'auto',
                                                         transition: {
-                                                            duration: 0.6,
-                                                            ease: [0.22, 1, 0.36, 1]
+                                                            height: { duration: 0.2 },
+                                                            opacity: { duration: 0.2, delay: 0.1 }
                                                         }
                                                     }}
                                                     exit={{ 
                                                         opacity: 0,
+                                                        height: 0,
                                                         transition: {
-                                                            duration: 0.4,
-                                                            ease: [0.22, 1, 0.36, 1]
+                                                            height: { duration: 0.2, delay: 0.1 },
+                                                            opacity: { duration: 0.1 }
                                                         }
                                                     }}
                                                     className="bg-zinc-800/50 rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden"
@@ -625,53 +630,103 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             {data.activities
                                                 ?.filter(activity => activity.type !== 2 && activity.type !== 4)
                                                 .map((activity: any, index: number) => (
-                                                    <AnimatePresence key={activity.application_id || activity.name}>
-                                                        <motion.div 
-                                                            initial={{ opacity: 0, scale: 0.9 }}
-                                                            animate={{ 
-                                                                opacity: 1, 
-                                                                scale: 1,
-                                                                transition: {
-                                                                    duration: 0.2,
-                                                                    delay: index * 0.05,
-                                                                    ease: [0.4, 0, 0.2, 1]
-                                                                }
-                                                            }}
-                                                            exit={{ 
-                                                                opacity: 0,
-                                                                scale: 0.9,
-                                                                transition: {
-                                                                    duration: 0.15,
-                                                                    ease: [0.4, 0, 0.2, 1]
-                                                                }
-                                                            }}
-                                                            className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-colors duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
-                                                        >
-                                                            {(activity.application_id || activity.assets?.large_image) ? (
-                                                                <div className="relative">
-                                                                    <div className="group/large">
+                                                    <motion.div 
+                                                        key={activity.application_id || activity.name}
+                                                        initial={{ opacity: 0, height: 0 }}
+                                                        animate={{ 
+                                                            opacity: 1,
+                                                            height: 'auto',
+                                                            transition: {
+                                                                height: { duration: 0.2 },
+                                                                opacity: { duration: 0.2, delay: 0.1 + (index * 0.05) }
+                                                            }
+                                                        }}
+                                                        exit={{ 
+                                                            opacity: 0,
+                                                            height: 0,
+                                                            transition: {
+                                                                height: { duration: 0.2, delay: 0.1 },
+                                                                opacity: { duration: 0.1 }
+                                                            }
+                                                        }}
+                                                        className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent hover:border-zinc-700/50 transition-colors duration-200 hover:scale-[1.02] min-h-[88px] overflow-hidden"
+                                                    >
+                                                        {(activity.application_id || activity.assets?.large_image) ? (
+                                                            <div className="relative">
+                                                                <div className="group/large">
+                                                                    <div className="relative">
+                                                                        <Image
+                                                                            src={getActivityImageUrl(activity)}
+                                                                            alt={activity.name}
+                                                                            width={needsWiderSpotifyCard ? 72 : 65}
+                                                                            height={needsWiderSpotifyCard ? 72 : 65}
+                                                                            className="rounded-md"
+                                                                            onLoad={(e) => {
+                                                                                const target = e.target as HTMLImageElement;
+                                                                                target.style.opacity = '1';
+                                                                                setActivityImagesLoaded(prev => ({
+                                                                                    ...prev,
+                                                                                    [activity.application_id]: true
+                                                                                }));
+                                                                            }}
+                                                                            style={{ 
+                                                                                opacity: activityImagesLoaded[activity.application_id] ? '1' : '0'
+                                                                            }}
+                                                                        />
+                                                                        {!activityImagesLoaded[activity.application_id] && (
+                                                                            <div 
+                                                                                className="absolute inset-0 bg-zinc-700/50 rounded-md animate-pulse transition-opacity duration-300" 
+                                                                                onTransitionEnd={(e) => {
+                                                                                    const target = e.target as HTMLElement;
+                                                                                    if (target.style.opacity === '0') {
+                                                                                        target.style.display = 'none';
+                                                                                    }
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                    {activity.assets?.large_text && (
+                                                                        <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                                                            <div 
+                                                                                className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
+                                                                                style={{
+                                                                                    position: 'absolute',
+                                                                                    transform: 'translate(-50%, -100%)',
+                                                                                    left: '50%',
+                                                                                    bottom: needsWiderSpotifyCard ? '60px' : '55px',
+                                                                                    marginLeft: needsWiderSpotifyCard ? '35px' : '30px',
+                                                                                }}
+                                                                            >
+                                                                                {activity.assets.large_text}
+                                                                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                                {getActivitySmallImageUrl(activity) && (
+                                                                    <div className="absolute -bottom-1.5 -right-1.5 group/small">
                                                                         <div className="relative">
                                                                             <Image
-                                                                                src={getActivityImageUrl(activity)}
-                                                                                alt={activity.name}
-                                                                                width={needsWiderSpotifyCard ? 72 : 65}
-                                                                                height={needsWiderSpotifyCard ? 72 : 65}
-                                                                                className="rounded-md"
+                                                                                src={getActivitySmallImageUrl(activity)}
+                                                                                alt={activity.assets?.small_text || "Status"}
+                                                                                width={28}
+                                                                                height={28}
+                                                                                className="rounded-full border-2 border-zinc-900"
                                                                                 onLoad={(e) => {
                                                                                     const target = e.target as HTMLImageElement;
                                                                                     target.style.opacity = '1';
-                                                                                    setActivityImagesLoaded(prev => ({
+                                                                                    setSmallActivityImagesLoaded(prev => ({
                                                                                         ...prev,
                                                                                         [activity.application_id]: true
                                                                                     }));
                                                                                 }}
                                                                                 style={{ 
-                                                                                    opacity: activityImagesLoaded[activity.application_id] ? '1' : '0'
+                                                                                    opacity: smallActivityImagesLoaded[activity.application_id] ? '1' : '0'
                                                                                 }}
                                                                             />
-                                                                            {!activityImagesLoaded[activity.application_id] && (
+                                                                            {!smallActivityImagesLoaded[activity.application_id] && (
                                                                                 <div 
-                                                                                    className="absolute inset-0 bg-zinc-700/50 rounded-md animate-pulse transition-opacity duration-300" 
+                                                                                    className="absolute inset-0 bg-zinc-700/50 rounded-full animate-pulse transition-opacity duration-300 border-2 border-zinc-900"
                                                                                     onTransitionEnd={(e) => {
                                                                                         const target = e.target as HTMLElement;
                                                                                         if (target.style.opacity === '0') {
@@ -680,230 +735,181 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                                     }}
                                                                                 />
                                                                             )}
-                                                                        </div>
-                                                                        {activity.assets?.large_text && (
-                                                                            <div className="fixed opacity-0 group-hover/large:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                                <div 
-                                                                                    className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                    style={{
-                                                                                        position: 'absolute',
-                                                                                        transform: 'translate(-50%, -100%)',
-                                                                                        left: '50%',
-                                                                                        bottom: needsWiderSpotifyCard ? '60px' : '55px',
-                                                                                        marginLeft: needsWiderSpotifyCard ? '35px' : '30px',
-                                                                                    }}
-                                                                                >
-                                                                                    {activity.assets.large_text}
-                                                                                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
-                                                                                </div>
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                    {getActivitySmallImageUrl(activity) && (
-                                                                        <div className="absolute -bottom-1.5 -right-1.5 group/small">
-                                                                            <div className="relative">
-                                                                                <Image
-                                                                                    src={getActivitySmallImageUrl(activity)}
-                                                                                    alt={activity.assets?.small_text || "Status"}
-                                                                                    width={28}
-                                                                                    height={28}
-                                                                                    className="rounded-full border-2 border-zinc-900"
-                                                                                    onLoad={(e) => {
-                                                                                        const target = e.target as HTMLImageElement;
-                                                                                        target.style.opacity = '1';
-                                                                                        setSmallActivityImagesLoaded(prev => ({
-                                                                                            ...prev,
-                                                                                            [activity.application_id]: true
-                                                                                        }));
-                                                                                    }}
-                                                                                    style={{ 
-                                                                                        opacity: smallActivityImagesLoaded[activity.application_id] ? '1' : '0'
-                                                                                    }}
-                                                                                />
-                                                                                {!smallActivityImagesLoaded[activity.application_id] && (
+                                                                            {activity.assets?.small_text && (
+                                                                                <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
                                                                                     <div 
-                                                                                        className="absolute inset-0 bg-zinc-700/50 rounded-full animate-pulse transition-opacity duration-300 border-2 border-zinc-900"
-                                                                                        onTransitionEnd={(e) => {
-                                                                                            const target = e.target as HTMLElement;
-                                                                                            if (target.style.opacity === '0') {
-                                                                                                target.style.display = 'none';
-                                                                                            }
+                                                                                        className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
+                                                                                        style={{
+                                                                                            position: 'absolute',
+                                                                                            transform: 'translate(-50%, -100%)',
+                                                                                            left: '50%',
+                                                                                            bottom: '50px',
+                                                                                            marginBottom: '-35px',
+                                                                                            marginLeft: '15px',
                                                                                         }}
-                                                                                    />
-                                                                                )}
-                                                                                {activity.assets?.small_text && (
-                                                                                    <div className="fixed opacity-0 group-hover/small:opacity-100 transition-opacity duration-200 pointer-events-none">
-                                                                                        <div 
-                                                                                            className="bg-zinc-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-lg relative"
-                                                                                            style={{
-                                                                                                position: 'absolute',
-                                                                                                transform: 'translate(-50%, -100%)',
-                                                                                                left: '50%',
-                                                                                                bottom: '50px',
-                                                                                                marginBottom: '-35px',
-                                                                                                marginLeft: '15px',
-                                                                                            }}
-                                                                                        >
-                                                                                            {activity.assets.small_text}
-                                                                                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
-                                                                                        </div>
+                                                                                    >
+                                                                                        {activity.assets.small_text}
+                                                                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 transform rotate-45" />
                                                                                     </div>
-                                                                                )}
-                                                                            </div>
+                                                                                </div>
+                                                                            )}
                                                                         </div>
-                                                                    )}
-                                                                </div>
-                                                            ) : (
-                                                                <div className="relative flex-shrink-0">
-                                                                    <div className="w-[65px] h-[65px] rounded-md bg-zinc-700/50 flex items-center justify-center">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                                                        </svg>
                                                                     </div>
-                                                                </div>
-                                                            )}
-                                                            <div>
-                                                                <p className="text-base font-medium text-white">{activity.name}</p>
-                                                                {activity.details && (
-                                                                    <p className="text-xs font-normal text-zinc-400">{activity.details}</p>
-                                                                )}
-                                                                {activity.state && (
-                                                                    <p className="text-xs font-normal text-zinc-400">{activity.state}</p>
-                                                                )}
-                                                                {activity.timestamps?.start && (
-                                                                    <p className="text-xs text-zinc-500">
-                                                                        {(() => {
-                                                                            const elapsed = activityTimes[index] ? Math.floor(activityTimes[index] / 1000) : 0;
-                                                                            const hours = Math.floor(elapsed / 3600);
-                                                                            const minutes = Math.floor((elapsed % 3600) / 60);
-                                                                            const seconds = elapsed % 60;
-                                                                            
-                                                                            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} elapsed`;
-                                                                        })()}
-                                                                    </p>
                                                                 )}
                                                             </div>
-                                                        </motion.div>
-                                                    </AnimatePresence>
+                                                        ) : (
+                                                            <div className="relative flex-shrink-0">
+                                                                <div className="w-[65px] h-[65px] rounded-md bg-zinc-700/50 flex items-center justify-center">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        <div>
+                                                            <p className="text-base font-medium text-white">{activity.name}</p>
+                                                            {activity.details && (
+                                                                <p className="text-xs font-normal text-zinc-400">{activity.details}</p>
+                                                            )}
+                                                            {activity.state && (
+                                                                <p className="text-xs font-normal text-zinc-400">{activity.state}</p>
+                                                            )}
+                                                            {activity.timestamps?.start && (
+                                                                <p className="text-xs text-zinc-500">
+                                                                    {(() => {
+                                                                        const elapsed = activityTimes[index] ? Math.floor(activityTimes[index] / 1000) : 0;
+                                                                        const hours = Math.floor(elapsed / 3600);
+                                                                        const minutes = Math.floor((elapsed % 3600) / 60);
+                                                                        const seconds = elapsed % 60;
+                                                                        
+                                                                        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} elapsed`;
+                                                                    })()}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </motion.div>
                                                 ))}
 
                                             {data.spotify && (
-                                                <motion.div 
-                                                    key="spotify"
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ 
-                                                        opacity: 1,
-                                                        transition: {
-                                                            duration: 0.6,
-                                                            delay: 0.1 + ((data.activities?.filter(a => a.type !== 2 && a.type !== 4).length || 0) * 0.05),
-                                                            ease: [0.22, 1, 0.36, 1]
-                                                        }
-                                                    }}
-                                                    exit={{ 
-                                                        opacity: 0,
-                                                        transition: {
-                                                            duration: 0.4,
-                                                            ease: [0.22, 1, 0.36, 1]
-                                                        }
-                                                    }}
-                                                    className={`rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent transition-all duration-300 group relative min-h-[88px] overflow-hidden
-                                                        ${data.spotify.track_id ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
-                                                    style={{ 
-                                                        backgroundColor: isCalculatingColor ? 'rgb(24, 24, 27)' : `color-mix(in srgb, ${dominantColor} 8%, rgb(39 39 42 / 0.5))`
-                                                    }}
-                                                >
-                                                    {(!needsWiderSpotifyCard || !data.spotify.album_art_url || !data.spotify.track_id) && (
-                                                        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                            {!data.spotify.track_id || !data.spotify.album_art_url ? (
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 2931 2931"
-                                                                    className="fill-[#1DB954] h-4 w-4"
-                                                                >
-                                                                    <path d="M1465.5 0C656.1 0 0 656.1 0 1465.5S656.1 2931 1465.5 2931 2931 2274.9 2931 1465.5C2931 656.2 2274.9.1 1465.5 0zm672.1 2113.6c-26.3 43.2-82.6 56.7-125.6 30.4-344.1-210.3-777.3-257.8-1287.4-141.3-49.2 11.3-98.2-19.5-109.4-68.7-11.3-49.2 19.4-98.2 68.7-109.4C1242.1 1697.1 1721 1752 2107.3 1988c43 26.5 56.7 82.6 30.3 125.6zm179.3-398.9c-33.1 53.8-103.5 70.6-157.2 37.6-394.2-242.3-994.9-312.2-1460.3-170.8-60.4 18.3-124.2-15.8-142.6-76.1-18.2-60.4 15.9-124.1 76.2-142.5 532.2-161.5 1193.9-83.3 1646.8 194.7 53.8 33.1 70.8 103.4 37.1 157.1zm15.4-415.6c-472.4-280.5-1251.6-306.3-1702.6-169.5-72.4 22-149-18.9-170.9-91.3-21.9-72.4 18.9-149 91.4-171 517.7-157.1 1378.2-126.8 1922 196 65.1 38.7 86.5 122.8 47.9 187.8-38.5 65.2-122.8 86.7-187.8 48z"/>
-                                                                </svg>
-                                                            ) : (
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    className="fill-white/50 h-4 w-4"
-                                                                    viewBox="0 0 24 24"
-                                                                >
-                                                                    <path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3 6 4 6H10ZM21 3V11H19V6.413L11.207 14.207L9.793 12.793L17.585 5H13V3H21Z" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                    <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
-                                                        {data.spotify.album_art_url && data.spotify.track_id && (
-                                                            
-                                                            <div className={`relative flex-shrink-0 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-4' : ''}`}>
-                                                                <Image
-                                                                    src={data.spotify.album_art_url}
-                                                                    alt={data.spotify.album}
-                                                                    width={80}
-                                                                    height={80}
-                                                                    className="rounded-md"
-                                                                    onLoad={() => setSpotifyImageLoaded(true)}
-                                                                />
-                                                                {!spotifyImageLoaded && (
-                                                                    <div className="absolute inset-0 w-20 h-20 rounded-md bg-zinc-700/50 animate-pulse" />
+                                                <AnimatePresence mode="popLayout">
+                                                    <motion.div 
+                                                        key="spotify"
+                                                        initial={{ opacity: 0, scale: 0.95 }}
+                                                        animate={{ 
+                                                            opacity: 1,
+                                                            scale: 1,
+                                                            transition: {
+                                                                duration: 0.2,
+                                                                ease: [0.4, 0, 0.2, 1]
+                                                            }
+                                                        }}
+                                                        exit={{ 
+                                                            opacity: 0,
+                                                            scale: 0.95,
+                                                            transition: {
+                                                                duration: 0.15,
+                                                                ease: [0.4, 0, 1, 1]
+                                                            }
+                                                        }}
+                                                        className={`rounded-lg p-3 flex items-center gap-3 border-2 border-dashed border-transparent transition-all duration-300 group relative min-h-[88px] overflow-hidden
+                                                            ${data.spotify.track_id ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
+                                                        style={{ 
+                                                            backgroundColor: isCalculatingColor ? 'rgb(24, 24, 27)' : `color-mix(in srgb, ${dominantColor} 8%, rgb(39 39 42 / 0.5))`
+                                                        }}
+                                                    >
+                                                        {(!needsWiderSpotifyCard || !data.spotify.album_art_url || !data.spotify.track_id) && (
+                                                            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                                {!data.spotify.track_id || !data.spotify.album_art_url ? (
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 2931 2931"
+                                                                        className="fill-[#1DB954] h-4 w-4"
+                                                                    >
+                                                                        <path d="M1465.5 0C656.1 0 0 656.1 0 1465.5S656.1 2931 1465.5 2931 2931 2274.9 2931 1465.5C2931 656.2 2274.9.1 1465.5 0zm672.1 2113.6c-26.3 43.2-82.6 56.7-125.6 30.4-344.1-210.3-777.3-257.8-1287.4-141.3-49.2 11.3-98.2-19.5-109.4-68.7-11.3-49.2 19.4-98.2 68.7-109.4C1242.1 1697.1 1721 1752 2107.3 1988c43 26.5 56.7 82.6 30.3 125.6zm179.3-398.9c-33.1 53.8-103.5 70.6-157.2 37.6-394.2-242.3-994.9-312.2-1460.3-170.8-60.4 18.3-124.2-15.8-142.6-76.1-18.2-60.4 15.9-124.1 76.2-142.5 532.2-161.5 1193.9-83.3 1646.8 194.7 53.8 33.1 70.8 103.4 37.1 157.1zm15.4-415.6c-472.4-280.5-1251.6-306.3-1702.6-169.5-72.4 22-149-18.9-170.9-91.3-21.9-72.4 18.9-149 91.4-171 517.7-157.1 1378.2-126.8 1922 196 65.1 38.7 86.5 122.8 47.9 187.8-38.5 65.2-122.8 86.7-187.8 48z"/>
+                                                                    </svg>
+                                                                ) : (
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        className="fill-white/50 h-4 w-4"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3 6 4 6H10ZM21 3V11H19V6.413L11.207 14.207L9.793 12.793L17.585 5H13V3H21Z" />
+                                                                    </svg>
                                                                 )}
                                                             </div>
                                                         )}
-                                                        <div className={`${!data.spotify.album_art_url || !data.spotify.track_id ? 'text-center flex-1' : 'flex-1'}`}>
-                                                            <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
-                                                                <p className="text-sm font-medium text-white pr-6">{data.spotify.song}</p>
-                                                                {needsWiderSpotifyCard && data.spotify.track_id && (
-                                                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                                        <svg
-                                                                            xmlns="http://www.w3.org/2000/svg"
-                                                                            className="fill-white/50 h-4 w-4 mx-auto"
-                                                                            viewBox="0 0 24 24"
-                                                                        >
-                                                                            <path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3 6 4 6H10ZM21 3V11H19V6.413L11.207 14.207L9.793 12.793L17.585 5H13V3H21Z" />
-                                                                        </svg>
+                                                        <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
+                                                            {data.spotify.album_art_url && data.spotify.track_id && (
+                                                                
+                                                                <div className={`relative flex-shrink-0 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-4' : ''}`}>
+                                                                    <Image
+                                                                        src={data.spotify.album_art_url}
+                                                                        alt={data.spotify.album}
+                                                                        width={80}
+                                                                        height={80}
+                                                                        className="rounded-md"
+                                                                        onLoad={() => setSpotifyImageLoaded(true)}
+                                                                    />
+                                                                    {!spotifyImageLoaded && (
+                                                                        <div className="absolute inset-0 w-20 h-20 rounded-md bg-zinc-700/50 animate-pulse" />
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                            <div className={`${!data.spotify.album_art_url || !data.spotify.track_id ? 'text-center flex-1' : 'flex-1'}`}>
+                                                                <div className={`flex items-start gap-2 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'justify-center' : ''}`}>
+                                                                    <p className="text-sm font-medium text-white pr-6">{data.spotify.song}</p>
+                                                                    {needsWiderSpotifyCard && data.spotify.track_id && (
+                                                                        <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                                            <svg
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                className="fill-white/50 h-4 w-4 mx-auto"
+                                                                                viewBox="0 0 24 24"
+                                                                            >
+                                                                                <path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3 6 4 6H10ZM21 3V11H19V6.413L11.207 14.207L9.793 12.793L17.585 5H13V3H21Z" />
+                                                                            </svg>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                                <p className="text-xs text-zinc-400">
+                                                                    by {data.spotify.artist.split('; ').map((artist: string, index: number, array: string[]) => {
+                                                                        if (array.length === 1) return artist;
+                                                                        if (index === array.length - 2) return `${artist} `;
+                                                                        if (index === array.length - 1) return `& ${artist}`;
+                                                                        return `${artist}, `;
+                                                                    })}
+                                                                </p>
+                                                                <p className={`text-xs text-zinc-500 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-1' : ''}`}>
+                                                                    on {data.spotify.album}
+                                                                </p>
+                                                                <div className={`mt-3 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'flex justify-center' : ''}`}>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="text-xs text-zinc-500">
+                                                                            {Math.floor(currentTime / 1000 / 60)}:
+                                                                            {String(Math.floor(currentTime / 1000 % 60)).padStart(2, '0')}
+                                                                        </span>
+                                                                        <div className="w-40 bg-zinc-700/50 rounded-full h-1">
+                                                                            {isCalculatingColor ? (
+                                                                                <div className="h-full w-full animate-pulse bg-gradient-to-r from-zinc-600/50 via-zinc-500/50 to-zinc-600/50 rounded-full" />
+                                                                            ) : (
+                                                                                <div 
+                                                                                    className="h-1 rounded-full transition-all duration-1000"
+                                                                                    style={{ 
+                                                                                        width: `${Math.min(progress, 100)}%`,
+                                                                                        backgroundColor: dominantColor
+                                                                                    }}
+                                                                                />
+                                                                            )}
+                                                                        </div>
+                                                                        <span className="text-xs text-zinc-500">
+                                                                            {Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 / 60)}:
+                                                                            {String(Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 % 60)).padStart(2, '0')}
+                                                                        </span>
                                                                     </div>
-                                                                )}
-                                                            </div>
-                                                            <p className="text-xs text-zinc-400">
-                                                                by {data.spotify.artist.split('; ').map((artist: string, index: number, array: string[]) => {
-                                                                    if (array.length === 1) return artist;
-                                                                    if (index === array.length - 2) return `${artist} `;
-                                                                    if (index === array.length - 1) return `& ${artist}`;
-                                                                    return `${artist}, `;
-                                                                })}
-                                                            </p>
-                                                            <p className={`text-xs text-zinc-500 ${!hasOverflow && (data.spotify.song.length > 35 || data.spotify.artist.length > 35) ? 'mt-1' : ''}`}>
-                                                                on {data.spotify.album}
-                                                            </p>
-                                                            <div className={`mt-3 ${!data.spotify.album_art_url || !data.spotify.track_id ? 'flex justify-center' : ''}`}>
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-xs text-zinc-500">
-                                                                        {Math.floor(currentTime / 1000 / 60)}:
-                                                                        {String(Math.floor(currentTime / 1000 % 60)).padStart(2, '0')}
-                                                                    </span>
-                                                                    <div className="w-40 bg-zinc-700/50 rounded-full h-1">
-                                                                        {isCalculatingColor ? (
-                                                                            <div className="h-full w-full animate-pulse bg-gradient-to-r from-zinc-600/50 via-zinc-500/50 to-zinc-600/50 rounded-full" />
-                                                                        ) : (
-                                                                            <div 
-                                                                                className="h-1 rounded-full transition-all duration-1000"
-                                                                                style={{ 
-                                                                                    width: `${Math.min(progress, 100)}%`,
-                                                                                    backgroundColor: dominantColor
-                                                                                }}
-                                                                            />
-                                                                        )}
-                                                                    </div>
-                                                                    <span className="text-xs text-zinc-500">
-                                                                        {Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 / 60)}:
-                                                                        {String(Math.floor((data.spotify.timestamps.end - data.spotify.timestamps.start) / 1000 % 60)).padStart(2, '0')}
-                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </motion.div>
+                                                    </motion.div>
+                                                </AnimatePresence>
                                             )}
                                         </AnimatePresence>
                                     </motion.div>
