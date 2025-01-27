@@ -619,7 +619,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ease: [0.32, 0.72, 0, 1]
                                                         }
                                                     }}
-                                                    className="bg-zinc-800/50 rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden"
+                                                    className={`bg-zinc-800/${bannerUrl ? '30' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
                                                 >
                                                     <motion.div 
                                                         initial={{ opacity: 0 }}
@@ -677,7 +677,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ease: [0.32, 0.72, 0, 1]
                                                         }
                                                     }}
-                                                    className="bg-zinc-800/50 rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden"
+                                                    className={`bg-zinc-800/${bannerUrl ? '30' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
                                                 >
                                                     <motion.div 
                                                         initial={{ opacity: 0 }}

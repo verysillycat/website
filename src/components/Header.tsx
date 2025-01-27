@@ -12,10 +12,10 @@ export default function Header() {
 	const [showUserArea, setShowUserArea] = useState(false);
 
 	const statusColor = {
-		online: "bg-green-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
-		dnd: "bg-red-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
-		idle: "bg-yellow-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
-		offline: "bg-gray-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
+		online: "bg-green-500 shadow-[0_0_3px_rgba(34,197,94,0.2),_0_0_5px_rgba(34,197,94,0.12),_0_0_8px_rgba(34,197,94,0.05)]",
+		dnd: "bg-red-500 shadow-[0_0_3px_rgba(239,68,68,0.2),_0_0_5px_rgba(239,68,68,0.12),_0_0_8px_rgba(239,68,68,0.05)]",
+		idle: "bg-yellow-500 shadow-[0_0_3px_rgba(234,179,8,0.2),_0_0_5px_rgba(234,179,8,0.12),_0_0_8px_rgba(234,179,8,0.05)]",
+		offline: "bg-gray-500 shadow-[0_0_3px_rgba(107,114,128,0.2),_0_0_5px_rgba(107,114,128,0.12),_0_0_8px_rgba(107,114,128,0.05)]",
 	} as const;
 
 	const statusClass = statusColor[status as keyof typeof statusColor] || statusColor.offline;
