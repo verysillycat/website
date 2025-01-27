@@ -3,20 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
     images: {
         remotePatterns: [
+            // For Discord RPC we need to allow all domains
             {
-                hostname: 'github.com',
-            },
-            {
-                hostname: 'cdn.discordapp.com',
-            },
-            {
-                hostname: 'i.scdn.co',
-            },
-            {
-                hostname: 'raw.githubusercontent.com',
-            },
-            {
-                hostname: 'dcdn.dstn.to',
+                protocol: 'https',
+                hostname: '**',
             },
         ],
     },
