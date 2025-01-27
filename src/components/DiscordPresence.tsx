@@ -427,17 +427,17 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                 <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-zinc-900 bg-zinc-800/50" />
                                             </div>
                                             <div className="flex-1">
-                                                <div className="flex items-start">
-                                                    <div className="space-y-2">
+                                                <div className="flex items-start justify-between">
+                                                    <div className="space-y-1.5">
                                                         <div className="flex items-center gap-2">
-                                                            <div className="h-5 w-32 bg-zinc-800/50 rounded" />
-                                                            <div className="h-5 w-20 bg-zinc-800/30 rounded-md" />
+                                                            <div className="h-4 w-32 bg-zinc-800/50 rounded" />
+                                                            <div className="h-4 w-20 bg-zinc-800/30 rounded-md" />
                                                         </div>
-                                                        <div className="h-4 w-24 bg-zinc-800/50 rounded" />
-                                                        <div className="h-4 w-36 bg-zinc-800/50 rounded mt-1" />
+                                                        <div className="h-3.5 w-24 bg-zinc-800/50 rounded" />
+                                                        <div className="h-3.5 w-36 bg-zinc-800/50 rounded" />
                                                     </div>
-                                                    <div className="ml-auto ">
-                                                        <div className="h-6 w-24 bg-zinc-800/50 rounded-md" />
+                                                    <div className="mt-2 mr-5">
+                                                        <div className="h-[30px] zsm:w-[120px] w-[60px] bg-zinc-800/50 rounded-md" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -535,7 +535,8 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             rel="noopener noreferrer"
                                                             className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 transition-colors px-2.5 py-1.5 rounded-md flex items-center gap-1.5 w-fit whitespace-nowrap"
                                                         >
-                                                            Add on Discord
+                                                            <span className="hidden zsm:block">Add on Discord</span>
+                                                            <span className="block zsm:hidden">Add</span>
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
                                                                 <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
                                                             </svg>
