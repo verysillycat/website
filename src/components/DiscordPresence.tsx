@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardHeader, CardBody } from "@heroui/react";
 import { useSocket } from "@/hooks/SocketContext";
 import Image from 'next/image';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface UserAreaProps {
     isOpen: boolean;
@@ -22,36 +22,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
     const [spotifyImageLoaded, setSpotifyImageLoaded] = useState(false);
     const [hasOverflow, setHasOverflow] = useState(false);
     const [needsWiderSpotifyCard, setNeedsWiderSpotifyCard] = useState(false);
-    const [avatarColors, setAvatarColors] = useState<{ primary: string; secondary: string }>({
-        primary: 'rgb(39, 39, 42)',
-        secondary: 'rgb(24, 24, 27)'
-    });
+    const [avatarColors, setAvatarColors] = useState<{ primary: string; secondary: string } | null>(null);
     const [activityImagesLoaded, setActivityImagesLoaded] = useState<{[key: string]: boolean}>({});
     const [smallActivityImagesLoaded, setSmallActivityImagesLoaded] = useState<{[key: string]: boolean}>({});
-
-    const predefinedColors = useMemo(() => [
-        { primary: 'rgb(66, 93, 68)', secondary: 'rgb(72, 85, 99)' },
-    ], []);
-
-    const getClosestColor = useCallback((color: [number, number, number]) => {
-        let closestColor = predefinedColors[0];
-        let minDistance = Number.MAX_VALUE;
-
-        predefinedColors.forEach(predefined => {
-            const [r1, g1, b1] = color;
-            const [r2, g2, b2] = predefined.primary.match(/\d+/g)!.map(Number);
-            const distance = Math.sqrt(
-                Math.pow(r1 - r2, 2) + Math.pow(g1 - g2, 2) + Math.pow(b1 - b2, 2)
-            );
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestColor = predefined;
-            }
-        });
-
-        return closestColor;
-    }, [predefinedColors]);
+    const [bannerUrl, setBannerUrl] = useState<string | null>(null);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -250,33 +224,32 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
             
             const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
             
-            if (brightness >= 0.25 && brightness <= 0.5) {
+            if (brightness >= 0.1 && brightness <= 0.8) {
                 const max = Math.max(r, g, b);
                 const min = Math.min(r, g, b);
-                const saturation = (max - min) / max;
+                const saturation = max > 0 ? (max - min) / max : 0;
                 
-                if (saturation >= 0.2 && saturation <= 0.5) {
+                if (saturation >= 0.1) {
                     colors.push([r, g, b]);
                 }
             }
         }
         
-        if (colors.length < 2) {
-            return getClosestColor(colors[0] || [0, 0, 0]);
-        }
-        
         colors.sort((a, b) => {
             const brightnessA = (0.299 * a[0] + 0.587 * a[1] + 0.114 * a[2]) / 255;
             const brightnessB = (0.299 * b[0] + 0.587 * b[1] + 0.114 * b[2]) / 255;
-            const targetBrightness = 0.35;
-            return Math.abs(brightnessA - targetBrightness) - Math.abs(brightnessB - targetBrightness);
+            return brightnessB - brightnessA;
         });
         
+        const midPoint = Math.floor(colors.length / 2);
+        const primary = colors[Math.floor(midPoint / 2)];
+        const secondary = colors[Math.min(colors.length - 1, midPoint + Math.floor(midPoint / 2))];
+        
         return {
-            primary: `rgb(${colors[0][0]}, ${colors[0][1]}, ${colors[0][2]})`,
-            secondary: `rgb(${colors[Math.min(1, colors.length - 1)][0]}, ${colors[Math.min(1, colors.length - 1)][1]}, ${colors[Math.min(1, colors.length - 1)][2]})`
+            primary: `rgb(${primary[0]}, ${primary[1]}, ${primary[2]})`,
+            secondary: `rgb(${secondary[0]}, ${secondary[1]}, ${secondary[2]})`
         };
-    }, [getClosestColor]);
+    }, []);
 
     useEffect(() => {
         if (getAvatarUrl()) {
@@ -356,6 +329,20 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
         );
     }, []);
 
+    useEffect(() => {
+        if (data?.discord_user?.id) {
+            fetch(`https://dcdn.dstn.to/banners/${data.discord_user.id}?size=1024`)
+                .then(response => {
+                    if (response.ok) {
+                        setBannerUrl(`https://dcdn.dstn.to/banners/${data.discord_user.id}?size=1024`);
+                    } else {
+                        setBannerUrl(null);
+                    }
+                })
+                .catch(() => setBannerUrl(null));
+        }
+    }, [data?.discord_user?.id]);
+
     return (
         <AnimatePresence mode="wait">
             {isOpen && (
@@ -396,16 +383,38 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         data-overflow={hasOverflow}
                         data-wider-spotify={needsWiderSpotifyCard}
                     >
-                        <Card className="rounded-lg bg-zinc-900/90 border border-zinc-800 bg-white/[0.05] relative overflow-hidden">
-                            <div 
-                                className="absolute top-0 left-0 right-0 h-32 opacity-40 pointer-events-none"
-                                style={{
-                                    background: `linear-gradient(to right, ${avatarColors.primary}, ${avatarColors.secondary})`,
-                                    filter: 'blur(30px)',
-                                    transform: 'translateY(-50%)'
-                                }}
-                            />
-                            <CardHeader className="flex justify-end items-center">
+                        <Card className={`rounded-lg border border-zinc-800 bg-white/[0.05] relative overflow-hidden ${
+                            bannerUrl ? 'bg-zinc-950/95' : 'bg-zinc-900/90'
+                        }`}>
+                            {bannerUrl ? (
+                                <div 
+                                    className="absolute inset-0 opacity-40 pointer-events-none"
+                                    style={{
+                                        backgroundImage: `url(${bannerUrl})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        filter: 'blur(10px)',
+                                        transform: 'scale(1.1)',
+                                        zIndex: 0,
+                                        backgroundColor: 'rgba(0, 0, 0, 0.4)'
+                                    }}
+                                    aria-hidden="true"
+                                />
+                            ) : (
+                                <div 
+                                    className="absolute top-0 left-0 right-0 h-32 opacity-30 pointer-events-none"
+                                    style={{
+                                        background: avatarColors 
+                                            ? `linear-gradient(to right, ${avatarColors.primary}, ${avatarColors.secondary})`
+                                            : 'linear-gradient(to right, rgb(39, 39, 42), rgb(24, 24, 27))',
+                                        filter: 'blur(30px)',
+                                        transform: 'translateY(-50%)',
+                                        zIndex: 0
+                                    }}
+                                    aria-hidden="true"
+                                />
+                            )}
+                            <CardHeader className="relative z-10 flex justify-end items-center">
                                 <button 
                                     onClick={onClose}
                                     className="text-zinc-400 hover:text-white transition-colors"
@@ -415,7 +424,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                     </svg>
                                 </button>
                             </CardHeader>
-                            <CardBody>
+                            <CardBody className="relative z-10">
                                 {isLoading || !data?.discord_user ? (
                                     <div className="flex flex-col gap-4 animate-pulse">
                                         <div className="flex items-center gap-4">
@@ -502,7 +511,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                                                             {data.discord_user.global_name || data.discord_user.username}
                                                             {data.discord_user.clan?.identity_enabled && (
-                                                                <span className="text-xs font-medium text-zinc-400 bg-zinc-800/50 px-1.5 py-0.5 rounded-md flex items-center gap-1">
+                                                                <span className={`text-xs font-medium ${bannerUrl ? 'text-zinc-400/70 bg-zinc-800/40' : 'text-zinc-400 bg-zinc-800/50'} px-1.5 py-0.5 rounded-md flex items-center gap-1`}>
                                                                     <Image
                                                                         src={`https://cdn.discordapp.com/clan-badges/${data.discord_user.clan.identity_guild_id}/${data.discord_user.clan.badge}.png`}
                                                                         alt={data.discord_user.clan.tag}
@@ -699,7 +708,8 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
                                                         >
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m3 3 8.735 8.735m0 0a.374.374 0 1 1 .53.53m-.53-.53.53.53m0 0L21 21M14.652 9.348a3.75 3.75 0 0 1 0 5.304m2.121-7.425a6.75 6.75 0 0 1 0 9.546m2.121-11.667c3.808 3.807 3.808 9.98 0 13.788m-9.546-4.242a3.733 3.733 0 0 1-1.06-2.122m-1.061 4.243a6.75 6.75 0 0 1-1.625-6.929m-.496 9.05c-3.068-3.067-3.664-7.67-1.79-11.334M12 12h.008v.008H12V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />                                                        </svg>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="m3 3 8.735 8.735m0 0a.374.374 0 1 1 .53.53m-.53-.53.53.53m0 0L21 21M14.652 9.348a3.75 3.75 0 0 1 0 5.304m2.121-7.425a6.75 6.75 0 0 1 0 9.546m2.121-11.667c3.808 3.807 3.808 9.98 0 13.788m-9.546-4.242a3.733 3.733 0 0 1-1.06-2.122m-1.061 4.243a6.75 6.75 0 0 1-1.625-6.929m-.496 9.05c-3.068-3.067-3.664-7.67-1.79-11.334M12 12h.008v.008H12V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                                        </svg>
                                                         <p className="text-sm text-zinc-400">Currently offline</p>
                                                         <p className="text-xs text-zinc-500 mt-1">No connection to Discord</p>
                                                     </motion.div>
@@ -729,7 +739,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                     ease: [0.25, 0.8, 0.25, 1]
                                                                 }
                                                             }}
-                                                            className="bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 relative before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-dashed before:border-zinc-700/50 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 hover:scale-[1.02] min-h-[88px] overflow-hidden"
+                                                            className={`bg-zinc-800/${bannerUrl ? '30' : '50'} rounded-lg p-3 flex items-center gap-3 relative before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-dashed before:border-zinc-700/50 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 hover:scale-[1.02] min-h-[88px] overflow-hidden`}
                                                         >
                                                             {(activity.application_id || activity.assets?.large_image) ? (
                                                                 <div className="relative">
@@ -896,8 +906,8 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                     }`}
                                                     style={{ 
                                                         backgroundColor: isCalculatingColor 
-                                                            ? 'rgb(24, 24, 27)' 
-                                                            : `color-mix(in srgb, ${dominantColor} ${data.spotify.track_id ? 'var(--bg-opacity, 8%)' : '8%'}, rgb(39 39 42 / 0.5))`,
+                                                            ? `rgb(24, 24, 27, ${bannerUrl ? '0.3' : '1'})` 
+                                                            : `color-mix(in srgb, ${dominantColor} ${data.spotify.track_id ? 'var(--bg-opacity, 8%)' : '8%'}, rgb(39 39 42 / ${bannerUrl ? '0.3' : '0.5'}))`,
                                                         '--bg-opacity': 'var(--bg-opacity, 8%)',
                                                         '--border-color': isCalculatingColor 
                                                             ? 'transparent'
