@@ -12,13 +12,13 @@ export default function Header() {
 	const [showUserArea, setShowUserArea] = useState(false);
 
 	const statusColor = {
-		online: "bg-green-500",
-		dnd: "bg-red-500",
-		idle: "bg-yellow-500",
-		offline: "bg-gray-500",
+		online: "bg-green-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
+		dnd: "bg-red-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
+		idle: "bg-yellow-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
+		offline: "bg-gray-500 shadow-[0_0_3px_rgba(240,237,255,0.2),_0_0_5px_rgba(240,237,255,0.12),_0_0_8px_rgba(240,237,255,0.05)]",
 	} as const;
 
-	const statusClass = statusColor[status as keyof typeof statusColor] || "bg-gray-500";
+	const statusClass = statusColor[status as keyof typeof statusColor] || statusColor.offline;
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -38,7 +38,7 @@ export default function Header() {
 			document.documentElement.style.scrollBehavior = 'auto';
 		};
 	}, []);
-
+	
 	return (
 		<div>
 			<div className="h-20" />
@@ -59,14 +59,23 @@ export default function Header() {
 				initial={{ y: -100 }}
 				animate={{ y: 0 }}
 				transition={{ type: "spring", stiffness: 150, damping: 20 }}
-				className="fixed top-0 left-0 right-0 mx-20 mt-4 bg-dark/70 text-white border border-[#898c91] backdrop-blur-lg opacity-75 rounded-2xl shadow-md shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] transition-shadow duration-300 non-selectable relative z-50"
+				className="fixed top-0 left-0 right-0 mx-20 mt-4 bg-dark/70 text-white border border-[#898c91] backdrop-blur-lg opacity-75 rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-shadow duration-300 non-selectable relative z-50"
 				style={{ position: "fixed", top: 0, left: 0, right: 0 }}
 			>
 				<div className="p-3.5 non-selectable">
 					<div className="flex justify-between items-center non-selectable">
 						<div className="flex items-center gap-2 non-selectable min-w-fit xsm:w-1/4">
 							<h1
-								className="text-xl font-bold text-white/90 hover:text-shadow-[0_0_10px_rgba(22,22,22,15)] transition-all duration-300 non-selectable cursor-pointer"
+								className="text-xl font-bold text-[#f0edff]/90 hover:text-[#f0edff] transition-all duration-300 non-selectable cursor-pointer"
+								style={{
+									textShadow: "0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)",
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.textShadow = "0 0 3px rgba(240,237,255,0.2), 0 0 5px rgba(240,237,255,0.12), 0 0 8px rgba(240,237,255,0.05)";
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.textShadow = "0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)";
+								}}
 								onClick={() => setShowUserArea(!showUserArea)}
 							>
 								Cortex
