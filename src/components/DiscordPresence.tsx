@@ -26,6 +26,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
     const [activityImagesLoaded, setActivityImagesLoaded] = useState<{[key: string]: boolean}>({});
     const [smallActivityImagesLoaded, setSmallActivityImagesLoaded] = useState<{[key: string]: boolean}>({});
     const [bannerUrl, setBannerUrl] = useState<string | null>(null);
+    const [isBannerLoaded, setIsBannerLoaded] = useState(false);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -331,6 +332,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
 
     useEffect(() => {
         if (data?.discord_user?.id) {
+            setIsBannerLoaded(false);
             fetch(`https://dcdn.dstn.to/banners/${data.discord_user.id}?size=1024`)
                 .then(response => {
                     if (response.ok) {
@@ -344,7 +346,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
     }, [data?.discord_user?.id]);
 
     return (
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
             {isOpen && (
                 <motion.div 
                     initial={{ opacity: 0 }}
@@ -387,19 +389,40 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                             bannerUrl ? 'bg-zinc-950/95' : 'bg-zinc-900/90'
                         }`}>
                             {bannerUrl ? (
-                                <div 
-                                    className="absolute inset-0 opacity-40 pointer-events-none"
-                                    style={{
-                                        backgroundImage: `url(${bannerUrl})`,
-                                        backgroundSize: 'cover',
-                                        backgroundPosition: 'center',
-                                        filter: 'blur(10px)',
-                                        transform: 'scale(1.1)',
-                                        zIndex: 0,
-                                        backgroundColor: 'rgba(0, 0, 0, 0.4)'
-                                    }}
-                                    aria-hidden="true"
-                                />
+                                <>
+                                    <div 
+                                        className={`absolute inset-0 opacity-40 pointer-events-none transition-opacity duration-300 ${
+                                            !isBannerLoaded ? 'opacity-0' : 'opacity-40'
+                                        }`}
+                                        style={{
+                                            backgroundImage: `url(${bannerUrl})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center',
+                                            filter: 'blur(10px)',
+                                            transform: 'scale(1.1)',
+                                            zIndex: 0,
+                                            backgroundColor: 'rgba(0, 0, 0, 0.4)'
+                                        }}
+                                        aria-hidden="true"
+                                    >
+                                        <Image
+                                            src={bannerUrl}
+                                            alt="User Banner"
+                                            width={500}
+                                            height={500}
+                                            className="hidden"
+                                            onLoad={() => setIsBannerLoaded(true)}
+                                            priority
+                                            unoptimized
+                                        />
+                                    </div>
+                                    {!isBannerLoaded && !isLoading && (
+                                        <div 
+                                            className="absolute inset-0 bg-zinc-800/30 animate-pulse"
+                                            aria-hidden="true"
+                                        />
+                                    )}
+                                </>
                             ) : (
                                 <div 
                                     className="absolute top-0 left-0 right-0 h-32 opacity-30 pointer-events-none"
@@ -599,7 +622,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             </motion.div>
                                         )}
                                         
-                                        <AnimatePresence mode="wait">
+                                        <AnimatePresence>
                                             {(data.activities?.length === 0 || data.activities?.every(activity => activity.type === 4)) && status !== 'offline' ? (
                                                 <motion.div 
                                                     key="nothing-happening"
