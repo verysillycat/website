@@ -174,7 +174,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
     const getAvatarUrl = useCallback(() => {
         if (!data?.discord_user) return null;
         const { avatar } = data.discord_user;
-        return `https://cdn.discordapp.com/avatars/825069530376044594/${avatar}.${avatar?.startsWith('a_') ? 'gif' : 'png'}?size=512`;
+        return `https://cdn.discordapp.com/avatars/${data.discord_user.id}/${avatar}.${avatar?.startsWith('a_') ? 'gif' : 'png'}?size=512`;
     }, [data?.discord_user]);
 
     useEffect(() => {
@@ -327,6 +327,35 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
         }
     }, [dominantColor, isCalculatingColor]);
 
+    const handleStatusTextOverflow = useCallback((text: string, maxWidth: number) => {
+        const tempSpan = document.createElement('span');
+        Object.assign(tempSpan.style, {
+            visibility: 'hidden',
+            position: 'absolute',
+            whiteSpace: 'nowrap',
+            fontSize: '0.875rem'
+        });
+        tempSpan.textContent = text;
+        document.body.appendChild(tempSpan);
+        
+        const isOverflowing = tempSpan.getBoundingClientRect().width > maxWidth;
+        document.body.removeChild(tempSpan);
+        
+        if (!isOverflowing) return text;
+        
+        const words = text.split(' ');
+        const lastTwoWords = words.slice(-2).join(' ');
+        const remainingWords = words.slice(0, -2).join(' ');
+        
+        return (
+            <>
+                {remainingWords}
+                <br />
+                {lastTwoWords}
+            </>
+        );
+    }, []);
+
     return (
         <AnimatePresence mode="wait">
             {isOpen && (
@@ -468,10 +497,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                 <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-zinc-900 ${statusColor}`} />
                                             </div>
                                             <div className="flex-1">
-                                                <div className="flex items-start">
+                                                <div className="flex items-start justify-between">
                                                     <div>
                                                         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                                            {data.discord_user.global_name}
+                                                            {data.discord_user.global_name || data.discord_user.username}
                                                             {data.discord_user.clan?.identity_enabled && (
                                                                 <span className="text-xs font-medium text-zinc-400 bg-zinc-800/50 px-1.5 py-0.5 rounded-md flex items-center gap-1">
                                                                     <Image
@@ -488,39 +517,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                         <p className="text-sm text-zinc-400">
                                                             @{data.discord_user.username}
                                                         </p>
-                                                        <AnimatePresence mode="popLayout">
-                                                            {(data.activities?.find(activity => activity.type === 4)?.state || data.activities?.find(activity => activity.type === 4)?.emoji) && (
-                                                                <motion.p 
-                                                                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                                                                    animate={{ height: "auto", opacity: 1, marginTop: "0.25rem" }}
-                                                                    exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                                                                    transition={{ 
-                                                                        duration: 0.2,
-                                                                        ease: "easeInOut"
-                                                                    }}
-                                                                    className="text-sm text-zinc-400 flex items-center gap-1.5 overflow-hidden"
-                                                                >
-                                                                    {data.activities.find(activity => activity.type === 4)?.emoji && (
-                                                                        <Image
-                                                                            src={data.activities.find(activity => activity.type === 4)?.emoji?.id 
-                                                                                ? `https://cdn.discordapp.com/emojis/${data.activities.find(activity => activity.type === 4)?.emoji?.id}.${data.activities.find(activity => activity.type === 4)?.emoji?.animated ? 'gif' : 'png'}`
-                                                                                : `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/${data.activities.find(activity => activity.type === 4)?.emoji?.name.codePointAt(0)?.toString(16)}.svg`
-                                                                            }
-                                                                            alt={data.activities.find(activity => activity.type === 4)?.emoji?.name}
-                                                                            width={16}
-                                                                            height={16}
-                                                                            className="w-4 h-4 rounded-[0.125rem]"
-                                                                            unoptimized={!!data.activities.find(activity => activity.type === 4)?.emoji?.id}
-                                                                        />
-                                                                    )}
-                                                                    {data.activities.find(activity => activity.type === 4)?.state}
-                                                                </motion.p>
-                                                            )}
-                                                        </AnimatePresence>
                                                     </div>
                                                     <motion.div 
                                                         layout="position"
-                                                        className="ml-auto mt-2"
+                                                        className="flex-shrink-0 mt-3 mr-5"
                                                         transition={{ 
                                                             layout: { 
                                                                 duration: 0.2,
@@ -533,16 +533,44 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             href={`https://discord.com/users/${data.discord_user.id}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 transition-colors px-2.5 py-1.5 rounded-md flex mr-5 items-center gap-1.5 w-fit sm:text-xs sm:px-2.5 sm:py-1.5 xs:text-[10px] xs:px-2 xs:py-1"
+                                                            className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 transition-colors px-2.5 py-1.5 rounded-md flex items-center gap-1.5 w-fit whitespace-nowrap"
                                                         >
-                                                            <span className="sm:inline xs:hidden">Add on Discord</span>
-                                                            <span className="sm:hidden xs:inline text-sm">Discord</span>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 xs:w-3 xs:h-3">
+                                                            Add on Discord
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
                                                                 <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
                                                             </svg>
                                                         </motion.a>
                                                     </motion.div>
                                                 </div>
+                                                <AnimatePresence mode="popLayout">
+                                                    {(data.activities?.find(activity => activity.type === 4)?.state || data.activities?.find(activity => activity.type === 4)?.emoji) && (
+                                                        <motion.p 
+                                                            initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                                                            animate={{ height: "auto", opacity: 1, marginTop: "0.25rem" }}
+                                                            exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                                                            transition={{ 
+                                                                duration: 0.2,
+                                                                ease: "easeInOut"
+                                                            }}
+                                                            className="text-sm text-zinc-400 flex items-center gap-1.5 overflow-hidden mt-1"
+                                                        >
+                                                            {data.activities.find(activity => activity.type === 4)?.emoji && (
+                                                                <Image
+                                                                    src={data.activities.find(activity => activity.type === 4)?.emoji?.id 
+                                                                        ? `https://cdn.discordapp.com/emojis/${data.activities.find(activity => activity.type === 4)?.emoji?.id}.${data.activities.find(activity => activity.type === 4)?.emoji?.animated ? 'gif' : 'png'}`
+                                                                        : `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/${data.activities.find(activity => activity.type === 4)?.emoji?.name.codePointAt(0)?.toString(16)}.svg`
+                                                                    }
+                                                                    alt={data.activities.find(activity => activity.type === 4)?.emoji?.name}
+                                                                    width={16}
+                                                                    height={16}
+                                                                    className="w-4 h-4 rounded-[0.125rem]"
+                                                                    unoptimized={!!data.activities.find(activity => activity.type === 4)?.emoji?.id}
+                                                                />
+                                                            )}
+                                                            {handleStatusTextOverflow(data.activities.find(activity => activity.type === 4)?.state || '', document.querySelector('.text-sm.text-zinc-400')?.getBoundingClientRect().width || 0)}
+                                                        </motion.p>
+                                                    )}
+                                                </AnimatePresence>
                                             </div>
                                         </motion.div>
                                         
