@@ -391,7 +391,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         data-overflow={hasOverflow}
                         data-wider-spotify={needsWiderSpotifyCard}
                     >
-                        <Card className={`rounded-lg border border-zinc-800 bg-white/[0.05] relative overflow-hidden ${
+                        <Card className={`rounded-lg border border-zinc-800 bg-white/[0.05] relative overflow-hidden transition-colors duration-300 ${
                             bannerUrl ? (
                                 isBannerLoaded ? 'bg-zinc-950/95' : 'bg-zinc-900/75'
                             ) : 'bg-zinc-900/90'
@@ -426,9 +426,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                     </div>
                                     {!isBannerLoaded && !isLoading && (
                                         <div 
-                                            className="absolute inset-0 rounded-lg animate-pulse"
+                                            className="absolute inset-0 rounded-lg"
                                             style={{
-                                                background: 'linear-gradient(to right, rgb(39 39 42 / 0.3), rgb(63 63 70 / 0.3), rgb(39 39 42 / 0.3))'
+                                                background: 'linear-gradient(to right, rgb(39 39 42 / 0.3), rgb(63 63 70 / 0.3), rgb(39 39 42 / 0.3))',
+                                                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
                                             }}
                                             aria-hidden="true"
                                         />
