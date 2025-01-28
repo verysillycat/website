@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardHeader, CardBody } from "@heroui/react";
 import { useSocket } from "@/hooks/SocketContext";
 import Image from 'next/image';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface UserAreaProps {
     isOpen: boolean;
@@ -27,6 +27,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
     const [smallActivityImagesLoaded, setSmallActivityImagesLoaded] = useState<{[key: string]: boolean}>({});
     const [bannerUrl, setBannerUrl] = useState<string | null>(null);
     const [isBannerLoaded, setIsBannerLoaded] = useState(false);
+    const currentBannerUrl = useRef<string | null>(null);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -332,16 +333,21 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
 
     useEffect(() => {
         if (data?.discord_user?.id) {
-            setIsBannerLoaded(false);
-            fetch(`https://dcdn.dstn.to/banners/${data.discord_user.id}?size=1024`)
-                .then(response => {
-                    if (response.ok) {
-                        setBannerUrl(`https://dcdn.dstn.to/banners/${data.discord_user.id}?size=1024`);
-                    } else {
-                        setBannerUrl(null);
-                    }
-                })
-                .catch(() => setBannerUrl(null));
+            const bannerUrl = `https://dcdn.dstn.to/banners/${data.discord_user.id}?size=1024`;
+            
+            if (bannerUrl !== currentBannerUrl.current) {
+                currentBannerUrl.current = bannerUrl;
+                setIsBannerLoaded(false);
+                fetch(bannerUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            setBannerUrl(bannerUrl);
+                        } else {
+                            setBannerUrl(null);
+                        }
+                    })
+                    .catch(() => setBannerUrl(null));
+            }
         }
     }, [data?.discord_user?.id]);
 
@@ -386,16 +392,18 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         data-wider-spotify={needsWiderSpotifyCard}
                     >
                         <Card className={`rounded-lg border border-zinc-800 bg-white/[0.05] relative overflow-hidden ${
-                            bannerUrl ? 'bg-zinc-950/95' : 'bg-zinc-900/90'
+                            bannerUrl ? (
+                                isBannerLoaded ? 'bg-zinc-950/95' : 'bg-zinc-900/75'
+                            ) : 'bg-zinc-900/90'
                         }`}>
                             {bannerUrl ? (
                                 <>
                                     <div 
-                                        className={`absolute inset-0 opacity-40 pointer-events-none transition-opacity duration-300 ${
-                                            !isBannerLoaded ? 'opacity-0' : 'opacity-40'
+                                        className={`absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-300 ${
+                                            isBannerLoaded ? 'opacity-40' : 'opacity-0'
                                         }`}
                                         style={{
-                                            backgroundImage: `url(${bannerUrl})`,
+                                            backgroundImage: isBannerLoaded ? `url(${bannerUrl})` : 'none',
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
                                             filter: 'blur(10px)',
@@ -418,7 +426,10 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                     </div>
                                     {!isBannerLoaded && !isLoading && (
                                         <div 
-                                            className="absolute inset-0 bg-zinc-800/30 animate-pulse"
+                                            className="absolute inset-0 rounded-lg animate-pulse"
+                                            style={{
+                                                background: 'linear-gradient(to right, rgb(39 39 42 / 0.3), rgb(63 63 70 / 0.3), rgb(39 39 42 / 0.3))'
+                                            }}
                                             aria-hidden="true"
                                         />
                                     )}
