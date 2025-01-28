@@ -346,7 +346,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
     }, [data?.discord_user?.id]);
 
     return (
-        <AnimatePresence>
+        <AnimatePresence mode="popLayout">
             {isOpen && (
                 <motion.div 
                     initial={{ opacity: 0 }}
@@ -607,7 +607,6 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                             </div>
                                         </motion.div>
                                         
-                                        {(data.activities?.length > 0 || data.spotify || status !== 'offline') && (
                                             <motion.div 
                                                 layout="position"
                                                 className={`relative py-1 ${hasOverflow ? 'md:col-span-2' : ''}`}
@@ -617,12 +616,11 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                 }}
                                             >
                                                 <div className="absolute inset-x-0 bottom-0" aria-hidden="true">
-                                                    <div className="w-2/3 mx-auto h-[2px] bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
+                                                    <div className="w-3/4 mx-auto h-[2px] bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
                                                 </div>
                                             </motion.div>
-                                        )}
                                         
-                                        <AnimatePresence>
+                                        <AnimatePresence mode="popLayout">
                                             {(data.activities?.length === 0 || data.activities?.every(activity => activity.type === 4)) && status !== 'offline' ? (
                                                 <motion.div 
                                                     key="nothing-happening"
@@ -642,7 +640,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ease: [0.32, 0.72, 0, 1]
                                                         }
                                                     }}
-                                                    className={`bg-zinc-800/${bannerUrl ? '30' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
+                                                    className={`bg-zinc-800/${bannerUrl ? '35' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
                                                 >
                                                     <motion.div 
                                                         initial={{ opacity: 0 }}
@@ -700,7 +698,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ease: [0.32, 0.72, 0, 1]
                                                         }
                                                     }}
-                                                    className={`bg-zinc-800/${bannerUrl ? '30' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
+                                                    className={`bg-zinc-800/${bannerUrl ? '35' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
                                                 >
                                                     <motion.div 
                                                         initial={{ opacity: 0 }}
