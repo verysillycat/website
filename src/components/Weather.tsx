@@ -130,7 +130,7 @@ const Weather = () => {
     return (
       <div className="bg-red-500/10 backdrop-blur-sm px-3 py-1 rounded-2xl flex items-center gap-2 shadow-lg">
         <span className="text-sm text-red-500">
-          {windowWidth < 465 ? 'Error' : weatherState.error}
+          {windowWidth < 860 ? 'Error' : weatherState.error}
         </span>
       </div>
     );
