@@ -362,7 +362,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         duration: 0.25,
                         ease: [0.25, 0.8, 0.25, 1]
                     }}
-                    className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-[8px]"
+                    className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-[10px]"
                 >
                     <motion.div 
                         className="absolute inset-0 bg-black bg-opacity-50"
@@ -391,25 +391,25 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                         data-overflow={hasOverflow}
                         data-wider-spotify={needsWiderSpotifyCard}
                     >
-                        <Card className={`rounded-lg border border-zinc-800 bg-white/[0.05] relative overflow-hidden transition-colors duration-300 ${
+                        <Card className={`rounded-lg border border-zinc-800 relative overflow-hidden transition-colors duration-300 ${
                             bannerUrl ? (
-                                isBannerLoaded ? 'bg-zinc-950/95' : 'bg-zinc-900/75'
+                                isBannerLoaded ? 'bg-black/85' : 'bg-zinc-900/80'
                             ) : 'bg-zinc-900/90'
                         }`}>
                             {bannerUrl ? (
                                 <>
                                     <div 
-                                        className={`absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-300 ${
-                                            isBannerLoaded ? 'opacity-40' : 'opacity-0'
+                                        className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+                                            isBannerLoaded ? 'opacity-50' : 'opacity-0'
                                         }`}
                                         style={{
                                             backgroundImage: isBannerLoaded ? `url(${bannerUrl})` : 'none',
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
-                                            filter: 'blur(10px)',
+                                            filter: 'blur(13px)',
                                             transform: 'scale(1.1)',
                                             zIndex: 0,
-                                            backgroundColor: 'rgba(0, 0, 0, 0.4)'
+                                            backgroundColor: 'transparent'
                                         }}
                                         aria-hidden="true"
                                     >
@@ -652,7 +652,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ease: [0.32, 0.72, 0, 1]
                                                         }
                                                     }}
-                                                    className={`bg-zinc-800/${bannerUrl ? '35' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
+                                                    className={`bg-zinc-800/${bannerUrl ? '40' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
                                                 >
                                                     <motion.div 
                                                         initial={{ opacity: 0 }}
@@ -710,7 +710,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                             ease: [0.32, 0.72, 0, 1]
                                                         }
                                                     }}
-                                                    className={`bg-zinc-800/${bannerUrl ? '35' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
+                                                    className={`bg-zinc-800/${bannerUrl ? '40' : '50'} rounded-lg p-3 flex items-center justify-center gap-3 border-2 border-dashed border-transparent min-h-[88px] overflow-hidden`}
                                                 >
                                                     <motion.div 
                                                         initial={{ opacity: 0 }}
@@ -772,7 +772,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                     ease: [0.25, 0.8, 0.25, 1]
                                                                 }
                                                             }}
-                                                            className={`bg-zinc-800/${bannerUrl ? '30' : '50'} rounded-lg p-3 flex items-center gap-3 relative before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-dashed before:border-zinc-700/50 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 hover:scale-[1.02] min-h-[88px] overflow-hidden`}
+                                                            className={`bg-zinc-800/${bannerUrl ? '40' : '50'} rounded-lg p-3 flex items-center gap-3 relative before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-dashed before:border-zinc-700/50 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 hover:scale-[1.02] min-h-[88px] overflow-hidden`}
                                                         >
                                                             {(activity.application_id || activity.assets?.large_image) ? (
                                                                 <div className="relative">
