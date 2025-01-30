@@ -597,7 +597,7 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                 duration: 0.2,
                                                                 ease: "easeInOut"
                                                             }}
-                                                            className="text-sm text-zinc-400 flex items-center gap-1.5 overflow-hidden mt-1"
+                                                            className="text-[11.5px] text-zinc-400/90 flex items-center gap-1.5 overflow-hidden mt-1"
                                                         >
                                                             {data.activities.find(activity => activity.type === 4)?.emoji && (
                                                                 <Image
@@ -606,13 +606,13 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                                                         : `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/${data.activities.find(activity => activity.type === 4)?.emoji?.name.codePointAt(0)?.toString(16)}.svg`
                                                                     }
                                                                     alt={data.activities.find(activity => activity.type === 4)?.emoji?.name}
-                                                                    width={16}
-                                                                    height={16}
-                                                                    className="w-4 h-4 rounded-[0.125rem]"
+                                                                    width={14}
+                                                                    height={14}
+                                                                    className="w-3.5 h-3.5 rounded-[0.125rem]"
                                                                     unoptimized={!!data.activities.find(activity => activity.type === 4)?.emoji?.id}
                                                                 />
                                                             )}
-                                                            {handleStatusTextOverflow(data.activities.find(activity => activity.type === 4)?.state || '', document.querySelector('.text-sm.text-zinc-400')?.getBoundingClientRect().width || 0)}
+                                                            {handleStatusTextOverflow(data.activities.find(activity => activity.type === 4)?.state || '', document.querySelector('.text-xs.text-zinc-400')?.getBoundingClientRect().width || 0)}
                                                         </motion.p>
                                                     )}
                                                 </AnimatePresence>
