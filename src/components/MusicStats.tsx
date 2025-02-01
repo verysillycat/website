@@ -92,6 +92,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>({});
 	const [dominantColors, setDominantColors] = useState<Record<string, string>>({});
 	const previousTab = useRef<"artists" | "tracks">("artists");
+	const [hasInitialTabSwitch, setHasInitialTabSwitch] = useState(false);
 	const [animationDirection, setAnimationDirection] = useState<'left' | 'right' | null>(null);
 	const [isPageChange, setIsPageChange] = useState(false);
 
@@ -197,6 +198,9 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	};
 
 	const handleTabChange = (tab: "artists" | "tracks") => {
+		if (!hasInitialTabSwitch) {
+			setHasInitialTabSwitch(true);
+		}
 		setIsPageChange(false);
 		const direction = tab === 'artists' ? 'left' : 'right';
 		setAnimationDirection(direction);
@@ -360,7 +364,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												key={`${activeTab}-${currentPage}`}
 												initial={{ 
 													opacity: 0,
-													x: (isPageChange === false && animationDirection) ? (animationDirection === 'left' ? 20 : -20) : 0,
+													x: (!isPageChange && (hasInitialTabSwitch || animationDirection)) ? (animationDirection === 'left' ? 20 : -20) : 0,
 													y: isPageChange === true ? 8 : 0
 												}}
 												animate={{ 
@@ -370,7 +374,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												}}
 												exit={{ 
 													opacity: 0,
-													x: (isPageChange === false && animationDirection) ? (animationDirection === 'left' ? -20 : 20) : 0,
+													x: (!isPageChange && (hasInitialTabSwitch || animationDirection)) ? (animationDirection === 'left' ? -20 : 20) : 0,
 													y: isPageChange === true ? -8 : 0
 												}}
 												transition={{
