@@ -93,6 +93,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	const [dominantColors, setDominantColors] = useState<Record<string, string>>({});
 	const previousTab = useRef<"artists" | "tracks">("artists");
 	const [animationDirection, setAnimationDirection] = useState<'left' | 'right' | null>(null);
+	const [isPageChange, setIsPageChange] = useState(false);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -189,8 +190,16 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 		});
 	}, [currentItems]);
 
+	const handlePageChange = (newPage: number) => {
+		setIsPageChange(true);
+		setAnimationDirection(null);
+		setCurrentPage(newPage);
+	};
+
 	const handleTabChange = (tab: "artists" | "tracks") => {
-		setAnimationDirection(tab === 'artists' ? 'left' : 'right');
+		setIsPageChange(false);
+		const direction = tab === 'artists' ? 'left' : 'right';
+		setAnimationDirection(direction);
 		setActiveTab(tab);
 		setCurrentPage(1);
 	};
@@ -351,10 +360,8 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												key={`${activeTab}-${currentPage}`}
 												initial={{ 
 													opacity: 0,
-													x: animationDirection 
-														? (animationDirection === 'left' ? 20 : -20)
-														: 0,
-													y: !animationDirection ? 8 : 0
+													x: (isPageChange === false && animationDirection) ? (animationDirection === 'left' ? 20 : -20) : 0,
+													y: isPageChange === true ? 8 : 0
 												}}
 												animate={{ 
 													opacity: 1,
@@ -363,10 +370,8 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												}}
 												exit={{ 
 													opacity: 0,
-													x: animationDirection 
-														? (animationDirection === 'left' ? -20 : 20)
-														: 0,
-													y: !animationDirection ? -8 : 0
+													x: (isPageChange === false && animationDirection) ? (animationDirection === 'left' ? -20 : 20) : 0,
+													y: isPageChange === true ? -8 : 0
 												}}
 												transition={{
 													duration: 0.3,
@@ -604,7 +609,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												
 												<div className="flex justify-center items-center gap-2">
 													<button
-														onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+														onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
 														disabled={currentPage === 1}
 														className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
 													>
@@ -614,7 +619,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 														{currentPage} of {paginationInfo.totalPages}
 													</span>
 													<button
-														onClick={() => setCurrentPage((p) => Math.min(paginationInfo.totalPages, p + 1))}
+														onClick={() => handlePageChange(Math.min(paginationInfo.totalPages, currentPage + 1))}
 														disabled={currentPage === paginationInfo.totalPages}
 														className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
 													>
@@ -647,28 +652,28 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 									</>
 								)}
 							</CardBody>
-							{error && (
+							{(error || loading) && (
 								<div className="absolute bottom-0 left-0 right-0 flex justify-between w-full px-2 py-2 zsm:hidden">
 									<button className="p-2 text-zinc-400 hover:text-white transition-colors">
 										<Disc3 className="w-5 h-5" />
-								</button>
-								<button
-									onClick={onClose}
-									className="p-2 text-zinc-400 hover:text-white transition-colors"
-								>
-									<svg
-										className="w-5 h-5"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
+									</button>
+									<button
+										onClick={onClose}
+										className="p-2 text-zinc-400 hover:text-white transition-colors"
 									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M6 18L18 6M6 6l12 12"
-										/>
-									</svg>
+										<svg
+											className="w-5 h-5"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M6 18L18 6M6 6l12 12"
+											/>
+										</svg>
 									</button>
 								</div>
 							)}
