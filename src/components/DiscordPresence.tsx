@@ -3,6 +3,7 @@ import { Card, CardHeader, CardBody } from "@heroui/react";
 import { useSocket } from "@/hooks/SocketContext";
 import Image from 'next/image';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { Icon } from "@iconify/react";
 
 interface UserAreaProps {
     isOpen: boolean;
@@ -449,7 +450,8 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                     aria-hidden="true"
                                 />
                             )}
-                            <CardHeader className="relative z-10 flex justify-end items-center">
+                            <CardHeader className="relative z-10 flex justify-between items-center">
+                                <Icon icon="ic:baseline-discord" className="w-5 h-5 text-zinc-400" />
                                 <button 
                                     onClick={onClose}
                                     className="text-zinc-400 hover:text-white transition-colors"
