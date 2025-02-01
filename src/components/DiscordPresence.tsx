@@ -451,7 +451,11 @@ export default function UserArea({ isOpen, onClose }: UserAreaProps) {
                                 />
                             )}
                             <CardHeader className="relative z-10 flex justify-between items-center">
-                                <Icon icon="ic:baseline-discord" className="w-5 h-5 text-zinc-400" />
+                                {isLoading ? (
+                                    <div className="w-5 h-5 bg-zinc-700/50 rounded animate-pulse" />
+                                ) : (
+                                    <Icon icon="ic:baseline-discord" className="w-5 h-5 text-zinc-400" />
+                                )}
                                 <button 
                                     onClick={onClose}
                                     className="text-zinc-400 hover:text-white transition-colors"
