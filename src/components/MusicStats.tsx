@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardHeader, CardBody } from "@heroui/react";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import {
 	ArrowRight,
 	Disc3,
 } from "lucide-react";
+import React from "react";
 
 interface MusicStatsProps {
 	isOpen: boolean;
@@ -23,6 +24,7 @@ interface Artist {
 		image: string;
 		genres: string[];
 		id: string;
+		spotifyPopularity: number;
 	};
 }
 
@@ -33,8 +35,51 @@ interface Track {
 		artists: { name: string }[];
 		albums: { image: string }[];
 		id: string;
+		spotifyPopularity: number;
 	};
 }
+
+const extractDominantColor = (imageData: Uint8ClampedArray) => {
+	const colors = Array.from({ length: Math.floor(imageData.length / (4 * 10)) }, (_, i) => {
+		const idx = i * 40;
+		return [imageData[idx], imageData[idx + 1], imageData[idx + 2]];
+	});
+
+	const [avgR, avgG, avgB] = colors.reduce(
+		([r, g, b], [cr, cg, cb]) => [r + cr, g + cg, b + cb],
+		[0, 0, 0]
+	).map(sum => Math.floor(sum / colors.length));
+
+	const brightness = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB) / 255;
+	if (brightness < 0.4) {
+		const adjustment = 0.5 / brightness;
+		return {
+			r: Math.min(255, Math.floor(avgR * adjustment)),
+			g: Math.min(255, Math.floor(avgG * adjustment)),
+			b: Math.min(255, Math.floor(avgB * adjustment))
+		};
+	}
+
+	return { r: avgR, g: avgG, b: avgB };
+};
+
+const handleImageColorExtraction = (
+	img: HTMLImageElement, 
+	onColorExtracted: (color: string) => void
+) => {
+	const canvas = document.createElement("canvas");
+	const ctx = canvas.getContext("2d");
+	if (!ctx) return;
+
+	const scale = Math.min(1, 100 / Math.max(img.width, img.height));
+	canvas.width = img.width * scale;
+	canvas.height = img.height * scale;
+
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+	const { r, g, b } = extractDominantColor(imageData);
+	onColorExtracted(`rgb(${r}, ${g}, ${b})`);
+};
 
 export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	const [artists, setArtists] = useState<Artist[]>([]);
@@ -44,9 +89,17 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	const [activeTab, setActiveTab] = useState<"artists" | "tracks">("artists");
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
-	const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>(
-		{},
-	);
+	const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>({});
+	const [dominantColors, setDominantColors] = useState<Record<string, string>>({});
+	const previousTab = useRef<"artists" | "tracks">("artists");
+	const [animationDirection, setAnimationDirection] = useState<'left' | 'right' | null>(null);
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			previousTab.current = activeTab;
+		}, 300);
+		return () => clearTimeout(timer);
+	}, [activeTab]);
 
 	const fetchStats = async () => {
 		try {
@@ -87,23 +140,20 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 		return () => document.removeEventListener("keydown", handleEscapeKey);
 	}, [isOpen, onClose]);
 
-	const getCurrentItems = () => {
-		const items = activeTab === "artists" ? artists : tracks;
-		const startIndex = (currentPage - 1) * itemsPerPage;
-		const endIndex = startIndex + itemsPerPage;
-		return items.slice(startIndex, endIndex);
-	};
-
-	const totalPages = Math.ceil(
-		(activeTab === "artists" ? artists.length : tracks.length) / itemsPerPage,
-	);
-
-	useEffect(() => {
-		setCurrentPage(1);
-	}, [activeTab]);
-
-	const handleImageLoad = (position: number) => {
-		setLoadingImages((prev) => ({ ...prev, [position]: false }));
+	const handleImageLoad = (position: number, item: Artist | Track) => {
+		setLoadingImages(prev => ({ ...prev, [position]: false }));
+		
+		const img = new window.Image();
+		img.crossOrigin = "Anonymous";
+		const imgSrc = isArtist(item) ? item.artist.image : item.track.albums[0].image;
+		const itemKey = isArtist(item) 
+			? `${item.artist.id}-${item.artist.image}`
+			: `${item.track.id}-${item.track.albums[0]?.image}`;
+		
+		img.src = imgSrc;
+		img.onload = () => handleImageColorExtraction(img, (color) => {
+			setDominantColors(prev => ({ ...prev, [itemKey]: color }));
+		});
 	};
 
 	const isArtist = (item: Artist | Track): item is Artist => {
@@ -112,6 +162,37 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 
 	const isTrack = (item: Artist | Track): item is Track => {
 		return "track" in item;
+	};
+
+	const currentItems = React.useMemo(() => {
+		const items = activeTab === "artists" ? artists : tracks;
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		return items.slice(startIndex, startIndex + itemsPerPage);
+	}, [activeTab, currentPage, artists, tracks]);
+
+	const paginationInfo = React.useMemo(() => ({
+		totalPages: Math.ceil((activeTab === "artists" ? artists.length : tracks.length) / itemsPerPage),
+		canGoBack: currentPage > 1,
+		canGoForward: currentPage < Math.ceil((activeTab === "artists" ? artists.length : tracks.length) / itemsPerPage)
+	}), [activeTab, currentPage, artists.length, tracks.length]);
+
+	useEffect(() => {
+		currentItems.forEach((item) => {
+			const key = isArtist(item) 
+				? `${item.artist.id}-${item.artist.image}`
+				: `${item.track.id}-${item.track.albums[0]?.image}`;
+			
+			const imgSrc = isArtist(item) ? item.artist.image : item.track.albums[0]?.image;
+			if (imgSrc && !dominantColors[key]) {
+				handleImageLoad(item.position, item);
+			}
+		});
+	}, [currentItems]);
+
+	const handleTabChange = (tab: "artists" | "tracks") => {
+		setAnimationDirection(tab === 'artists' ? 'left' : 'right');
+		setActiveTab(tab);
+		setCurrentPage(1);
 	};
 
 	if (!isOpen) return null;
@@ -151,11 +232,11 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 						className="relative z-10 w-[95%] max-w-lg mx-auto"
 					>
 						<Card className="rounded-lg border border-zinc-800 relative overflow-hidden bg-zinc-900/90">
-							<CardHeader className="relative z-10 flex justify-between items-center py-5 px-6">
-								<Disc3 className="absolute left-4 top-5 w-5 h-5 text-zinc-500" />
+							<CardHeader className="relative z-10 flex justify-between items-center py-4.5 px-6">
+								<Disc3 className="absolute left-4 top-5 w-5 h-5 text-zinc-500 zsm:block hidden" />
 								<button
 									onClick={onClose}
-									className="text-zinc-400 hover:text-white transition-colors absolute right-4 top-4"
+									className="text-zinc-400 hover:text-white transition-colors absolute right-4 top-4 zsm:block hidden"
 								>
 									<svg
 										className="w-5 h-5"
@@ -179,7 +260,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 													? "bg-[#B7B7B7]/15 text-white hover:bg-[#B7B7B7]/25"
 													: "bg-[#B7B7B7]/5 hover:bg-[#B7B7B7]/15"
 											}`}
-											onClick={() => setActiveTab("artists")}
+											onClick={() => handleTabChange("artists")}
 										>
 											<UserRound className="w-4 h-4" />
 											Top Artists
@@ -190,7 +271,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 													? "bg-[#B7B7B7]/15 text-white hover:bg-[#B7B7B7]/30"
 													: "bg-[#B7B7B7]/5 hover:bg-[#B7B7B7]/30"
 											}`}
-											onClick={() => setActiveTab("tracks")}
+											onClick={() => handleTabChange("tracks")}
 										>
 											<AudioLines className="w-4 h-4" />
 											Top Tracks
@@ -201,8 +282,8 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 									</span>
 								</div>
 							</CardHeader>
-							<div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent my-2" />
-							<CardBody className="relative px-6">
+							<div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
+							<CardBody className="relative px-6 py-3">
 								{error ? (
 									<div className="flex flex-col items-center justify-center py-8 text-center">
 										<div className="text-red-400 mb-3">
@@ -236,12 +317,23 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 									<>
 										<div className="space-y-4">
 											{[...Array(itemsPerPage)].map((_, index) => (
-												<div key={index} className="flex items-center gap-4">
-													<div className="w-8 h-8 bg-zinc-800/50 rounded-full animate-pulse" />
-													<div className="w-12 h-12 bg-zinc-800/50 rounded-full animate-pulse" />
-													<div className="flex-1 space-y-2">
-														<div className="h-4 bg-zinc-800/50 rounded animate-pulse w-32" />
-														<div className="h-3 bg-zinc-800/50 rounded animate-pulse w-48" />
+												<div key={index} className="flex items-center gap-2 py-1.5 mx-2">
+													<span className="ml-2 text-lg font-bold w-4 flex items-center justify-center">
+														<div className="w-4 h-6 bg-zinc-800/50 rounded animate-pulse" />
+													</span>
+													<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
+														<div className="w-12 h-12 bg-zinc-800/50 rounded-full animate-pulse" />
+														<div className="flex-1 space-y-2">
+															<div className="h-4 bg-zinc-800/50 rounded animate-pulse w-32" />
+															<div className="h-3 bg-zinc-800/50 rounded animate-pulse w-48" />
+														</div>
+														<div className="flex flex-col items-end justify-center gap-0.5 pr-2">
+															<div className="h-3 bg-zinc-800/50 rounded animate-pulse w-12" />
+															<div className="flex items-center gap-1">
+																<div className="w-14 h-1 bg-zinc-800/50 rounded-full animate-pulse" />
+																<div className="w-4 h-3 bg-zinc-800/50 rounded animate-pulse" />
+															</div>
+														</div>
 													</div>
 												</div>
 											))}
@@ -257,29 +349,79 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 										<AnimatePresence mode="wait" initial={false}>
 											<motion.div
 												key={`${activeTab}-${currentPage}`}
-												initial={{ opacity: 0, x: 20 }}
-												animate={{ opacity: 1, x: 0 }}
-												exit={{ opacity: 0, x: -20 }}
-												transition={{ duration: 0.2 }}
-												className="space-y-4 overflow-hidden pt-2"
+												initial={{ 
+													opacity: 0,
+													x: animationDirection 
+														? (animationDirection === 'left' ? 20 : -20)
+														: 0,
+													y: !animationDirection ? 8 : 0
+												}}
+												animate={{ 
+													opacity: 1,
+													x: 0,
+													y: 0
+												}}
+												exit={{ 
+													opacity: 0,
+													x: animationDirection 
+														? (animationDirection === 'left' ? -20 : 20)
+														: 0,
+													y: !animationDirection ? -8 : 0
+												}}
+												transition={{
+													duration: 0.3,
+													ease: [0.2, 0.0, 0.0, 1.0],
+													opacity: { 
+														duration: 0.2,
+														ease: [0.4, 0.0, 0.2, 1.0]
+													},
+												}}
+												className="space-y-3 overflow-hidden pt-2"
 											>
 												{activeTab === "artists"
-													? getCurrentItems().map((item) => {
+													? currentItems.map((item) => {
 															if (!isArtist(item)) return null;
+															const artistKey = `${item.artist.id}-${item.artist.image}`;
 															return (
-																<div
+																<a
+																	href={`https://stats.fm/artist/${item.artist.id}`}
+																	target="_blank"
+																	rel="noopener noreferrer"
 																	key={item.position}
-																	className="flex items-center gap-3 group"
+																	className="flex items-center gap-2 group rounded-lg hover:ease-out will-change-transform hover:-translate-y-[1px] py-1.5 mx-2 border-2 [border-style:dashed] border-transparent hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.2)] hover:shadow-zinc-900/20"
+																	style={{
+																		transition: `
+																			transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+																			background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+																			border-color 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)
+																		`,
+																		backgroundColor: 'transparent',
+																		borderColor: 'transparent'
+																	}}
+																	onMouseEnter={(e) => {
+																		const element = e.currentTarget;
+																		const color = dominantColors[artistKey] || 'rgb(128, 128, 128)';
+																		const rgbaColor = color.replace('rgb', 'rgba').replace(')', ', 0.15)');
+																		element.style.backgroundColor = rgbaColor;
+
+																		const colorValues = color.match(/\d+/g);
+																		const [r, g, b] = colorValues ? colorValues.map(Number) : [128, 128, 128];
+																		const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+																		const borderColor = brightness > 0.5
+																			? `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.2)`
+																			: `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.2)`;
+																		element.style.borderColor = borderColor;
+																	}}
+																	onMouseLeave={(e) => {
+																		const element = e.currentTarget;
+																		element.style.backgroundColor = 'transparent';
+																		element.style.borderColor = 'transparent';
+																	}}
 																>
-																	<span className="ml-1.5 mr-1 text-lg font-bold w-4 flex items-center text-zinc-500 group-hover:text-[#c6c6c6] transition-colors">
+																	<span className="ml-2 text-lg font-bold w-4 flex items-center justify-center text-zinc-400 group-hover:text-[#c6c6c6] transition-colors">
 																		{item.position}
 																	</span>
-																	<a
-																		href={`https://stats.fm/artist/${item.artist.id}`}
-																		target="_blank"
-																		rel="noopener noreferrer"
-																		className="flex items-center gap-4 flex-1 p-2 -m-2 rounded-lg transition-all duration-200 group-hover:bg-zinc-800/50 group-hover:shadow-lg group-hover:-translate-y-0.5"
-																	>
+																	<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
 																		<div className="relative w-12 h-12">
 																			{loadingImages[item.position] !==
 																				false && (
@@ -292,7 +434,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																				height={48}
 																				className="rounded-full object-cover aspect-square"
 																				onLoad={() =>
-																					handleImageLoad(item.position)
+																					handleImageLoad(item.position, item)
 																				}
 																			/>
 																		</div>
@@ -303,29 +445,85 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																			<p className="text-sm text-gray-500">
 																				{item.artist.genres
 																					.slice(0, 2)
-																					.join(" & ")}
+																					.join("/")}
 																			</p>
 																		</div>
-																	</a>
-																</div>
+																		<div className="flex flex-col items-end justify-center gap-0.5 pr-2 ml-auto">
+																			<span className="text-[10px] text-zinc-400">Popularity</span>
+																			<div className="flex items-center gap-1">
+																				<div 
+																					className="w-14 h-1 rounded-full overflow-hidden"
+																					style={{
+																						backgroundColor: dominantColors[artistKey] 
+																							? `${dominantColors[artistKey].replace('rgb', 'rgba').replace(')', ', 0.1')}`
+																							: 'rgb(39, 39, 42)' // fallback to zinc-800
+																					}}
+																				>
+																					<div 
+																						className="h-full rounded-full transition-all duration-150"
+																						style={{ 
+																							width: `${item.artist.spotifyPopularity}%`,
+																							backgroundColor: dominantColors[artistKey] || 'transparent'
+																						}}
+																					>
+																						{!dominantColors[artistKey] && (
+																							<div className="w-full h-full bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 animate-pulse" />
+																						)}
+																					</div>
+																				</div>
+																				<span className="text-[10px] text-zinc-400 min-w-[2ch]">
+																					{item.artist.spotifyPopularity}
+																				</span>
+																			</div>
+																		</div>
+																	</div>
+																</a>
 															);
 														})
-													: getCurrentItems().map((item) => {
+													: currentItems.map((item) => {
 															if (!isTrack(item)) return null;
+															const trackKey = `${item.track.id}-${item.track.albums[0]?.image}`;
+
 															return (
-																<div
+																<a
+																	href={`https://stats.fm/track/${item.track.id}`}
+																	target="_blank"
+																	rel="noopener noreferrer"
 																	key={item.position}
-																	className="flex items-center gap-3 group"
+																	className="flex items-center gap-2 group rounded-lg hover:ease-out will-change-transform hover:-translate-y-[1px] py-1.5 mx-2 border-2 [border-style:dashed] border-transparent hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.2)] hover:shadow-zinc-900/20"
+																	style={{
+																		transition: `
+																			transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+																			background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+																			border-color 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)
+																		`,
+																		backgroundColor: 'transparent',
+																		borderColor: 'transparent'
+																	}}
+																	onMouseEnter={(e) => {
+																		const element = e.currentTarget;
+																		const color = dominantColors[trackKey] || 'rgb(128, 128, 128)';
+																		const rgbaColor = color.replace('rgb', 'rgba').replace(')', ', 0.15)');
+																		element.style.backgroundColor = rgbaColor;
+
+																		const colorValues = color.match(/\d+/g);
+																		const [r, g, b] = colorValues ? colorValues.map(Number) : [128, 128, 128];
+																		const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+																		const borderColor = brightness > 0.5
+																			? `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.2)`
+																			: `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.2)`;
+																		element.style.borderColor = borderColor;
+																	}}
+																	onMouseLeave={(e) => {
+																		const element = e.currentTarget;
+																		element.style.backgroundColor = 'transparent';
+																		element.style.borderColor = 'transparent';
+																	}}
 																>
-																	<span className="ml-1.5 mr-1 text-lg font-bold w-4 flex items-center text-zinc-500 group-hover:text-[#c6c6c6] transition-colors">
+																	<span className="ml-2 text-lg font-bold w-4 flex items-center justify-center text-zinc-500 group-hover:text-[#c6c6c6] transition-colors">
 																		{item.position}
 																	</span>
-																	<a
-																		href={`https://stats.fm/track/${item.track.id}`}
-																		target="_blank"
-																		rel="noopener noreferrer"
-																		className="flex items-center gap-4 flex-1 p-2 -m-2 rounded-lg transition-all duration-200 group-hover:bg-zinc-800/50 group-hover:shadow-lg group-hover:-translate-y-0.5"
-																	>
+																	<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
 																		<div className="relative w-12 h-12">
 																			{loadingImages[item.position] !==
 																				false && (
@@ -338,7 +536,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																				height={48}
 																				className="rounded"
 																				onLoad={() =>
-																					handleImageLoad(item.position)
+																					handleImageLoad(item.position, item)
 																				}
 																			/>
 																		</div>
@@ -361,39 +559,119 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																				}, "")}
 																			</p>
 																		</div>
-																	</a>
-																</div>
+																		<div className="flex flex-col items-end justify-center gap-0.5 pr-2 ml-auto">
+																			<span className="text-[10px] text-zinc-400">Popularity</span>
+																			<div className="flex items-center gap-1">
+																				<div 
+																					className="w-14 h-1 rounded-full overflow-hidden"
+																					style={{
+																						backgroundColor: dominantColors[trackKey] 
+																							? `${dominantColors[trackKey].replace('rgb', 'rgba').replace(')', ', 0.1')}`
+																							: 'rgb(39, 39, 42)' // fallback to zinc-800
+																					}}
+																				>
+																					<div 
+																						className="h-full rounded-full transition-all duration-150"
+																						style={{ 
+																							width: `${item.track.spotifyPopularity}%`,
+																							backgroundColor: dominantColors[trackKey] || 'transparent'
+																						}}
+																					>
+																						{!dominantColors[trackKey] && (
+																							<div className="w-full h-full bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 animate-pulse" />
+																						)}
+																					</div>
+																				</div>
+																				<span className="text-[10px] text-zinc-400 min-w-[2ch]">
+																					{item.track.spotifyPopularity}
+																				</span>
+																			</div>
+																		</div>
+																	</div>
+																</a>
 															);
 														})}
 											</motion.div>
 										</AnimatePresence>
 
-										<div className="flex justify-center items-center gap-2 mt-6">
-											<button
-												onClick={() =>
-													setCurrentPage((p) => Math.max(1, p - 1))
-												}
-												disabled={currentPage === 1}
-												className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
-											>
-												<ArrowLeft className="w-4 h-4" />
-											</button>
-											<span className="text-sm px-2">
-												{currentPage} of {totalPages}
-											</span>
-											<button
-												onClick={() =>
-													setCurrentPage((p) => Math.min(totalPages, p + 1))
-												}
-												disabled={currentPage === totalPages}
-												className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
-											>
-												<ArrowRight className="w-4 h-4" />
-											</button>
+										<div className="flex flex-col gap-4 mt-5">
+											<div className="flex justify-center items-center relative">
+												<div className="absolute left-0 zsm:hidden">
+													<button className="p-2 text-zinc-400 hover:text-white transition-colors">
+														<Disc3 className="w-5 h-5" />
+													</button>
+												</div>
+												
+												<div className="flex justify-center items-center gap-2">
+													<button
+														onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+														disabled={currentPage === 1}
+														className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
+													>
+														<ArrowLeft className="w-4 h-4" />
+													</button>
+													<span className="text-sm px-2">
+														{currentPage} of {paginationInfo.totalPages}
+													</span>
+													<button
+														onClick={() => setCurrentPage((p) => Math.min(paginationInfo.totalPages, p + 1))}
+														disabled={currentPage === paginationInfo.totalPages}
+														className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
+													>
+														<ArrowRight className="w-4 h-4" />
+													</button>
+												</div>
+
+												<div className="absolute right-0 zsm:hidden">
+													<button
+														onClick={onClose}
+														className="p-2 text-zinc-400 hover:text-white transition-colors"
+													>
+														<svg
+															className="w-5 h-5"
+															fill="none"
+															viewBox="0 0 24 24"
+															stroke="currentColor"
+														>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																strokeWidth={2}
+																d="M6 18L18 6M6 6l12 12"
+															/>
+														</svg>
+													</button>
+												</div>
+											</div>
 										</div>
 									</>
 								)}
 							</CardBody>
+							{error && (
+								<div className="absolute bottom-0 left-0 right-0 flex justify-between w-full px-2 py-2 zsm:hidden">
+									<button className="p-2 text-zinc-400 hover:text-white transition-colors">
+										<Disc3 className="w-5 h-5" />
+								</button>
+								<button
+									onClick={onClose}
+									className="p-2 text-zinc-400 hover:text-white transition-colors"
+								>
+									<svg
+										className="w-5 h-5"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M6 18L18 6M6 6l12 12"
+										/>
+									</svg>
+									</button>
+								</div>
+							)}
 						</Card>
 					</motion.div>
 				</motion.div>
