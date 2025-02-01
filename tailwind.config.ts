@@ -22,6 +22,7 @@ const config: Config = {
 			screens: {
 				'xs': {'max': '639px'},
 				'zsm': '490px',
+				'zssm': '415px',
 				'xsm': '730px',
 			},
 			colors: {

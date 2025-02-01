@@ -246,10 +246,10 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 					>
 						<Card className="rounded-lg border border-zinc-800 relative overflow-hidden bg-zinc-900/90">
 							<CardHeader className="relative z-10 flex justify-between items-center py-4.5 px-6">
-								<Disc3 className="absolute left-4 top-5 w-5 h-5 text-zinc-500 zsm:block hidden" />
+								<Disc3 className="absolute left-4 top-5 w-5 h-5 text-zinc-500" />
 								<button
 									onClick={onClose}
-									className="text-zinc-400 hover:text-white transition-colors absolute right-4 top-4 zsm:block hidden"
+									className="text-zinc-400 hover:text-white transition-colors absolute right-4 top-4"
 								>
 									<svg
 										className="w-5 h-5"
@@ -276,7 +276,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 											onClick={() => handleTabChange("artists")}
 										>
 											<UserRound className="w-4 h-4" />
-											Top Artists
+											<span className="hidden zssm:block">Top Artists</span>
 										</button>
 										<button
 											className={`px-4 py-2 rounded flex items-center gap-2 transition-colors ${
@@ -287,7 +287,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 											onClick={() => handleTabChange("tracks")}
 										>
 											<AudioLines className="w-4 h-4" />
-											Top Tracks
+											<span className="hidden zssm:block">Top Tracks</span>
 										</button>
 									</div>
 									<span className="text-xs text-zinc-500 mt-2 px-2 rounded-md bg-zinc-800/35">
@@ -602,85 +602,28 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 														})}
 											</motion.div>
 										</AnimatePresence>
-
-										<div className="flex flex-col gap-4 mt-5">
-											<div className="flex justify-center items-center relative">
-												<div className="absolute left-0 zsm:hidden">
-													<button className="p-2 text-zinc-400 hover:text-white transition-colors">
-														<Disc3 className="w-5 h-5" />
-													</button>
-												</div>
-												
-												<div className="flex justify-center items-center gap-2">
-													<button
-														onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-														disabled={currentPage === 1}
-														className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
-													>
-														<ArrowLeft className="w-4 h-4" />
-													</button>
-													<span className="text-sm px-2">
-														{currentPage} of {paginationInfo.totalPages}
-													</span>
-													<button
-														onClick={() => handlePageChange(Math.min(paginationInfo.totalPages, currentPage + 1))}
-														disabled={currentPage === paginationInfo.totalPages}
-														className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
-													>
-														<ArrowRight className="w-4 h-4" />
-													</button>
-												</div>
-
-												<div className="absolute right-0 zsm:hidden">
-													<button
-														onClick={onClose}
-														className="p-2 text-zinc-400 hover:text-white transition-colors"
-													>
-														<svg
-															className="w-5 h-5"
-															fill="none"
-															viewBox="0 0 24 24"
-															stroke="currentColor"
-														>
-															<path
-																strokeLinecap="round"
-																strokeLinejoin="round"
-																strokeWidth={2}
-																d="M6 18L18 6M6 6l12 12"
-															/>
-														</svg>
-													</button>
-												</div>
-											</div>
+										<div className="flex justify-center items-center mt-3 gap-2">
+											<button
+												onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+												disabled={currentPage === 1}
+												className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
+											>
+												<ArrowLeft className="w-4 h-4" />
+											</button>
+											<span className="text-sm px-2">
+												{currentPage} of {paginationInfo.totalPages}
+											</span>
+											<button
+												onClick={() => handlePageChange(Math.min(paginationInfo.totalPages, currentPage + 1))}
+												disabled={currentPage === paginationInfo.totalPages}
+												className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
+											>
+												<ArrowRight className="w-4 h-4" />
+											</button>
 										</div>
 									</>
 								)}
 							</CardBody>
-							{(error || loading) && (
-								<div className="absolute bottom-0 left-0 right-0 flex justify-between w-full px-2 py-2 zsm:hidden">
-									<button className="p-2 text-zinc-400 hover:text-white transition-colors">
-										<Disc3 className="w-5 h-5" />
-									</button>
-									<button
-										onClick={onClose}
-										className="p-2 text-zinc-400 hover:text-white transition-colors"
-									>
-										<svg
-											className="w-5 h-5"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M6 18L18 6M6 6l12 12"
-											/>
-										</svg>
-									</button>
-								</div>
-							)}
 						</Card>
 					</motion.div>
 				</motion.div>
