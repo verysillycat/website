@@ -89,7 +89,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	const [activeTab, setActiveTab] = useState<"artists" | "tracks">("artists");
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
-	const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>({});
+	const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>({});
 	const [dominantColors, setDominantColors] = useState<Record<string, string>>({});
 	const previousTab = useRef<"artists" | "tracks">("artists");
 	const [hasInitialTabSwitch, setHasInitialTabSwitch] = useState(false);
@@ -142,15 +142,16 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 		return () => document.removeEventListener("keydown", handleEscapeKey);
 	}, [isOpen, onClose]);
 
-	const handleImageLoad = (position: number, item: Artist | Track) => {
-		setLoadingImages(prev => ({ ...prev, [position]: false }));
+	const handleImageLoad = (item: Artist | Track) => {
+		const itemKey = isArtist(item) 
+			? `${item.artist.id}-${item.artist.image}`
+			: `${item.track.id}-${item.track.albums[0]?.image}`;
+		
+		setLoadingImages(prev => ({ ...prev, [itemKey]: false }));
 		
 		const img = new window.Image();
 		img.crossOrigin = "Anonymous";
 		const imgSrc = isArtist(item) ? item.artist.image : item.track.albums[0].image;
-		const itemKey = isArtist(item) 
-			? `${item.artist.id}-${item.artist.image}`
-			: `${item.track.id}-${item.track.albums[0]?.image}`;
 		
 		img.src = imgSrc;
 		img.onload = () => handleImageColorExtraction(img, (color) => {
@@ -184,9 +185,11 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 				? `${item.artist.id}-${item.artist.image}`
 				: `${item.track.id}-${item.track.albums[0]?.image}`;
 			
+			setLoadingImages(prev => ({ ...prev, [key]: true }));
+			
 			const imgSrc = isArtist(item) ? item.artist.image : item.track.albums[0]?.image;
 			if (imgSrc && !dominantColors[key]) {
-				handleImageLoad(item.position, item);
+				handleImageLoad(item);
 			}
 		});
 	}, [currentItems]);
@@ -364,8 +367,8 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												key={`${activeTab}-${currentPage}`}
 												initial={{ 
 													opacity: 0,
-													x: (!isPageChange && (hasInitialTabSwitch || animationDirection)) ? (animationDirection === 'left' ? 20 : -20) : 0,
-													y: isPageChange === true ? 8 : 0
+													x: isPageChange ? 0 : (animationDirection === 'left' ? 20 : animationDirection === 'right' ? -20 : 0),
+													y: isPageChange ? 8 : 0
 												}}
 												animate={{ 
 													opacity: 1,
@@ -374,8 +377,8 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												}}
 												exit={{ 
 													opacity: 0,
-													x: (!isPageChange && (hasInitialTabSwitch || animationDirection)) ? (animationDirection === 'left' ? -20 : 20) : 0,
-													y: isPageChange === true ? -8 : 0
+													x: isPageChange ? 0 : (animationDirection === 'left' ? -20 : animationDirection === 'right' ? 20 : 0),
+													y: isPageChange ? -8 : 0
 												}}
 												transition={{
 													duration: 0.3,
@@ -432,8 +435,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																	</span>
 																	<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
 																		<div className="relative w-12 h-12">
-																			{loadingImages[item.position] !==
-																				false && (
+																			{loadingImages[`${item.artist.id}-${item.artist.image}`] && (
 																				<div className="absolute inset-0 bg-zinc-800/50 rounded-full animate-pulse" />
 																			)}
 																			<Image
@@ -442,9 +444,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																				width={48}
 																				height={48}
 																				className="rounded-full object-cover aspect-square"
-																				onLoad={() =>
-																					handleImageLoad(item.position, item)
-																				}
+																				onLoad={() => handleImageLoad(item)}
 																			/>
 																		</div>
 																		<div className="flex-1">
@@ -534,8 +534,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																	</span>
 																	<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
 																		<div className="relative w-12 h-12">
-																			{loadingImages[item.position] !==
-																				false && (
+																			{loadingImages[`${item.track.id}-${item.track.albums[0]?.image}`] && (
 																				<div className="absolute inset-0 bg-zinc-800/50 rounded animate-pulse" />
 																			)}
 																			<Image
@@ -544,9 +543,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																				width={48}
 																				height={48}
 																				className="rounded"
-																				onLoad={() =>
-																					handleImageLoad(item.position, item)
-																				}
+																				onLoad={() => handleImageLoad(item)}
 																			/>
 																		</div>
 																		<div className="flex-1">
