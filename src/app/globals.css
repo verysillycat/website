@@ -1,23 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  color: #ededed;
-  background: #0a0a0a;
-  font-family: 'Montserrat', sans-serif;
+	color: #ededed;
+	background: #0a0a0a;
+	font-family: "Montserrat", sans-serif;
 }
 
 .skeleton-bg {
-  @apply bg-[#141415];
-} 
+	@apply bg-[#141415];
+}
 
 @layer utilities {
-  .pause-animation {
-    animation-play-state: paused !important;
-  }
+	.pause-animation {
+		animation-play-state: paused !important;
+	}
 }
 
 .hover-effect:hover {
@@ -36,9 +36,7 @@ body {
 }
 
 .hamburger-line {
-	transition:
-		transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-		opacity 0.2s ease;
+	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
 }
 
 .hamburger-line.top {
@@ -80,134 +78,134 @@ body {
 }
 
 .slider-fade {
-  position: relative;
+	position: relative;
 }
 
 .slider-fade::before,
 .slider-fade::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 30px;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-  border-radius: 0.375rem;
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 30px;
+	z-index: 1;
+	pointer-events: none;
+	overflow: hidden;
+	border-radius: 0.375rem;
 }
 
 .slider-fade::before {
-  left: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), transparent);
+	left: 0;
+	background: linear-gradient(to right, rgba(0, 0, 0, 0.9), transparent);
 }
 
 .slider-fade::after {
-  right: 0;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.9), transparent);
+	right: 0;
+	background: linear-gradient(to left, rgba(0, 0, 0, 0.9), transparent);
 }
 
 .card-background {
-  position: relative;
-  overflow: hidden;
+	position: relative;
+	overflow: hidden;
 }
 
 .card-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: none;
-  z-index: -1;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: none;
+	z-index: -1;
 }
 
 .card-background video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: blur(2.5px);
-  opacity: 0.7;
-  z-index: -1;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: blur(2.5px);
+	opacity: 0.7;
+	z-index: -1;
 }
 
 .animate-slider {
-  animation: slider var(--duration, 30s) linear infinite;
-  transition: animation-play-state 0.5s ease;
+	animation: slider var(--duration, 30s) linear infinite;
+	transition: animation-play-state 0.5s ease;
 }
 
 .animate-slider .hover-effect {
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hover-effect:hover > div {
-  background-color: rgba(128, 128, 128, 0.1);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
-  transform: scale(1.02);
-  transition: all 0.2s ease;
+	background-color: rgba(128, 128, 128, 0.1);
+	box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+	transform: scale(1.02);
+	transition: all 0.2s ease;
 }
 
 .nav-link {
-  padding: 2px 10px;
-  border-radius: 50px;
-  transition: all 0.3s ease;
-  position: relative;
-  isolation: isolate;
+	padding: 2px 10px;
+	border-radius: 50px;
+	transition: all 0.3s ease;
+	position: relative;
+	isolation: isolate;
 }
 
 .nav-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 50px;
+	background-color: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(4px);
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	z-index: -1;
+	box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 .nav-link:hover::before {
-  opacity: 1;
+	opacity: 1;
 }
 
 .hamburger-navlink {
-  padding: 10px 10px;
-  border-radius: 50px;
-  transition: all 0.3s ease;
+	padding: 10px 10px;
+	border-radius: 50px;
+	transition: all 0.3s ease;
 }
 
 .hamburger-navlink:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+	background-color: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(4px);
+	box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 .fadeIn {
-  animation: fadeIn 2s ease-in-out;
+	animation: fadeIn 2s ease-in-out;
 }
 @keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  25% {
-    opacity: 0.25;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  75% {
-    opacity: 0.75;
-  }
-  90% {
-    opacity: 0.9;
-  }
-  
-  100% {
-    opacity: 1;
-  }
+	0% {
+		opacity: 0;
+	}
+	25% {
+		opacity: 0.25;
+	}
+	50% {
+		opacity: 0.5;
+	}
+	75% {
+		opacity: 0.75;
+	}
+	90% {
+		opacity: 0.9;
+	}
+
+	100% {
+		opacity: 1;
+	}
 }

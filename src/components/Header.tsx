@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useSocket } from "@/hooks/SocketContext";
 import { motion, AnimatePresence } from "framer-motion";
-import UserArea from './DiscordPresence';
-import Weather from './Weather';
+import UserArea from "./DiscordPresence";
+import Weather from "./Weather";
 
 export default function Header() {
 	const [hamburgerTriggered, setHamburgerTriggered] = useState(false);
@@ -12,13 +12,16 @@ export default function Header() {
 	const [showUserArea, setShowUserArea] = useState(false);
 
 	const statusColor = {
-		online: "bg-green-500 shadow-[0_0_3px_rgba(34,197,94,0.2),_0_0_5px_rgba(34,197,94,0.12),_0_0_8px_rgba(34,197,94,0.05)]",
+		online:
+			"bg-green-500 shadow-[0_0_3px_rgba(34,197,94,0.2),_0_0_5px_rgba(34,197,94,0.12),_0_0_8px_rgba(34,197,94,0.05)]",
 		dnd: "bg-red-500 shadow-[0_0_3px_rgba(239,68,68,0.2),_0_0_5px_rgba(239,68,68,0.12),_0_0_8px_rgba(239,68,68,0.05)]",
 		idle: "bg-yellow-500 shadow-[0_0_3px_rgba(234,179,8,0.2),_0_0_5px_rgba(234,179,8,0.12),_0_0_8px_rgba(234,179,8,0.05)]",
-		offline: "bg-gray-500 shadow-[0_0_3px_rgba(107,114,128,0.2),_0_0_5px_rgba(107,114,128,0.12),_0_0_8px_rgba(107,114,128,0.05)]",
+		offline:
+			"bg-gray-500 shadow-[0_0_3px_rgba(107,114,128,0.2),_0_0_5px_rgba(107,114,128,0.12),_0_0_8px_rgba(107,114,128,0.05)]",
 	} as const;
 
-	const statusClass = statusColor[status as keyof typeof statusColor] || statusColor.offline;
+	const statusClass =
+		statusColor[status as keyof typeof statusColor] || statusColor.offline;
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -32,13 +35,13 @@ export default function Header() {
 	}, []);
 
 	useEffect(() => {
-		document.documentElement.style.scrollBehavior = 'xsmooth';
+		document.documentElement.style.scrollBehavior = "xsmooth";
 
 		return () => {
-			document.documentElement.style.scrollBehavior = 'auto';
+			document.documentElement.style.scrollBehavior = "auto";
 		};
 	}, []);
-	
+
 	return (
 		<div>
 			<div className="h-20" />
@@ -68,13 +71,16 @@ export default function Header() {
 							<h1
 								className="text-xl font-bold text-[#f0edff]/90 hover:text-[#f0edff] transition-all duration-300 non-selectable cursor-pointer"
 								style={{
-									textShadow: "0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)",
+									textShadow:
+										"0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)",
 								}}
 								onMouseEnter={(e) => {
-									e.currentTarget.style.textShadow = "0 0 3px rgba(240,237,255,0.2), 0 0 5px rgba(240,237,255,0.12), 0 0 8px rgba(240,237,255,0.05)";
+									e.currentTarget.style.textShadow =
+										"0 0 3px rgba(240,237,255,0.2), 0 0 5px rgba(240,237,255,0.12), 0 0 8px rgba(240,237,255,0.05)";
 								}}
 								onMouseLeave={(e) => {
-									e.currentTarget.style.textShadow = "0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)";
+									e.currentTarget.style.textShadow =
+										"0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)";
 								}}
 								onClick={() => setShowUserArea(!showUserArea)}
 							>
@@ -177,16 +183,16 @@ export default function Header() {
 									onClick={() => setHamburgerTriggered(false)}
 									className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
 								>
-									<svg 
+									<svg
 										className="w-5 h-5"
-										fill="none" 
-										stroke="currentColor" 
+										fill="none"
+										stroke="currentColor"
 										viewBox="0 0 24 24"
 									>
-										<path 
-											strokeLinecap="round" 
-											strokeLinejoin="round" 
-											strokeWidth="2" 
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
 											d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
 										/>
 									</svg>
@@ -226,16 +232,16 @@ export default function Header() {
 										className="hamburger-navlink text-white/80 hover:text-white py-2 hover:bg-white/10 transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
 									>
 										<div className="flex items-center">
-											<svg 
+											<svg
 												className="w-5 h-5 mr-2"
-												fill="none" 
-												stroke="currentColor" 
+												fill="none"
+												stroke="currentColor"
 												viewBox="0 0 24 24"
 											>
-												<path 
-													strokeLinecap="round" 
-													strokeLinejoin="round" 
-													strokeWidth="2" 
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth="2"
 													d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
 												/>
 											</svg>

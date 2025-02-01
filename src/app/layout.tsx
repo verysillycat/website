@@ -9,7 +9,7 @@ export const metadata = {
 		description: "designer, developer and web artist",
 		url: "https://cortex.rest",
 		images: [
-			{ 
+			{
 				url: "https://cortex.rest/assets/embed.png",
 			},
 		],
@@ -26,9 +26,7 @@ export default function RootLayout({
 				<meta name="theme-color" content="#232121" />
 			</head>
 			<body className="min-h-screen flex flex-col">
-				<SocketProvider>
-					{children}
-				</SocketProvider>
+				<SocketProvider>{children}</SocketProvider>
 			</body>
 		</html>
 	);

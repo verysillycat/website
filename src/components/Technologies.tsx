@@ -8,15 +8,43 @@ import { motion } from "framer-motion";
 
 export default function Technologies() {
 	const technologies = [
-		{ href: "https://nextjs.org", icon: "simple-icons:nextdotjs", name: "Next.js" },
+		{
+			href: "https://nextjs.org",
+			icon: "simple-icons:nextdotjs",
+			name: "Next.js",
+		},
 		{ href: "https://astro.build", icon: "simple-icons:astro", name: "Astro" },
-		{ href: "https://www.typescriptlang.org", icon: "simple-icons:typescript", name: "TypeScript" },
-		{ href: "https://www.w3.org/Style/CSS/", icon: "simple-icons:css3", name: "CSS" },
-		{ href: "https://www.gnu.org/software/bash/", icon: "simple-icons:gnubash", name: "Bash" },
-		{ href: "https://www.python.org", icon: "simple-icons:python", name: "Python" },
+		{
+			href: "https://www.typescriptlang.org",
+			icon: "simple-icons:typescript",
+			name: "TypeScript",
+		},
+		{
+			href: "https://www.w3.org/Style/CSS/",
+			icon: "simple-icons:css3",
+			name: "CSS",
+		},
+		{
+			href: "https://www.gnu.org/software/bash/",
+			icon: "simple-icons:gnubash",
+			name: "Bash",
+		},
+		{
+			href: "https://www.python.org",
+			icon: "simple-icons:python",
+			name: "Python",
+		},
 		{ href: "https://pnpm.io", icon: "simple-icons:pnpm", name: "pnpm" },
-		{ href: "https://www.kernel.org", icon: "simple-icons:linux", name: "Linux" },
-		{ href: "https://www.markdownguide.org", icon: "simple-icons:markdown", name: "Markdown" },
+		{
+			href: "https://www.kernel.org",
+			icon: "simple-icons:linux",
+			name: "Linux",
+		},
+		{
+			href: "https://www.markdownguide.org",
+			icon: "simple-icons:markdown",
+			name: "Markdown",
+		},
 	];
 
 	return (
@@ -64,7 +92,7 @@ export default function Technologies() {
 													animate={{ opacity: 1 }}
 													transition={{
 														duration: 0.5,
-														ease: "easeOut"
+														ease: "easeOut",
 													}}
 													className="border-[#bfbfbf] flex items-center gap-2 rounded-lg border bg-black bg-opacity-25 px-3 py-2 whitespace-nowrap"
 												>

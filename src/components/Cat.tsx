@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Image from "next/image";
 import { useState } from "react";
@@ -28,7 +28,10 @@ export default function Cat() {
 					e.currentTarget.style.transition = "transform 0.3s ease-in-out";
 				}}
 			/>
-			<MusicStats isOpen={showMusicStats} onClose={() => setShowMusicStats(false)} />
+			<MusicStats
+				isOpen={showMusicStats}
+				onClose={() => setShowMusicStats(false)}
+			/>
 		</div>
 	);
 }
