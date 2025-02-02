@@ -8,6 +8,7 @@ import Projects from "@/components/Projects";
 import { BackgroundBeams } from "@/components/Background";
 import { Footer } from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
+import About from "@/components/About";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -21,6 +22,7 @@ export default function Home() {
 				<CardComponent />
 				<MusicPlayer />
 				<Technologies />
+				<About />
 				<Projects />
 				<Cat />
 			</div>

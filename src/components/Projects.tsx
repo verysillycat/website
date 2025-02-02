@@ -69,7 +69,7 @@ export default function Projects() {
 				className={`grid ${
 					projects.length < 3
 						? "grid-cols-1 sm:grid-cols-2 max-w-[750px]"
-						: "grid-cols-2 sm:grid-cols-3 max-w-[1050px]"
+						: "grid-cols-1 sm:grid-cols-2 max-w-[750px] [&>*:last-child:nth-child(odd)]:col-span-2 [&>*:last-child:nth-child(odd)]:sm:col-span-2 [&>*:last-child:nth-child(odd)]:sm:w-1/2 [&>*:last-child:nth-child(odd)]:sm:mx-auto"
 				} gap-6 mb-1 mx-auto w-[95%] p-4 justify-center`}
 			>
 				{projects.map((project, index) => (
@@ -87,7 +87,7 @@ export default function Projects() {
 							ease: "easeOut",
 						}}
 					>
-						<Card className="bg-black bg-opacity-25 border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02]">
+						<Card className="bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02]">
 							<CardHeader className="px-4 pt-4 flex gap-3 justify-between">
 								<div className="flex gap-3">
 									{project.icon && (
