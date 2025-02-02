@@ -41,8 +41,8 @@ export default function About() {
 							<CardHeader className="flex flex-col sm:flex-row items-center gap-4">
 								<p className="text-white text-sm flex-[1.5] bg-white/[0.01] backdrop-blur-sm px-3 py-1 rounded-2xl shadow-lg transition-all border border-white/[0.02]">
 									In my early teen years, I developed an interest in programming,
-									design and cybersecurity which led me to pursue a career in development
-                  which I still have a passion for and I'm always looking to
+									design and cybersecurity which led me to pursue a career in the field
+                 					which I have a passion for and I'm always looking to
 									learn more and to make a difference.
 								</p>
 								<div className="w-full h-6 mt-3 mb-0 sm:my-2 sm:h-28 sm:w-auto flex justify-center sm:ml-8">
@@ -56,9 +56,11 @@ export default function About() {
 										and always exploring new technologies
 										to enhance and improve my skill set.
 									</p>
-									<div className="flex items-center justify-center sm:justify-start gap-2 bg-white/5 w-fit px-3 py-1.5 rounded-md mt-4 mx-auto sm:mx-0">
-										<Code className="w-4 h-4 text-white/80" />
-										<span className="text-white/80 text-sm">3 Years of Experience</span>
+									<div className="flex items-center justify-center sm:justify-start gap-1.5 bg-white/[0.03] w-fit px-2.5 py-1 rounded-md mt-3 mx-auto sm:mx-0 border border-white/[0.03]">
+										<div className="bg-white/[0.06] p-0.5 rounded-md border border-white/[0.03]">
+											<Code className="w-3.5 h-3.5 text-white/80" />
+										</div>
+										<span className="text-white/80 text-xs">~2 Years of Experience</span>
 									</div>
 								</div>
 							</CardHeader>
