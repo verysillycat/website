@@ -167,7 +167,6 @@ export default function CardComponent() {
 									rel="noopener noreferrer"
 									initial={{ y: -20, opacity: 0 }}
 									whileHover={{ 
-										y: -2,
 										scale: 1.05,
 										transition: { 
 											duration: 0.15,
