@@ -29,7 +29,7 @@ const Time: React.FC = () => {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.2, ease: "easeInOut" }}
 			>
-				<TextFade duration={0.5} words={time} />
+				<TextFade duration={0.5} words={time} className="text-white/90" />
 			</motion.div>
 		</div>
 	);

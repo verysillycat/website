@@ -96,12 +96,12 @@ body {
 
 .slider-fade::before {
 	left: 0;
-	background: linear-gradient(to right, rgba(0, 0, 0, 0.9), transparent);
+	background: linear-gradient(to right, rgba(0, 0, 0, 0.6), transparent);
 }
 
 .slider-fade::after {
 	right: 0;
-	background: linear-gradient(to left, rgba(0, 0, 0, 0.9), transparent);
+	background: linear-gradient(to left, rgba(0, 0, 0, 0.6), transparent);
 }
 
 .card-background {

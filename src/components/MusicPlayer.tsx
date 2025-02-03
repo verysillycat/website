@@ -294,7 +294,9 @@ export default function MusicPlayer() {
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								transition={{ duration: 0.3, ease: "easeOut" }}
-								className="relative h-12 w-12 rounded-lg overflow-hidden"
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+								className="relative h-12 w-12 rounded-lg overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105"
 							>
 								{!isImageLoaded && (
 									<div className="absolute inset-0 skeleton-bg animate-pulse" />
@@ -373,13 +375,17 @@ export default function MusicPlayer() {
 
 									<div className="flex items-center gap-3">
 										<div className="flex items-center gap-3">
-											<button
+											<motion.button
+												whileHover={{ scale: 1.1 }}
+												whileTap={{ scale: 0.9 }}
 												className="text-zinc-400 hover:text-white transition-colors"
 												onClick={playPreviousSong}
 											>
 												<SkipBack className="h-4 w-4" />
-											</button>
-											<button
+											</motion.button>
+											<motion.button
+												whileHover={{ scale: 1.1 }}
+												whileTap={{ scale: 0.9 }}
 												className="text-zinc-400 hover:text-white transition-colors"
 												onClick={togglePlayPause}
 											>
@@ -388,13 +394,15 @@ export default function MusicPlayer() {
 												) : (
 													<Play className="h-4 w-4" />
 												)}
-											</button>
-											<button
+											</motion.button>
+											<motion.button
+												whileHover={{ scale: 1.1 }}
+												whileTap={{ scale: 0.9 }}
 												className="text-zinc-400 hover:text-white transition-colors"
 												onClick={playNextSong}
 											>
 												<SkipForward className="h-4 w-4" />
-											</button>
+											</motion.button>
 										</div>
 
 										<div className="flex-1">
@@ -432,7 +440,9 @@ export default function MusicPlayer() {
 										</div>
 
 										<div className="group flex items-center gap-2">
-											<button
+											<motion.button
+												whileHover={{ scale: 1.1 }}
+												whileTap={{ scale: 0.9 }}
 												className="text-zinc-400 hover:text-white transition-colors"
 												onClick={toggleMute}
 											>
@@ -447,8 +457,12 @@ export default function MusicPlayer() {
 												) : (
 													<Volume2 className="h-4 w-4" />
 												)}
-											</button>
-											<div className="w-16 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-left">
+											</motion.button>
+											<motion.div
+												whileHover={{ scale: 1.05 }}
+												whileTap={{ scale: 0.95 }}
+												className="w-16 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
+											>
 												<div className="group relative h-6 flex items-center select-none">
 													<div className="flex items-center w-full">
 														<div className="relative flex-1 volume-bar">
@@ -469,7 +483,7 @@ export default function MusicPlayer() {
 														</span>
 													</div>
 												</div>
-											</div>
+											</motion.div>
 										</div>
 									</div>
 								</>

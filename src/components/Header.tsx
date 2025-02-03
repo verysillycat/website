@@ -62,33 +62,37 @@ export default function Header() {
 				initial={{ y: -100 }}
 				animate={{ y: 0 }}
 				transition={{ type: "spring", stiffness: 150, damping: 20 }}
-				className="fixed top-0 left-0 right-0 mx-20 mt-4 bg-dark/70 text-white border border-[#898c91] backdrop-blur-lg opacity-75 rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-shadow duration-300 non-selectable relative z-50"
+				className="fixed top-0 left-0 right-0 mx-20 mt-4 bg-dark/75 text-white border border-[#999a9e]/30 backdrop-blur-[5px] opacity-90 rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-shadow duration-300 non-selectable relative z-50"
 				style={{ position: "fixed", top: 0, left: 0, right: 0 }}
 			>
 				<div className="p-3.5 non-selectable">
 					<div className="flex justify-between items-center non-selectable">
 						<div className="flex items-center gap-2 non-selectable min-w-fit xsm:w-1/4">
-							<h1
-								className="text-xl font-bold text-[#f0edff]/90 hover:text-[#f0edff] transition-all duration-300 non-selectable cursor-pointer"
-								style={{
-									textShadow:
-										"0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)",
-								}}
-								onMouseEnter={(e) => {
-									e.currentTarget.style.textShadow =
-										"0 0 3px rgba(240,237,255,0.2), 0 0 5px rgba(240,237,255,0.12), 0 0 8px rgba(240,237,255,0.05)";
-								}}
-								onMouseLeave={(e) => {
-									e.currentTarget.style.textShadow =
-										"0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)";
-								}}
+							<div
+								className="flex items-center gap-2 cursor-pointer"
 								onClick={() => setShowUserArea(!showUserArea)}
 							>
-								Cortex
-							</h1>
-							<div
-								className={`w-2 h-2 rounded-full ${statusClass} non-selectable`}
-							></div>
+								<h1
+									className="text-xl font-bold text-[#f0edff]/90 hover:text-[#f0edff] transition-all duration-300 non-selectable"
+									style={{
+										textShadow:
+											"0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)",
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.textShadow =
+											"0 0 3px rgba(240,237,255,0.2), 0 0 5px rgba(240,237,255,0.12), 0 0 8px rgba(240,237,255,0.05)";
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.textShadow =
+											"0 0 3px rgba(240,237,255,0.15), 0 0 5px rgba(240,237,255,0.08), 0 0 8px rgba(240,237,255,0.03)";
+									}}
+								>
+									Cortex
+								</h1>
+								<div
+									className={`w-2 h-2 rounded-full ${statusClass} non-selectable`}
+								></div>
+							</div>
 						</div>
 
 						<div className="flex-grow flex justify-center zsm:w-2/4">

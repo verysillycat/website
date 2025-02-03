@@ -5,8 +5,13 @@ import { Icon } from "@iconify/react";
 import { Slider } from "../app/structure/Slider";
 import { TextFade } from "../app/structure/TextFade";
 import { motion } from "framer-motion";
+import { useRef } from "react";
+import { useInview } from "../lib/animateInscroll";
 
 export default function Technologies() {
+	const ref = useRef<HTMLDivElement>(null);
+	const isInView = useInview(ref);
+
 	const technologies = [
 		{
 			href: "https://nextjs.org",
@@ -48,31 +53,31 @@ export default function Technologies() {
 	];
 
 	return (
-		<div id="technologies" className="flex justify-center items-center mt-10">
+		<div id="technologies" className="flex justify-center items-center mt-10" ref={ref}>
 			<div className="flex flex-col items-center">
 				<motion.div
 					initial={{ opacity: 0, y: -5 }}
-					animate={{ opacity: 1, y: 0 }}
+					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
 					transition={{ duration: 0.2, ease: "easeInOut" }}
 				>
 					<TextFade
 						duration={1}
 						words="Technologies"
-						className="text-xl font-bold text-white"
+						className="text-xl font-bold text-white/90"
 					/>
 				</motion.div>
 
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
+					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
 					transition={{ duration: 0.5, ease: "easeInOut" }}
 				>
 					<motion.div
 						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
+						animate={isInView ? { opacity: 1 } : { opacity: 0 }}
 						transition={{ duration: 0.5, ease: "easeInOut" }}
 					>
-						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-visible bg-black bg-opacity-20 py-0.5 border border-[#dbdbdb] rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 slider-fade">
+						<Card className="relative mx-4 mt-3 w-auto max-w-4xl overflow-visible bg-black bg-opacity-20 backdrop-blur-[1px] py-0.5 border border-[#999a9e]/75 rounded-md transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 slider-fade">
 							<CardBody className="overflow-visible px-0">
 								<div
 									className="pointer-events-none absolute inset-0"
@@ -94,7 +99,7 @@ export default function Technologies() {
 														duration: 0.5,
 														ease: "easeOut",
 													}}
-													className="border-[#bfbfbf] flex items-center gap-2 rounded-lg border bg-black bg-opacity-25 px-3 py-2 whitespace-nowrap"
+													className="border-[#aaabaf]/50 flex items-center gap-2 rounded-lg border bg-black/10 px-3 py-2 whitespace-nowrap"
 												>
 													<Icon
 														icon={tech.icon}

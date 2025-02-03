@@ -62,7 +62,7 @@ export default function Projects() {
 			<TextFade
 				duration={1.2}
 				words="Projects"
-				className="text-xl font-bold text-white"
+				className="text-xl font-bold text-white/90"
 			/>
 
 			<div
@@ -87,26 +87,26 @@ export default function Projects() {
 							ease: "easeOut",
 						}}
 					>
-						<Card className="bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#dbdbdb] rounded-md relative z-0 transition-all duration-300 ease-in-out hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02]">
+						<Card className="bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#999a9e]/75 rounded-md relative z-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02] hover:backdrop-blur-none">
 							<CardHeader className="px-4 pt-4 flex gap-3 justify-between">
-								<div className="flex gap-3">
+								<div className="flex gap-3 items-center">
 									{project.icon && (
 										<Image
 											src={project.icon}
 											alt={`${project.name} icon`}
 											width={32}
 											height={32}
-											className="w-8 h-8 object-contain mb-1"
+											className="w-8 h-8 object-contain transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-110"
 										/>
 									)}
 									<div>
-										<div className="flex items-center gap-2 mt-1">
+										<div className="flex items-center gap-3">
 											<h2 className="text-lg font-bold tracking-tight text-white">
 												{project.name}
 											</h2>
 											{project.url.includes("github.com") &&
 												stars[project.url] !== undefined && (
-													<div className="non-selectable flex items-center gap-1 text-sm text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full mt-1">
+													<div className="border border-[#999a9e]/10 non-selectable flex items-center gap-1 text-sm text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-105 hover:shadow-[0_0_2px_rgba(255,255,255,0.08)]">
 														<svg
 															className="w-3.5 h-3.5 fill-current text-amber-400"
 															viewBox="0 0 16 16"
@@ -123,7 +123,7 @@ export default function Projects() {
 									href={project.url}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="non-selectable flex bg-zinc-900 p-2 rounded-full duration-200 ease-in-out hover:bg-zinc-800 hover:scale-105 overflow-visible"
+									className="outline outline-1 outline-[#999a9e]/20 non-selectable flex bg-zinc-900 p-2 rounded-full transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-zinc-800 hover:scale-110 overflow-visible"
 								>
 									{project.url.includes("github.com") ? (
 										<svg
@@ -156,7 +156,7 @@ export default function Projects() {
 									{project.description}
 								</p>
 								{project.language && (
-									<div className="non-selectable flex items-center gap-1 text-xs text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full w-fit">
+									<div className="border border-[#999a9e]/10 non-selectable flex items-center gap-1 text-xs text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full w-fit transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-105 hover:shadow-[0_0_2px_rgba(255,255,255,0.08)]">
 										<Icon
 											icon={`devicon-plain:${project.language.toLowerCase()}`}
 											className="w-3.5 h-4"
