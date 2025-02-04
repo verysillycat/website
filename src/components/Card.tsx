@@ -18,7 +18,7 @@ export default function CardComponent() {
 				alt: "Telegram",
 			},
 			{
-				href: "https://github.com/verysillycat",
+				href: "https://github.com/refurbishing",
 				icon: "mdi:github",
 				alt: "GitHub",
 			},

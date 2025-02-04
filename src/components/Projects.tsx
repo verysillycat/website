@@ -20,8 +20,8 @@ const projects = [
 		name: "VNREZ",
 		description:
 			"Utility-suite for recording and screenshotting your files easily and uploading them to a file host",
-		url: "https://github.com/verysillycat/vnrez",
-		icon: "https://github.com/verysillycat/vnrez/raw/main/assets/logo.png",
+		url: "https://github.com/refurbishing/vnrez",
+		icon: "https://github.com/refurbishing/vnrez/raw/main/assets/logo.png",
 		language: "Bash",
 	},
 ];

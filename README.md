@@ -6,7 +6,7 @@
 #### How to run:
 
 ```bash
-git clone https://github.com/verysillycat/website.git
+git clone https://github.com/refurbishing/website.git
 cd website
 pnpm i
 pnpm dev
