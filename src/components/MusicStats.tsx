@@ -447,7 +447,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																		{item.position}
 																	</span>
 																	<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
-																		<div className="relative w-12 h-12">
+																		<div className="relative w-12 h-12 rounded-full overflow-hidden">
 																			{loadingStates[`${item.artist.id}-${item.artist.image}`]?.loading && (
 																				<div className="absolute inset-0 skeleton-bg animate-pulse rounded-full" />
 																			)}
