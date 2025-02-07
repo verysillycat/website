@@ -41,6 +41,8 @@ export default function MusicPlayer() {
 
 	const shouldPlayAfterLoad = useRef(false);
 
+	const [isMobile, setIsMobile] = useState(false);
+
 	const currentSong =
 		songs.length > 0
 			? {
@@ -311,6 +313,15 @@ export default function MusicPlayer() {
 		};
 	}, [togglePlayPause]);
 
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.matchMedia("(max-width: 640px)").matches);
+		};
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
+	}, []);
+
 	return (
 		<motion.div
 			className="pt-2.5"
@@ -450,7 +461,7 @@ export default function MusicPlayer() {
 											</motion.button>
 										</div>
 
-										<div className="flex-1">
+										<div className={`flex-1 ${isMobile ? 'pr-8' : ''}`}>
 											<div className="group relative h-6 flex items-center select-none">
 												<div className="flex items-center w-full">
 													<span className="mr-2 text-xs text-zinc-400">
@@ -484,11 +495,11 @@ export default function MusicPlayer() {
 											</div>
 										</div>
 
-										<div className="group flex items-center gap-2">
+										{!isLoading && isMobile ? (
 											<motion.button
 												whileHover={{ scale: 1.1 }}
 												whileTap={{ scale: 0.9 }}
-												className="text-zinc-400 hover:text-white transition-colors"
+												className="absolute bottom-[0.85rem] right-3 text-zinc-400 hover:text-white transition-colors"
 												onClick={toggleMute}
 											>
 												{isMuted ? (
@@ -503,33 +514,54 @@ export default function MusicPlayer() {
 													<Volume2 className="h-4 w-4" />
 												)}
 											</motion.button>
-											<motion.div
-												whileHover={{ scale: 1.05 }}
-												whileTap={{ scale: 0.95 }}
-												className="w-16 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
-											>
-												<div className="group relative h-6 flex items-center select-none">
-													<div className="flex items-center w-full">
-														<div className="relative flex-1 volume-bar">
-															<div
-																className="absolute inset-0 -top-2 -bottom-2 cursor-pointer"
-																onClick={handleVolumeChange}
-																onMouseDown={handleMouseDown("volume")}
-															></div>
-															<div className="h-[2px] w-full bg-zinc-800 rounded-full overflow-hidden">
+										) : (
+											<div className="group flex items-center gap-2">
+												<motion.button
+													whileHover={{ scale: 1.1 }}
+													whileTap={{ scale: 0.9 }}
+													className="text-zinc-400 hover:text-white transition-colors"
+													onClick={toggleMute}
+												>
+													{isMuted ? (
+														<VolumeX className="h-4 w-4" />
+													) : volume === 0 ? (
+														<VolumeX className="h-4 w-4" />
+													) : volume < 30 ? (
+														<Volume className="h-4 w-4" />
+													) : volume < 60 ? (
+														<Volume1 className="h-4 w-4" />
+													) : (
+														<Volume2 className="h-4 w-4" />
+													)}
+												</motion.button>
+												<motion.div
+													whileHover={{ scale: 1.05 }}
+													whileTap={{ scale: 0.95 }}
+													className="w-16 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
+												>
+													<div className="group relative h-6 flex items-center select-none">
+														<div className="flex items-center w-full">
+															<div className="relative flex-1 volume-bar">
 																<div
-																	className="h-full transition-[width] duration-75 bg-zinc-400 rounded-full"
-																	style={{ width: `${volume}%` }}
+																	className="absolute inset-0 -top-2 -bottom-2 cursor-pointer"
+																	onClick={handleVolumeChange}
+																	onMouseDown={handleMouseDown("volume")}
 																></div>
+																<div className="h-[2px] w-full bg-zinc-800 rounded-full overflow-hidden">
+																	<div
+																		className="h-full transition-[width] duration-75 bg-zinc-400 rounded-full"
+																		style={{ width: `${volume}%` }}
+																	></div>
+																</div>
 															</div>
+															<span className="ml-2 text-xs text-zinc-400">
+																{volume}%
+															</span>
 														</div>
-														<span className="ml-2 text-xs text-zinc-400">
-															{volume}%
-														</span>
 													</div>
-												</div>
-											</motion.div>
-										</div>
+												</motion.div>
+											</div>
+										)}
 									</div>
 								</>
 							)}
