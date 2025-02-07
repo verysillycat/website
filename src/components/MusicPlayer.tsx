@@ -39,6 +39,8 @@ export default function MusicPlayer() {
 
 	const loadedImages = useRef<Record<string, boolean>>({});
 
+	const shouldPlayAfterLoad = useRef(false);
+
 	const currentSong =
 		songs.length > 0
 			? {
@@ -70,6 +72,10 @@ export default function MusicPlayer() {
 				const songList = await response.json();
 				setSongs(songList);
 				setCurrentSongIndex(Math.floor(Math.random() * songList.length));
+				if ('mediaSession' in navigator) {
+					navigator.mediaSession.setActionHandler('previoustrack', playPreviousSong);
+					navigator.mediaSession.setActionHandler('nexttrack', playNextSong);
+				}
 			} catch (error) {
 				console.error("Error loading songs:", error);
 			} finally {
@@ -79,6 +85,15 @@ export default function MusicPlayer() {
 
 		loadSongs();
 	}, [setSongs, setCurrentSongIndex]);
+	useEffect(() => {
+		if ('mediaSession' in navigator && currentSong) {
+			navigator.mediaSession.metadata = new MediaMetadata({
+				title: currentSong.title,
+				artist: currentSong.artist,
+				artwork: currentSong.cover ? [{ src: currentSong.cover }] : []
+			});
+		}
+	}, [currentSong]);
 
 	useEffect(() => {
 		if (audioRef.current) {
@@ -115,6 +130,12 @@ export default function MusicPlayer() {
 	const handleLoadedMetadata = () => {
 		if (audioRef.current) {
 			setDuration(audioRef.current.duration);
+			if (shouldPlayAfterLoad.current) {
+				audioRef.current.play().catch(error => console.error('Autoplay failed:', error));
+				shouldPlayAfterLoad.current = false;
+			} else if (isPlaying) {
+				audioRef.current.play().catch(error => console.error('Autoplay failed:', error));
+			}
 		}
 	};
 
@@ -139,27 +160,51 @@ export default function MusicPlayer() {
 		}
 	};
 
-	const playNextSong = () => {
+	const playNextSong = useCallback(() => {
 		if (songs.length > 0) {
+			const wasPlaying = isPlaying;
 			setSlideDirection(1);
-			const nextIndex = (currentSongIndex + 1) % songs.length;
-			setCurrentSongIndex(nextIndex);
-			if (isPlaying && audioRef.current) {
-				setTimeout(() => audioRef.current?.play(), 0);
+			setCurrentSongIndex((prevIndex) => (prevIndex + 1) % songs.length);
+			if (wasPlaying) {
+				const playNewSong = () => {
+					audioRef.current?.play().catch(error => console.error('Autoplay failed:', error));
+					audioRef.current?.removeEventListener('loadedmetadata', playNewSong);
+				};
+				audioRef.current?.addEventListener('loadedmetadata', playNewSong);
 			}
+			setIsPlaying(wasPlaying);
+			shouldPlayAfterLoad.current = wasPlaying;
 		}
-	};
+	}, [songs.length, isPlaying]);
 
-	const playPreviousSong = () => {
+	const playPreviousSong = useCallback(() => {
 		if (songs.length > 0) {
+			const wasPlaying = isPlaying;
 			setSlideDirection(-1);
-			const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-			setCurrentSongIndex(prevIndex);
-			if (isPlaying && audioRef.current) {
-				setTimeout(() => audioRef.current?.play(), 0);
+			setCurrentSongIndex((prevIndex) => (prevIndex - 1 + songs.length) % songs.length);
+			if (wasPlaying) {
+				const playNewSong = () => {
+					audioRef.current?.play().catch(error => console.error('Autoplay failed:', error));
+					audioRef.current?.removeEventListener('loadedmetadata', playNewSong);
+				};
+				audioRef.current?.addEventListener('loadedmetadata', playNewSong);
 			}
+			setIsPlaying(wasPlaying);
+			shouldPlayAfterLoad.current = wasPlaying;
 		}
-	};
+	}, [songs.length, isPlaying]);
+
+	useEffect(() => {
+		if ('mediaSession' in navigator) {
+			navigator.mediaSession.setActionHandler('previoustrack', playPreviousSong);
+			navigator.mediaSession.setActionHandler('nexttrack', playNextSong);
+			
+			return () => {
+				navigator.mediaSession.setActionHandler('previoustrack', null);
+				navigator.mediaSession.setActionHandler('nexttrack', null);
+			};
+		}
+	}, [playPreviousSong, playNextSong]);
 
 	const formatTime = (totalSeconds: number) => {
 		const minutes = Math.floor(totalSeconds / 60);
