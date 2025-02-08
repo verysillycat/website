@@ -66,9 +66,12 @@ export default function About() {
 									animate={isInView ? { opacity: 1, y: 0 } : {}}
 									transition={{ duration: 0.5, ease: "easeInOut" }}
 								>
-									<div className="w-full h-4 mt-2 mb-0 sm:my-2 sm:h-28 sm:w-auto flex justify-center sm:ml-8">
-										<div className="h-[1px] w-full sm:h-full sm:w-[1px] bg-gradient-to-r sm:bg-gradient-to-b from-transparent via-[#dbdbdb] to-transparent opacity-50 relative">
-											<div className="absolute h-[3px] w-8 sm:h-8 sm:w-[3px] bg-white/20 blur-sm -top-[1px] sm:-left-[1px] sm:top-auto animate-moveHorizontal sm:animate-moveVertical" />
+									<div className="block sm:hidden w-56 h-[1px] my-4 mx-auto bg-gradient-to-r from-transparent via-[#dbdbdb] to-transparent opacity-50 relative">
+										<div className="absolute w-16 h-[3px] bg-white/20 blur-sm -top-[1px]" />
+									</div>
+									<div className="hidden sm:block w-auto h-28 my-2 justify-center sm:ml-8">
+										<div className="h-full w-[1px] bg-gradient-to-b from-transparent via-[#dbdbdb] to-transparent opacity-50 relative">
+											<div className="absolute h-8 w-[3px] bg-white/20 blur-sm -left-[1px]" />
 										</div>
 									</div>
 								</motion.div>
