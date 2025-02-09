@@ -96,7 +96,7 @@ export default function CardComponent() {
 								<div key={index} className="relative inline-block">
 									<motion.span
 										className={`inline-block relative mr-[0.25em]`}
-										initial={{ y: "100%", opacity: 0, filter: "blur(1px)" }}
+										initial={{ y: "100%", opacity: 0, filter: "blur(2.5px)" }}
 										animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
 										transition={{
 											duration: 1.4,
