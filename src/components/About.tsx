@@ -68,10 +68,12 @@ export default function About() {
 								>
 									<div className="block sm:hidden w-56 h-[1px] my-4 mx-auto bg-gradient-to-r from-transparent via-[#dbdbdb] to-transparent opacity-50 relative">
 										<div className="absolute w-16 h-[3px] bg-white/20 blur-sm -top-[1px]" />
+										<div className="absolute w-16 h-[3px] bg-white/20 blur-sm -top-[1px] right-0" />
 									</div>
 									<div className="hidden sm:block w-auto h-28 my-2 justify-center sm:ml-8">
 										<div className="h-full w-[1px] bg-gradient-to-b from-transparent via-[#dbdbdb] to-transparent opacity-50 relative">
 											<div className="absolute h-8 w-[3px] bg-white/20 blur-sm -left-[1px]" />
+											<div className="absolute h-8 w-[3px] bg-white/20 blur-sm -left-[1px] bottom-0" />
 										</div>
 									</div>
 								</motion.div>
