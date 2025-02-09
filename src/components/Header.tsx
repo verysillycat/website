@@ -10,6 +10,8 @@ export default function Header() {
 	const [hamburgerTriggered, setHamburgerTriggered] = useState(false);
 	const { status } = useSocket();
 	const [showUserArea, setShowUserArea] = useState(false);
+	const [scrolled, setScrolled] = useState(false);
+	const [isDesktop, setIsDesktop] = useState(false);
 
 	const statusColor = {
 		online:
@@ -25,10 +27,14 @@ export default function Header() {
 
 	useEffect(() => {
 		const handleResize = () => {
+			setIsDesktop(window.innerWidth >= 1024);
 			if (window.innerWidth >= 640) {
 				setHamburgerTriggered(false);
 			}
 		};
+
+		// Initial check
+		handleResize();
 
 		window.addEventListener("resize", handleResize);
 		return () => window.removeEventListener("resize", handleResize);
@@ -40,6 +46,15 @@ export default function Header() {
 		return () => {
 			document.documentElement.style.scrollBehavior = "auto";
 		};
+	}, []);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			setScrolled(window.scrollY > 20);
+		};
+
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
 	}, []);
 
 	return (
@@ -59,10 +74,20 @@ export default function Header() {
 			</AnimatePresence>
 
 			<motion.div
-				initial={{ y: -100 }}
-				animate={{ y: 0 }}
-				transition={{ type: "spring", stiffness: 150, damping: 20 }}
-				className="fixed top-0 left-0 right-0 mx-20 mt-4 bg-dark/75 text-white border border-[#999a9e]/30 backdrop-blur-[5px] opacity-90 rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-shadow duration-300 non-selectable relative z-50"
+				initial={{ y: -100, scale: 0.98 }}
+				animate={{ 
+					y: 0,
+					scale: 1,
+					marginLeft: scrolled && isDesktop ? '8.5rem' : '5rem',
+					marginRight: scrolled && isDesktop ? '8.5rem' : '5rem'
+				}}
+				transition={{ 
+					y: { type: "spring", stiffness: 150, damping: 20 },
+					scale: { type: "spring", stiffness: 120, damping: 25 },
+					marginLeft: { type: "spring", stiffness: 70, damping: 25, mass: 1.2 },
+					marginRight: { type: "spring", stiffness: 70, damping: 25, mass: 1.2 }
+				}}
+				className={`fixed top-0 left-0 right-0 mt-4 bg-dark/75 text-white border border-[#999a9e]/30 backdrop-blur-[5px] opacity-90 rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] non-selectable relative z-50`}
 				style={{ position: "fixed", top: 0, left: 0, right: 0 }}
 			>
 				<div className="p-3.5 non-selectable">
@@ -169,7 +194,7 @@ export default function Header() {
 										window.scrollTo({ top: 0 });
 										setHamburgerTriggered(false);
 									}}
-									className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:text-shadow-[0_0_12px_rgba(255,255,255,0.7)] non-selectable"
+									className="nav-link text-white/80 hover:text-white transition-all duration-300 hover:drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]non-selectable"
 								>
 									Home
 								</a>
