@@ -44,6 +44,8 @@ export default function MusicPlayer() {
 
 	const [isMobile, setIsMobile] = useState(false);
 
+	const [isAudioLoading, setIsAudioLoading] = useState(false);
+
 	const currentSong =
 		songs.length > 0
 			? {
@@ -136,6 +138,7 @@ export default function MusicPlayer() {
 	const handleLoadedMetadata = () => {
 		if (audioRef.current) {
 			setDuration(audioRef.current.duration);
+			setIsAudioLoading(false);
 			if (shouldPlayAfterLoad.current) {
 				audioRef.current
 					.play()
@@ -174,6 +177,7 @@ export default function MusicPlayer() {
 		if (songs.length > 0) {
 			const wasPlaying = isPlaying;
 			setSlideDirection(1);
+			setIsAudioLoading(true);
 			setCurrentSongIndex((prevIndex) => (prevIndex + 1) % songs.length);
 			if (wasPlaying) {
 				const playNewSong = () => {
@@ -193,6 +197,7 @@ export default function MusicPlayer() {
 		if (songs.length > 0) {
 			const wasPlaying = isPlaying;
 			setSlideDirection(-1);
+			setIsAudioLoading(true);
 			setCurrentSongIndex(
 				(prevIndex) => (prevIndex - 1 + songs.length) % songs.length,
 			);
@@ -375,7 +380,7 @@ export default function MusicPlayer() {
 								transition={{ duration: 0.3, ease: "easeOut" }}
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
-								className="relative h-12 w-12 rounded-lg overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105"
+								className="relative h-12 w-12 rounded-lg overflow-hidden transition-transform duration-500 ease-in-out hover:scale-105"
 							>
 								{!isImageLoaded && (
 									<div className="absolute inset-0 skeleton-bg animate-pulse" />
@@ -468,12 +473,16 @@ export default function MusicPlayer() {
 												<SkipBack className="h-4 w-4" />
 											</motion.button>
 											<motion.button
-												whileHover={{ scale: 1.1 }}
-												whileTap={{ scale: 0.9 }}
-												className="text-zinc-400 hover:text-zinc-200 hover:filter hover:drop-shadow-[0_0_2px_rgba(255,255,255,0.5)] transition-all"
-												onClick={togglePlayPause}
+												whileHover={{ scale: isAudioLoading ? 1 : 1.1 }}
+												whileTap={{ scale: isAudioLoading ? 1 : 0.9 }}
+												className={`text-zinc-400 transition-all ${
+													isAudioLoading 
+														? "opacity-50 cursor-not-allowed" 
+														: "hover:text-zinc-200 hover:filter hover:drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]"
+												}`}
+												onClick={isAudioLoading ? undefined : togglePlayPause}
 											>
-												{audioRef.current && !audioRef.current.paused ? (
+												{isPlaying ? (
 													<Pause className="h-4 w-4" />
 												) : (
 													<Play className="h-4 w-4" />
@@ -489,7 +498,7 @@ export default function MusicPlayer() {
 											</motion.button>
 										</div>
 
-										<div className={`flex-1 ${isMobile ? "pr-8" : ""}`}>
+										<div className={`flex-1 ${isMobile ? "pr-10" : ""}`}>
 											<div className="group relative h-6 flex items-center select-none">
 												<div className="flex items-center w-full">
 													<span className="mr-2 text-xs text-zinc-400">
@@ -524,57 +533,24 @@ export default function MusicPlayer() {
 										</div>
 
 										{!isLoading && isMobile ? (
-											<div className="group flex items-center gap-2">
-												<motion.button
-													whileHover={{ scale: 1.1 }}
-													whileTap={{ scale: 0.9 }}
-													className="text-zinc-400 hover:text-zinc-200 hover:filter hover:drop-shadow-[0_0_2px_rgba(255,255,255,0.5)] transition-all"
-													onClick={toggleMute}
-												>
-													{isMuted ? (
-														<VolumeX className="h-4 w-4" />
-													) : volume === 0 ? (
-														<VolumeX className="h-4 w-4" />
-													) : volume < 30 ? (
-														<Volume className="h-4 w-4" />
-													) : volume < 60 ? (
-														<Volume1 className="h-4 w-4" />
-													) : (
-														<Volume2 className="h-4 w-4" />
-													)}
-												</motion.button>
-												<motion.div
-													whileHover={{ scale: 1.05 }}
-													className="w-16 opacity-0 scale-95 hover:opacity-100 hover:scale-100 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-in-out"
-												>
-													<div className="group relative h-6 flex items-center select-none">
-														<div className="flex items-center w-full">
-															<div className="relative flex-1 volume-bar">
-																<div
-																	className="absolute inset-0 -top-2 -bottom-2 cursor-pointer"
-																	onClick={handleVolumeChange}
-																	onMouseDown={handleMouseDown("volume")}
-																	onMouseMove={handleVolumeHover}
-																	onMouseLeave={() => setHoverVolume(0)}
-																></div>
-																<div className="h-[2px] w-full bg-zinc-800 rounded-full overflow-hidden">
-																	<div
-																		className="absolute h-full bg-white/10 rounded-full transition-all duration-300 ease-in-out"
-																		style={{ width: `${hoverVolume}%` }}
-																	/>
-																	<div
-																		className="relative h-full transition-[width] duration-75 bg-zinc-400 rounded-full"
-																		style={{ width: `${volume}%` }}
-																	></div>
-																</div>
-															</div>
-															<span className="ml-2 text-xs text-zinc-400">
-																{volume}%
-															</span>
-														</div>
-													</div>
-												</motion.div>
-											</div>
+											<motion.button
+												whileHover={{ scale: 1.1 }}
+												whileTap={{ scale: 0.9 }}
+												className="text-zinc-400 hover:text-zinc-200 hover:filter hover:drop-shadow-[0_0_2px_rgba(255,255,255,0.5)] transition-all absolute right-4"
+												onClick={toggleMute}
+											>
+												{isMuted ? (
+													<VolumeX className="h-4 w-4" />
+												) : volume === 0 ? (
+													<VolumeX className="h-4 w-4" />
+												) : volume < 30 ? (
+													<Volume className="h-4 w-4" />
+												) : volume < 60 ? (
+													<Volume1 className="h-4 w-4" />
+												) : (
+													<Volume2 className="h-4 w-4" />
+												)}
+											</motion.button>
 										) : (
 											<div className="group flex items-center gap-2">
 												<motion.button
