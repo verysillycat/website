@@ -45,15 +45,17 @@ interface LoadingState {
 }
 
 const extractDominantColor = (imageData: Uint8ClampedArray) => {
-	const colors = Array.from({ length: Math.floor(imageData.length / (4 * 10)) }, (_, i) => {
-		const idx = i * 40;
-		return [imageData[idx], imageData[idx + 1], imageData[idx + 2]];
-	});
+	const colors = Array.from(
+		{ length: Math.floor(imageData.length / (4 * 10)) },
+		(_, i) => {
+			const idx = i * 40;
+			return [imageData[idx], imageData[idx + 1], imageData[idx + 2]];
+		},
+	);
 
-	const [avgR, avgG, avgB] = colors.reduce(
-		([r, g, b], [cr, cg, cb]) => [r + cr, g + cg, b + cb],
-		[0, 0, 0]
-	).map(sum => Math.floor(sum / colors.length));
+	const [avgR, avgG, avgB] = colors
+		.reduce(([r, g, b], [cr, cg, cb]) => [r + cr, g + cg, b + cb], [0, 0, 0])
+		.map((sum) => Math.floor(sum / colors.length));
 
 	const brightness = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB) / 255;
 	if (brightness < 0.4) {
@@ -61,7 +63,7 @@ const extractDominantColor = (imageData: Uint8ClampedArray) => {
 		return {
 			r: Math.min(255, Math.floor(avgR * adjustment)),
 			g: Math.min(255, Math.floor(avgG * adjustment)),
-			b: Math.min(255, Math.floor(avgB * adjustment))
+			b: Math.min(255, Math.floor(avgB * adjustment)),
 		};
 	}
 
@@ -69,8 +71,8 @@ const extractDominantColor = (imageData: Uint8ClampedArray) => {
 };
 
 const handleImageColorExtraction = (
-	img: HTMLImageElement, 
-	onColorExtracted: (color: string) => void
+	img: HTMLImageElement,
+	onColorExtracted: (color: string) => void,
 ) => {
 	const canvas = document.createElement("canvas");
 	const ctx = canvas.getContext("2d");
@@ -94,11 +96,17 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	const [activeTab, setActiveTab] = useState<"artists" | "tracks">("artists");
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
-	const [dominantColors, setDominantColors] = useState<Record<string, string>>({});
+	const [dominantColors, setDominantColors] = useState<Record<string, string>>(
+		{},
+	);
 	const previousTab = useRef<"artists" | "tracks">("artists");
-	const [animationDirection, setAnimationDirection] = useState<'left' | 'right' | null>(null);
+	const [animationDirection, setAnimationDirection] = useState<
+		"left" | "right" | null
+	>(null);
 	const [isPageChange, setIsPageChange] = useState(false);
-	const [loadingStates, setLoadingStates] = useState<Record<string, LoadingState>>({});
+	const [loadingStates, setLoadingStates] = useState<
+		Record<string, LoadingState>
+	>({});
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -147,22 +155,24 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	}, [isOpen, onClose]);
 
 	const handleImageLoad = (item: Artist | Track) => {
-		const itemKey = isArtist(item) 
+		const itemKey = isArtist(item)
 			? `${item.artist.id}-${item.artist.image}`
 			: `${item.track.id}-${item.track.albums[0]?.image}`;
-		
-		setLoadingStates(prev => ({ 
-			...prev, 
-			[itemKey]: { loading: false, loaded: true }
+
+		setLoadingStates((prev) => ({
+			...prev,
+			[itemKey]: { loading: false, loaded: true },
 		}));
-		
+
 		const img = new window.Image();
 		img.crossOrigin = "Anonymous";
-		const imgSrc = isArtist(item) ? item.artist.image : item.track.albums[0].image;
-		
+		const imgSrc = isArtist(item)
+			? item.artist.image
+			: item.track.albums[0].image;
+
 		img.onload = () => {
 			handleImageColorExtraction(img, (color) => {
-				setDominantColors(prev => ({ ...prev, [itemKey]: color }));
+				setDominantColors((prev) => ({ ...prev, [itemKey]: color }));
 			});
 		};
 		img.src = imgSrc;
@@ -182,30 +192,41 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 		return items.slice(startIndex, startIndex + itemsPerPage);
 	}, [activeTab, currentPage, artists, tracks]);
 
-	const paginationInfo = React.useMemo(() => ({
-		totalPages: Math.ceil((activeTab === "artists" ? artists.length : tracks.length) / itemsPerPage),
-		canGoBack: currentPage > 1,
-		canGoForward: currentPage < Math.ceil((activeTab === "artists" ? artists.length : tracks.length) / itemsPerPage)
-	}), [activeTab, currentPage, artists.length, tracks.length]);
+	const paginationInfo = React.useMemo(
+		() => ({
+			totalPages: Math.ceil(
+				(activeTab === "artists" ? artists.length : tracks.length) /
+					itemsPerPage,
+			),
+			canGoBack: currentPage > 1,
+			canGoForward:
+				currentPage <
+				Math.ceil(
+					(activeTab === "artists" ? artists.length : tracks.length) /
+						itemsPerPage,
+				),
+		}),
+		[activeTab, currentPage, artists.length, tracks.length],
+	);
 
 	useEffect(() => {
 		const newLoadingStates: Record<string, LoadingState> = {};
-		
-		currentItems.forEach(item => {
-			const key = isArtist(item) 
+
+		currentItems.forEach((item) => {
+			const key = isArtist(item)
 				? `${item.artist.id}-${item.artist.image}`
 				: `${item.track.id}-${item.track.albums[0]?.image}`;
-			
+
 			if (!loadingStates[key]) {
 				newLoadingStates[key] = { loading: true, loaded: false };
 			}
 		});
 
 		if (Object.keys(newLoadingStates).length > 0) {
-			setLoadingStates(prev => ({ ...prev, ...newLoadingStates }));
+			setLoadingStates((prev) => ({ ...prev, ...newLoadingStates }));
 		}
 
-		currentItems.forEach(item => {
+		currentItems.forEach((item) => {
 			handleImageLoad(item);
 		});
 	}, [currentItems]);
@@ -218,7 +239,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 
 	const handleTabChange = (tab: "artists" | "tracks") => {
 		setIsPageChange(false);
-		const direction = tab === 'artists' ? 'left' : 'right';
+		const direction = tab === "artists" ? "left" : "right";
 		setAnimationDirection(direction);
 		setActiveTab(tab);
 		setCurrentPage(1);
@@ -346,7 +367,10 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 									<>
 										<div className="space-y-4">
 											{[...Array(itemsPerPage)].map((_, index) => (
-												<div key={index} className="flex items-center gap-2 py-1.5 mx-2">
+												<div
+													key={index}
+													className="flex items-center gap-2 py-1.5 mx-2"
+												>
 													<span className="ml-2 text-lg font-bold w-4 flex items-center justify-center">
 														<div className="w-4 h-6 bg-zinc-800/50 rounded animate-pulse" />
 													</span>
@@ -378,27 +402,35 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 										<AnimatePresence mode="wait" initial={false}>
 											<motion.div
 												key={`${activeTab}-${currentPage}`}
-												initial={{ 
+												initial={{
 													opacity: 0,
-													x: isPageChange ? 0 : (animationDirection === 'left' ? 20 : -20),
-													y: isPageChange ? 8 : 0
+													x: isPageChange
+														? 0
+														: animationDirection === "left"
+															? 20
+															: -20,
+													y: isPageChange ? 8 : 0,
 												}}
-												animate={{ 
+												animate={{
 													opacity: 1,
 													x: 0,
-													y: 0
+													y: 0,
 												}}
-												exit={{ 
+												exit={{
 													opacity: 0,
-													x: isPageChange ? 0 : (animationDirection === 'left' ? -20 : 20),
-													y: isPageChange ? -8 : 0
+													x: isPageChange
+														? 0
+														: animationDirection === "left"
+															? -20
+															: 20,
+													y: isPageChange ? -8 : 0,
 												}}
 												transition={{
 													duration: 0.3,
 													ease: [0.2, 0.0, 0.0, 1.0],
-													opacity: { 
+													opacity: {
 														duration: 0.2,
-														ease: [0.4, 0.0, 0.2, 1.0]
+														ease: [0.4, 0.0, 0.2, 1.0],
 													},
 												}}
 												className="space-y-3 overflow-hidden pt-2"
@@ -420,27 +452,36 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																			background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
 																			border-color 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)
 																		`,
-																		backgroundColor: 'transparent',
-																		borderColor: 'transparent'
+																		backgroundColor: "transparent",
+																		borderColor: "transparent",
 																	}}
 																	onMouseEnter={(e) => {
 																		const element = e.currentTarget;
-																		const color = dominantColors[artistKey] || 'rgb(128, 128, 128)';
-																		const rgbaColor = color.replace('rgb', 'rgba').replace(')', ', 0.15)');
+																		const color =
+																			dominantColors[artistKey] ||
+																			"rgb(128, 128, 128)";
+																		const rgbaColor = color
+																			.replace("rgb", "rgba")
+																			.replace(")", ", 0.15)");
 																		element.style.backgroundColor = rgbaColor;
 
 																		const colorValues = color.match(/\d+/g);
-																		const [r, g, b] = colorValues ? colorValues.map(Number) : [128, 128, 128];
-																		const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-																		const borderColor = brightness > 0.5
-																			? `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.2)`
-																			: `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.2)`;
+																		const [r, g, b] = colorValues
+																			? colorValues.map(Number)
+																			: [128, 128, 128];
+																		const brightness =
+																			(0.299 * r + 0.587 * g + 0.114 * b) / 255;
+																		const borderColor =
+																			brightness > 0.5
+																				? `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.2)`
+																				: `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.2)`;
 																		element.style.borderColor = borderColor;
 																	}}
 																	onMouseLeave={(e) => {
 																		const element = e.currentTarget;
-																		element.style.backgroundColor = 'transparent';
-																		element.style.borderColor = 'transparent';
+																		element.style.backgroundColor =
+																			"transparent";
+																		element.style.borderColor = "transparent";
 																	}}
 																>
 																	<span className="ml-2 text-lg font-bold w-4 flex items-center justify-center text-zinc-400 group-hover:text-[#c6c6c6] transition-colors">
@@ -448,7 +489,9 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																	</span>
 																	<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
 																		<div className="relative w-12 h-12 rounded-full overflow-hidden">
-																			{loadingStates[`${item.artist.id}-${item.artist.image}`]?.loading && (
+																			{loadingStates[
+																				`${item.artist.id}-${item.artist.image}`
+																			]?.loading && (
 																				<div className="absolute inset-0 skeleton-bg animate-pulse rounded-full" />
 																			)}
 																			<Image
@@ -457,9 +500,11 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																				width={48}
 																				height={48}
 																				className={`rounded-full object-cover transition-opacity duration-300 ease-in-out ${
-																					loadingStates[`${item.artist.id}-${item.artist.image}`]?.loaded 
-																						? 'opacity-100' 
-																						: 'opacity-0'
+																					loadingStates[
+																						`${item.artist.id}-${item.artist.image}`
+																					]?.loaded
+																						? "opacity-100"
+																						: "opacity-0"
 																				}`}
 																				onLoad={() => handleImageLoad(item)}
 																			/>
@@ -475,21 +520,27 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																			</p>
 																		</div>
 																		<div className="flex flex-col items-end justify-center gap-0.5 pr-2 ml-auto">
-																			<span className="text-[10px] text-zinc-400">Popularity</span>
+																			<span className="text-[10px] text-zinc-400">
+																				Popularity
+																			</span>
 																			<div className="flex items-center gap-1">
-																				<div 
+																				<div
 																					className="w-14 h-1 rounded-full overflow-hidden"
 																					style={{
-																						backgroundColor: dominantColors[artistKey] 
-																							? `${dominantColors[artistKey].replace('rgb', 'rgba').replace(')', ', 0.1')}`
-																							: 'rgb(39, 39, 42)' // fallback to zinc-800
+																						backgroundColor: dominantColors[
+																							artistKey
+																						]
+																							? `${dominantColors[artistKey].replace("rgb", "rgba").replace(")", ", 0.1")}`
+																							: "rgb(39, 39, 42)", // fallback to zinc-800
 																					}}
 																				>
-																					<div 
+																					<div
 																						className="h-full rounded-full transition-all duration-150"
-																						style={{ 
+																						style={{
 																							width: `${item.artist.spotifyPopularity}%`,
-																							backgroundColor: dominantColors[artistKey] || 'transparent'
+																							backgroundColor:
+																								dominantColors[artistKey] ||
+																								"transparent",
 																						}}
 																					>
 																						{!dominantColors[artistKey] && (
@@ -523,27 +574,36 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																			background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
 																			border-color 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)
 																		`,
-																		backgroundColor: 'transparent',
-																		borderColor: 'transparent'
+																		backgroundColor: "transparent",
+																		borderColor: "transparent",
 																	}}
 																	onMouseEnter={(e) => {
 																		const element = e.currentTarget;
-																		const color = dominantColors[trackKey] || 'rgb(128, 128, 128)';
-																		const rgbaColor = color.replace('rgb', 'rgba').replace(')', ', 0.15)');
+																		const color =
+																			dominantColors[trackKey] ||
+																			"rgb(128, 128, 128)";
+																		const rgbaColor = color
+																			.replace("rgb", "rgba")
+																			.replace(")", ", 0.15)");
 																		element.style.backgroundColor = rgbaColor;
 
 																		const colorValues = color.match(/\d+/g);
-																		const [r, g, b] = colorValues ? colorValues.map(Number) : [128, 128, 128];
-																		const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-																		const borderColor = brightness > 0.5
-																			? `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.2)`
-																			: `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.2)`;
+																		const [r, g, b] = colorValues
+																			? colorValues.map(Number)
+																			: [128, 128, 128];
+																		const brightness =
+																			(0.299 * r + 0.587 * g + 0.114 * b) / 255;
+																		const borderColor =
+																			brightness > 0.5
+																				? `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.2)`
+																				: `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.2)`;
 																		element.style.borderColor = borderColor;
 																	}}
 																	onMouseLeave={(e) => {
 																		const element = e.currentTarget;
-																		element.style.backgroundColor = 'transparent';
-																		element.style.borderColor = 'transparent';
+																		element.style.backgroundColor =
+																			"transparent";
+																		element.style.borderColor = "transparent";
 																	}}
 																>
 																	<span className="ml-2 text-lg font-bold w-4 flex items-center justify-center text-zinc-500 group-hover:text-[#c6c6c6] transition-colors">
@@ -551,7 +611,9 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																	</span>
 																	<div className="flex items-center gap-3 flex-1 px-1.5 w-full">
 																		<div className="relative w-12 h-12">
-																			{loadingStates[`${item.track.id}-${item.track.albums[0]?.image}`]?.loading && (
+																			{loadingStates[
+																				`${item.track.id}-${item.track.albums[0]?.image}`
+																			]?.loading && (
 																				<div className="absolute inset-0 skeleton-bg animate-pulse rounded" />
 																			)}
 																			<Image
@@ -560,9 +622,11 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																				width={48}
 																				height={48}
 																				className={`rounded object-cover transition-opacity duration-300 ease-in-out ${
-																					loadingStates[`${item.track.id}-${item.track.albums[0]?.image}`]?.loaded 
-																						? 'opacity-100' 
-																						: 'opacity-0'
+																					loadingStates[
+																						`${item.track.id}-${item.track.albums[0]?.image}`
+																					]?.loaded
+																						? "opacity-100"
+																						: "opacity-0"
 																				}`}
 																				onLoad={() => handleImageLoad(item)}
 																			/>
@@ -587,21 +651,27 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 																			</p>
 																		</div>
 																		<div className="flex flex-col items-end justify-center gap-0.5 pr-2 ml-auto">
-																			<span className="text-[10px] text-zinc-400">Popularity</span>
+																			<span className="text-[10px] text-zinc-400">
+																				Popularity
+																			</span>
 																			<div className="flex items-center gap-1">
-																				<div 
+																				<div
 																					className="w-14 h-1 rounded-full overflow-hidden"
 																					style={{
-																						backgroundColor: dominantColors[trackKey] 
-																							? `${dominantColors[trackKey].replace('rgb', 'rgba').replace(')', ', 0.1')}`
-																							: 'rgb(39, 39, 42)' // fallback to zinc-800
+																						backgroundColor: dominantColors[
+																							trackKey
+																						]
+																							? `${dominantColors[trackKey].replace("rgb", "rgba").replace(")", ", 0.1")}`
+																							: "rgb(39, 39, 42)", // fallback to zinc-800
 																					}}
 																				>
-																					<div 
+																					<div
 																						className="h-full rounded-full transition-all duration-150"
-																						style={{ 
+																						style={{
 																							width: `${item.track.spotifyPopularity}%`,
-																							backgroundColor: dominantColors[trackKey] || 'transparent'
+																							backgroundColor:
+																								dominantColors[trackKey] ||
+																								"transparent",
 																						}}
 																					>
 																						{!dominantColors[trackKey] && (
@@ -622,7 +692,9 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 										</AnimatePresence>
 										<div className="flex justify-center items-center mt-3 gap-2">
 											<button
-												onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+												onClick={() =>
+													handlePageChange(Math.max(1, currentPage - 1))
+												}
 												disabled={currentPage === 1}
 												className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
 											>
@@ -632,7 +704,14 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 												{currentPage} of {paginationInfo.totalPages}
 											</span>
 											<button
-												onClick={() => handlePageChange(Math.min(paginationInfo.totalPages, currentPage + 1))}
+												onClick={() =>
+													handlePageChange(
+														Math.min(
+															paginationInfo.totalPages,
+															currentPage + 1,
+														),
+													)
+												}
 												disabled={currentPage === paginationInfo.totalPages}
 												className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700/80 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
 											>

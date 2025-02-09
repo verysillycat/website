@@ -75,9 +75,12 @@ export default function MusicPlayer() {
 				const songList = await response.json();
 				setSongs(songList);
 				setCurrentSongIndex(Math.floor(Math.random() * songList.length));
-				if ('mediaSession' in navigator) {
-					navigator.mediaSession.setActionHandler('previoustrack', playPreviousSong);
-					navigator.mediaSession.setActionHandler('nexttrack', playNextSong);
+				if ("mediaSession" in navigator) {
+					navigator.mediaSession.setActionHandler(
+						"previoustrack",
+						playPreviousSong,
+					);
+					navigator.mediaSession.setActionHandler("nexttrack", playNextSong);
 				}
 			} catch (error) {
 				console.error("Error loading songs:", error);
@@ -89,11 +92,11 @@ export default function MusicPlayer() {
 		loadSongs();
 	}, [setSongs, setCurrentSongIndex]);
 	useEffect(() => {
-		if ('mediaSession' in navigator && currentSong) {
+		if ("mediaSession" in navigator && currentSong) {
 			navigator.mediaSession.metadata = new MediaMetadata({
 				title: currentSong.title,
 				artist: currentSong.artist,
-				artwork: currentSong.cover ? [{ src: currentSong.cover }] : []
+				artwork: currentSong.cover ? [{ src: currentSong.cover }] : [],
 			});
 		}
 	}, [currentSong]);
@@ -134,10 +137,14 @@ export default function MusicPlayer() {
 		if (audioRef.current) {
 			setDuration(audioRef.current.duration);
 			if (shouldPlayAfterLoad.current) {
-				audioRef.current.play().catch(error => console.error('Autoplay failed:', error));
+				audioRef.current
+					.play()
+					.catch((error) => console.error("Autoplay failed:", error));
 				shouldPlayAfterLoad.current = false;
 			} else if (isPlaying) {
-				audioRef.current.play().catch(error => console.error('Autoplay failed:', error));
+				audioRef.current
+					.play()
+					.catch((error) => console.error("Autoplay failed:", error));
 			}
 		}
 	};
@@ -170,10 +177,12 @@ export default function MusicPlayer() {
 			setCurrentSongIndex((prevIndex) => (prevIndex + 1) % songs.length);
 			if (wasPlaying) {
 				const playNewSong = () => {
-					audioRef.current?.play().catch(error => console.error('Autoplay failed:', error));
-					audioRef.current?.removeEventListener('loadedmetadata', playNewSong);
+					audioRef.current
+						?.play()
+						.catch((error) => console.error("Autoplay failed:", error));
+					audioRef.current?.removeEventListener("loadedmetadata", playNewSong);
 				};
-				audioRef.current?.addEventListener('loadedmetadata', playNewSong);
+				audioRef.current?.addEventListener("loadedmetadata", playNewSong);
 			}
 			setIsPlaying(wasPlaying);
 			shouldPlayAfterLoad.current = wasPlaying;
@@ -184,13 +193,17 @@ export default function MusicPlayer() {
 		if (songs.length > 0) {
 			const wasPlaying = isPlaying;
 			setSlideDirection(-1);
-			setCurrentSongIndex((prevIndex) => (prevIndex - 1 + songs.length) % songs.length);
+			setCurrentSongIndex(
+				(prevIndex) => (prevIndex - 1 + songs.length) % songs.length,
+			);
 			if (wasPlaying) {
 				const playNewSong = () => {
-					audioRef.current?.play().catch(error => console.error('Autoplay failed:', error));
-					audioRef.current?.removeEventListener('loadedmetadata', playNewSong);
+					audioRef.current
+						?.play()
+						.catch((error) => console.error("Autoplay failed:", error));
+					audioRef.current?.removeEventListener("loadedmetadata", playNewSong);
 				};
-				audioRef.current?.addEventListener('loadedmetadata', playNewSong);
+				audioRef.current?.addEventListener("loadedmetadata", playNewSong);
 			}
 			setIsPlaying(wasPlaying);
 			shouldPlayAfterLoad.current = wasPlaying;
@@ -198,13 +211,16 @@ export default function MusicPlayer() {
 	}, [songs.length, isPlaying]);
 
 	useEffect(() => {
-		if ('mediaSession' in navigator) {
-			navigator.mediaSession.setActionHandler('previoustrack', playPreviousSong);
-			navigator.mediaSession.setActionHandler('nexttrack', playNextSong);
-			
+		if ("mediaSession" in navigator) {
+			navigator.mediaSession.setActionHandler(
+				"previoustrack",
+				playPreviousSong,
+			);
+			navigator.mediaSession.setActionHandler("nexttrack", playNextSong);
+
 			return () => {
-				navigator.mediaSession.setActionHandler('previoustrack', null);
-				navigator.mediaSession.setActionHandler('nexttrack', null);
+				navigator.mediaSession.setActionHandler("previoustrack", null);
+				navigator.mediaSession.setActionHandler("nexttrack", null);
 			};
 		}
 	}, [playPreviousSong, playNextSong]);
@@ -319,8 +335,8 @@ export default function MusicPlayer() {
 			setIsMobile(window.matchMedia("(max-width: 640px)").matches);
 		};
 		checkMobile();
-		window.addEventListener('resize', checkMobile);
-		return () => window.removeEventListener('resize', checkMobile);
+		window.addEventListener("resize", checkMobile);
+		return () => window.removeEventListener("resize", checkMobile);
 	}, []);
 
 	const handleVolumeHover = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -473,7 +489,7 @@ export default function MusicPlayer() {
 											</motion.button>
 										</div>
 
-										<div className={`flex-1 ${isMobile ? 'pr-8' : ''}`}>
+										<div className={`flex-1 ${isMobile ? "pr-8" : ""}`}>
 											<div className="group relative h-6 flex items-center select-none">
 												<div className="flex items-center w-full">
 													<span className="mr-2 text-xs text-zinc-400">

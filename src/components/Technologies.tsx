@@ -18,7 +18,11 @@ export default function Technologies() {
 			icon: "simple-icons:nextdotjs",
 			name: "Next.js",
 		},
-		{ href: "https://astro.build", icon: "simple-icons:astro", name: "Astro" },
+		{
+			href: "https://astro.build",
+			icon: "simple-icons:astro",
+			name: "Astro",
+		},
 		{
 			href: "https://www.typescriptlang.org",
 			icon: "simple-icons:typescript",
@@ -39,7 +43,11 @@ export default function Technologies() {
 			icon: "simple-icons:python",
 			name: "Python",
 		},
-		{ href: "https://pnpm.io", icon: "simple-icons:pnpm", name: "pnpm" },
+		{
+			href: "https://pnpm.io",
+			icon: "simple-icons:pnpm",
+			name: "pnpm",
+		},
 		{
 			href: "https://www.kernel.org",
 			icon: "simple-icons:linux",
@@ -53,7 +61,11 @@ export default function Technologies() {
 	];
 
 	return (
-		<div id="technologies" className="flex justify-center items-center mt-10" ref={ref}>
+		<div
+			id="technologies"
+			className="flex justify-center items-center mt-10"
+			ref={ref}
+		>
 			<div className="flex flex-col items-center">
 				<motion.div
 					initial={{ opacity: 0, y: -5 }}

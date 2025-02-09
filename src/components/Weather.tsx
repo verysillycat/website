@@ -142,7 +142,9 @@ const Weather = () => {
 		<div className="outline outline-1 outline-[#999a9e]/20 bg-white/5 backdrop-blur-sm px-3 py-1 rounded-2xl flex items-center gap-2 hover:shadow-[0_0_2px_rgba(255,255,255,0.08)] hover:bg-white/10 transition-all duration-300">
 			<WeatherIcon condition={weatherState.condition} />
 			{!showIconOnly && (
-				<span className="text-sm text-white/85 font-medium">{weatherState.temp}</span>
+				<span className="text-sm text-white/85 font-medium">
+					{weatherState.temp}
+				</span>
 			)}
 		</div>
 	);

@@ -12,7 +12,11 @@ export default function About() {
 	const isInView = useInview(ref);
 
 	return (
-		<div id="about" className="flex justify-center items-center mt-10" ref={ref}>
+		<div
+			id="about"
+			className="flex justify-center items-center mt-10"
+			ref={ref}
+		>
 			<div className="flex flex-col items-center">
 				<motion.div
 					initial={{ opacity: 0, y: -5 }}
@@ -25,7 +29,7 @@ export default function About() {
 						className="text-2xl font-bold text-white/90"
 					/>
 				</motion.div>
-    
+
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -44,22 +48,22 @@ export default function About() {
 						<div className="relative z-10">
 							<CardHeader className="flex flex-col sm:flex-row items-center gap-4">
 								<motion.div
-									whileHover={{ 
+									whileHover={{
 										scale: 1.03,
-										boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)" 
+										boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)",
 									}}
 									whileTap={{ scale: 0.98 }}
-									transition={{ 
+									transition={{
 										type: "tween",
 										ease: [0.4, 0, 0.2, 1],
-										duration: 0.3 
+										duration: 0.3,
 									}}
 									className="text-white text-sm flex-[1.5] bg-white/[0.01] backdrop-blur-sm px-3 py-1 rounded-2xl shadow-lg border border-white/[0.02]"
 								>
-									In my early teen years, I developed an interest in programming,
-									design and cybersecurity which led me to pursue a career in the field
-                 					which I have a passion for and I'm always looking to
-									learn more and to make a difference.
+									In my early teen years, I developed an interest in
+									programming, design and cybersecurity which led me to pursue a
+									career in the field which I have a passion for and I'm always
+									looking to learn more and to make a difference.
 								</motion.div>
 								<motion.div
 									initial={{ opacity: 0, y: 20 }}
@@ -79,26 +83,25 @@ export default function About() {
 								</motion.div>
 								<div className="flex-1 sm:ml-8 text-center sm:text-left">
 									<motion.div
-										whileHover={{ 
+										whileHover={{
 											scale: 1.03,
-											boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)" 
+											boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)",
 										}}
 										whileTap={{ scale: 0.98 }}
-										transition={{ 
+										transition={{
 											type: "tween",
 											ease: [0.4, 0, 0.2, 1],
-											duration: 0.3 
+											duration: 0.3,
 										}}
 										className="text-white text-xs flex-[1.5] bg-white/[0.01] backdrop-blur-sm px-3 py-1 rounded-2xl shadow-lg border border-white/[0.02]"
 									>
-										Currently focused on Web Development
-										and always exploring new technologies
-										to enhance and improve my skill set.
+										Currently focused on Web Development and always exploring
+										new technologies to enhance and improve my skill set.
 									</motion.div>
 									<motion.div
-										whileHover={{ 
+										whileHover={{
 											scale: 1.03,
-											boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)" 
+											boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)",
 										}}
 										whileTap={{ scale: 0.98 }}
 										className="flex items-center justify-center sm:justify-start gap-1.5 bg-white/[0.03] w-fit px-2.5 py-1 rounded-md mt-3 mx-auto sm:mx-0 border border-white/[0.03]"
@@ -106,7 +109,9 @@ export default function About() {
 										<div className="bg-white/[0.06] p-0.5 rounded-md border border-white/[0.03]">
 											<Code className="w-3.5 h-3.5 text-white/80" />
 										</div>
-										<span className="text-white/80 text-xs">~2 Years of Experience</span>
+										<span className="text-white/80 text-xs">
+											~2 Years of Experience
+										</span>
 									</motion.div>
 								</div>
 							</CardHeader>

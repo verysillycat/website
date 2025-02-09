@@ -105,27 +105,29 @@ export default function CardComponent() {
 											filter: {
 												duration: 1.2,
 												delay: index * 0.15,
-												ease: [0.4, 0, 0.2, 1]
-											}
+												ease: [0.4, 0, 0.2, 1],
+											},
 										}}
 									>
 										<motion.span
 											className="inline-block bg-gradient-to-r bg-clip-text text-transparent"
-											initial={{ 
-												backgroundPosition: "-100%", 
+											initial={{
+												backgroundPosition: "-100%",
 												opacity: 0.5,
-												backgroundImage: index === 0 || index === 2
-													? "linear-gradient(to right, rgb(229, 231, 235), rgb(209, 213, 219), rgb(229, 231, 235))"
-													: "linear-gradient(to right, rgb(161, 161, 170), rgb(212, 212, 216), rgb(161, 161, 170))"
+												backgroundImage:
+													index === 0 || index === 2
+														? "linear-gradient(to right, rgb(229, 231, 235), rgb(209, 213, 219), rgb(229, 231, 235))"
+														: "linear-gradient(to right, rgb(161, 161, 170), rgb(212, 212, 216), rgb(161, 161, 170))",
 											}}
 											animate={{
 												backgroundPosition: "200%",
 												opacity: 1,
-												backgroundImage: index === 1
-													? "linear-gradient(to right, rgba(167, 89, 237, 0.90), rgb(216, 180, 254), rgba(167, 89, 237, 0.90))"
-													: index === 3
-														? "linear-gradient(to right, rgba(96, 165, 250, 0.8), rgb(147, 197, 253), rgba(96, 165, 250, 0.8))"
-														: "linear-gradient(to right, rgb(229, 231, 235), rgb(209, 213, 219), rgb(229, 231, 235))"
+												backgroundImage:
+													index === 1
+														? "linear-gradient(to right, rgba(167, 89, 237, 0.90), rgb(216, 180, 254), rgba(167, 89, 237, 0.90))"
+														: index === 3
+															? "linear-gradient(to right, rgba(96, 165, 250, 0.8), rgb(147, 197, 253), rgba(96, 165, 250, 0.8))"
+															: "linear-gradient(to right, rgb(229, 231, 235), rgb(209, 213, 219), rgb(229, 231, 235))",
 											}}
 											transition={{
 												duration: 2.5,
@@ -136,13 +138,13 @@ export default function CardComponent() {
 												times: [0, 1],
 												opacity: {
 													duration: 0.6,
-													ease: "circOut"
+													ease: "circOut",
 												},
 												backgroundImage: {
 													delay: index * 0.25 + 0.5,
 													duration: 1.2,
-													ease: [0.22, 1, 0.36, 1]
-												}
+													ease: [0.22, 1, 0.36, 1],
+												},
 											}}
 										>
 											{text}
@@ -183,30 +185,31 @@ export default function CardComponent() {
 									target="_blank"
 									rel="noopener noreferrer"
 									initial={{ y: -20, opacity: 0 }}
-									whileHover={{ 
+									whileHover={{
 										scale: 1.03,
-										transition: { 
+										transition: {
 											duration: 0.3,
-											ease: "easeOut"
-										} 
+											ease: "easeOut",
+										},
 									}}
-									whileTap={{ 
+									whileTap={{
 										scale: 0.97,
-										transition: { 
-											duration: 0.2 
-										} 
+										transition: {
+											duration: 0.2,
+										},
 									}}
-									animate={{ 
-										y: 0, 
+									animate={{
+										y: 0,
 										opacity: 1,
 										transition: {
 											type: "spring",
 											stiffness: 100,
 											damping: 15,
-											delay: 0.5 + i * 0.1
-										}
+											delay: 0.5 + i * 0.1,
+										},
 									}}
-									className="border p-1 rounded-md border-[#999a9e]/45 hover:bg-[#1a1a1a]/60 mr-2 last:mr-0 cursor-pointer will-change-transform">
+									className="border p-1 rounded-md border-[#999a9e]/45 hover:bg-[#1a1a1a]/60 mr-2 last:mr-0 cursor-pointer will-change-transform"
+								>
 									{link.icon.startsWith("/") ? (
 										<Image
 											src={link.icon}
