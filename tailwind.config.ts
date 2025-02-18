@@ -45,6 +45,7 @@ const config: Config = {
 	},
 	plugins: [
 		addVariablesForColors,
+		require('tailwind-scrollbar'),
 		function ({ matchUtilities, theme }: any) {
 			matchUtilities(
 				{

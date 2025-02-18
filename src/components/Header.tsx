@@ -87,7 +87,7 @@ export default function Header() {
 					marginLeft: { type: "spring", stiffness: 70, damping: 25, mass: 1.2 },
 					marginRight: { type: "spring", stiffness: 70, damping: 25, mass: 1.2 }
 				}}
-				className={`fixed top-0 left-0 right-0 mt-4 bg-dark/75 text-white border border-[#999a9e]/30 backdrop-blur-[5px] opacity-90 rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] non-selectable relative z-50`}
+				className={`fixed top-0 left-0 right-0 mt-4 bg-dark/85 text-white border border-[#999a9e]/30 backdrop-blur-[5px] rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] non-selectable relative z-50`}
 				style={{ position: "fixed", top: 0, left: 0, right: 0 }}
 			>
 				<div className="p-3.5 non-selectable">

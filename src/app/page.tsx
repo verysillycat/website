@@ -11,6 +11,7 @@ import MusicPlayer from "@/components/MusicPlayer";
 import About from "@/components/About";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Statistics from "@/components/Statistics";
 
 export default function Home() {
 	return (
@@ -23,6 +24,7 @@ export default function Home() {
 				<MusicPlayer />
 				<Technologies />
 				<About />
+				<Statistics />
 				<Projects />
 				<Cat />
 			</div>

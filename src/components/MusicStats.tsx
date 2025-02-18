@@ -118,7 +118,7 @@ export default function MusicStats({ isOpen, onClose }: MusicStatsProps) {
 	const fetchStats = async () => {
 		try {
 			setError(null);
-			const res = await fetch("/api/stats");
+			const res = await fetch("/api/music");
 			if (!res.ok) {
 				throw new Error(`Error fetching music stats: ${res.status}`);
 			}
