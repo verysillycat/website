@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 let lastSuccessfulResponse: any = null;
 let lastRequestTime: number = 0;
-const RATE_LIMIT_WINDOW = 30 * 60 * 1000;
+const RATE_LIMIT_WINDOW = 120 * 60 * 1000;
 export async function GET() {
 	try {
 		const now = Date.now();
@@ -10,6 +10,8 @@ export async function GET() {
 			if (lastSuccessfulResponse) {
 				return NextResponse.json(lastSuccessfulResponse);
 			}
+		} else {
+			lastSuccessfulResponse = null;
 		}
 
 		lastRequestTime = now;
@@ -65,9 +67,11 @@ export async function GET() {
 		return NextResponse.json(lastSuccessfulResponse);
 	} catch (error) {
 		console.error("API Error:", error);
-		if (lastSuccessfulResponse) {
+		const now = Date.now();
+		if (lastSuccessfulResponse && now - lastRequestTime < RATE_LIMIT_WINDOW) {
 			return NextResponse.json(lastSuccessfulResponse);
 		}
+		lastSuccessfulResponse = null;
 		return NextResponse.json(
 			{
 				error:
