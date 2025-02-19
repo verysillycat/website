@@ -76,7 +76,7 @@ export default function Technologies() {
 						fullLoadedDuration={1}
 						duration={1}
 						words="Technologies"
-						className="text-xl font-bold text-white/90"
+						className="text-2xl font-bold text-white/90"
 					/>
 				</motion.div>
 

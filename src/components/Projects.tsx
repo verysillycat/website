@@ -63,7 +63,7 @@ export default function Projects() {
 				fullLoadedDuration={2.25}
 				duration={1.85}
 				words="Projects"
-				className="text-xl font-bold text-white/90"
+				className="text-2xl font-bold text-white/90"
 			/>
 
 			<div

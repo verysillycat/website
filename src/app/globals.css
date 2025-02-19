@@ -5,9 +5,33 @@
 @tailwind utilities;
 
 body {
+	background-color: #0a0a0a;
 	color: #ededed;
-	background: #0a0a0a;
 	font-family: "Montserrat", sans-serif;
+	position: relative;
+	overflow-x: hidden;
+}
+
+body::before {
+	content: "";
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100vw;
+	height: 100vh;
+	background-image: url("../../public/assets/background.svg");
+	background-size: 300%;
+	background-position: center;
+	background-repeat: no-repeat;
+	animation: wobble 30s ease-in-out infinite;
+	filter: brightness(1.2);
+}
+
+@media (min-width: 768px) {
+	body::before {
+		background-size: cover;
+	}
 }
 
 .skeleton-bg {
@@ -232,4 +256,27 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
 	background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes wobble {
+	0% {
+		background-position: center;
+		transform: translate(-50%, -50%) scale(1.04) rotate(0.5deg);
+	}
+	25% {
+		background-position: 51% 51%;
+		transform: translate(-50%, -50%) scale(1.05) rotate(-0.5deg);
+	}
+	50% {
+		background-position: 49% 49%;
+		transform: translate(-50%, -50%) scale(1.06) rotate(0.3deg);
+	}
+	75% {
+		background-position: 51% 49%;
+		transform: translate(-50%, -50%) scale(1.05) rotate(-0.4deg);
+	}
+	100% {
+		background-position: center;
+		transform: translate(-50%, -50%) scale(1.04) rotate(0.5deg);
+	}
 }
