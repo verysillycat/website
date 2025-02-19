@@ -14,6 +14,7 @@ export default function Statistics() {
 	const [months, setMonths] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [languages, setLanguages] = useState<{ [key: string]: number }>({});
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const getLastTwelveMonths = () => {
@@ -33,15 +34,25 @@ export default function Statistics() {
 		setMonths(getLastTwelveMonths());
 		
 		fetch('/api/stats')
-			.then(res => res.json())
+			.then(res => {
+				if (!res.ok) {
+					throw new Error(`Error fetching GitHub stats: ${res.status}`);
+				}
+				return res.json();
+			})
 			.then(data => {
+				if (data.error) {
+					throw new Error(data.error);
+				}
 				setContributions(data.contributions);
 				setTotal(data.total);
 				setLanguages(data.languages);
+				setError(null);
 				setLoading(false);
 			})
 			.catch(error => {
 				console.error('Error fetching GitHub data:', error);
+				setError('Failed to load GitHub statistics. Please try again later.');
 				setLoading(false);
 			});
 	}, []);
@@ -104,6 +115,101 @@ export default function Statistics() {
 											<div className="h-3 w-20 bg-white/10 animate-pulse rounded" />
 											<div className="flex-1 h-3 bg-white/10 animate-pulse rounded-full" />
 											<div className="h-3 w-10 bg-white/10 animate-pulse rounded" />
+										</div>
+									))}
+								</div>
+							</div>
+						</CardBody>
+					</Card>
+				</motion.div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div 
+				ref={ref}
+				className="flex flex-col items-center justify-center min-h-[25vh] py-12"
+			>
+				<motion.div
+					initial={{ opacity: 0, y: -5 }}
+					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
+					transition={{ duration: 0.2, ease: "easeInOut" }}
+				>
+					<TextFade words="Statistics" className="mb-3.5 text-2xl font-bold text-white/90" duration={1}/>
+				</motion.div>
+				
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+					transition={{ duration: 0.5, ease: "easeInOut" }}
+				>
+					<Card className="w-full max-w-[95vw] md:w-auto bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#999a9e]/75 rounded-md">
+						<CardHeader className="px-2 md:px-4 pt-2 md:pt-4 flex gap-3 justify-between items-center">
+							<div className="flex items-center gap-3">
+								<div className="h-7 w-64 bg-white/10 rounded-2xl" />
+								<div className="h-4 w-4 bg-white/10 rounded-full" />
+							</div>
+							<div className="h-7 w-32 bg-white/10 rounded-2xl" />
+						</CardHeader>
+						<CardBody>
+							<div className="w-full">
+								<div className="border border-white/[0.03] bg-white/[0.01] backdrop-blur-sm rounded-2xl shadow-lg p-4">
+									<div className="flex flex-col items-center justify-center py-8 text-center">
+										<div className="text-red-400 mb-3">
+											<svg
+												className="w-12 h-12 mx-auto"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+												/>
+											</svg>
+										</div>
+										<p className="text-zinc-300">{error}</p>
+										<button
+											onClick={() => {
+												setLoading(true);
+												setError(null);
+												fetch('/api/stats')
+													.then(res => {
+														if (!res.ok) throw new Error(`Error fetching GitHub stats: ${res.status}`);
+														return res.json();
+													})
+													.then(data => {
+														if (data.error) throw new Error(data.error);
+														setContributions(data.contributions);
+														setTotal(data.total);
+														setLanguages(data.languages);
+														setError(null);
+														setLoading(false);
+													})
+													.catch(error => {
+														console.error('Error fetching GitHub data:', error);
+														setError('Failed to load GitHub statistics. Please try again later.');
+														setLoading(false);
+													});
+											}}
+											className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors"
+										>
+											Try Again
+										</button>
+									</div>
+								</div>
+							</div>
+							<div className="mt-4 border border-white/[0.03] bg-white/[0.01] backdrop-blur-sm rounded-2xl p-4">
+								<div className="flex flex-col gap-2">
+									{[...Array(5)].map((_, i) => (
+										<div key={i} className="flex items-center gap-2">
+											<div className="h-3 w-20 bg-white/10 rounded" />
+											<div className="flex-1 h-3 bg-white/10 rounded-full" />
+											<div className="h-3 w-10 bg-white/10 rounded" />
 										</div>
 									))}
 								</div>
