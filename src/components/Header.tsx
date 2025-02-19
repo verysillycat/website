@@ -53,8 +53,8 @@ export default function Header() {
 			setScrolled(window.scrollY > 20);
 		};
 
-		window.addEventListener('scroll', handleScroll);
-		return () => window.removeEventListener('scroll', handleScroll);
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
 	return (
@@ -75,17 +75,22 @@ export default function Header() {
 
 			<motion.div
 				initial={{ y: -100, scale: 0.98 }}
-				animate={{ 
+				animate={{
 					y: 0,
 					scale: 1,
-					marginLeft: scrolled && isDesktop ? '8.5rem' : '5rem',
-					marginRight: scrolled && isDesktop ? '8.5rem' : '5rem'
+					marginLeft: scrolled && isDesktop ? "8.5rem" : "5rem",
+					marginRight: scrolled && isDesktop ? "8.5rem" : "5rem",
 				}}
-				transition={{ 
+				transition={{
 					y: { type: "spring", stiffness: 150, damping: 20 },
 					scale: { type: "spring", stiffness: 120, damping: 25 },
 					marginLeft: { type: "spring", stiffness: 70, damping: 25, mass: 1.2 },
-					marginRight: { type: "spring", stiffness: 70, damping: 25, mass: 1.2 }
+					marginRight: {
+						type: "spring",
+						stiffness: 70,
+						damping: 25,
+						mass: 1.2,
+					},
 				}}
 				className={`fixed top-0 left-0 right-0 mt-4 bg-dark/85 text-white border border-[#999a9e]/30 backdrop-blur-[5px] rounded-2xl shadow-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] non-selectable relative z-50`}
 				style={{ position: "fixed", top: 0, left: 0, right: 0 }}

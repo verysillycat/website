@@ -18,29 +18,42 @@ export default function Statistics() {
 
 	useEffect(() => {
 		const getLastTwelveMonths = () => {
-			const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			const monthNames = [
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec",
+			];
 			const current = new Date();
 			const months = [];
-			
+
 			const startMonth = current.getMonth();
 			for (let i = 0; i <= 12; i++) {
 				const monthIndex = (startMonth + i) % 12;
 				months.push(monthNames[monthIndex]);
 			}
-			
+
 			return months;
 		};
 
 		setMonths(getLastTwelveMonths());
-		
-		fetch('/api/stats')
-			.then(res => {
+
+		fetch("/api/stats")
+			.then((res) => {
 				if (!res.ok) {
 					throw new Error(`Error fetching GitHub stats: ${res.status}`);
 				}
 				return res.json();
 			})
-			.then(data => {
+			.then((data) => {
 				if (data.error) {
 					throw new Error(data.error);
 				}
@@ -50,16 +63,16 @@ export default function Statistics() {
 				setError(null);
 				setLoading(false);
 			})
-			.catch(error => {
-				console.error('Error fetching GitHub data:', error);
-				setError('Failed to load GitHub statistics. Please try again later.');
+			.catch((error) => {
+				console.error("Error fetching GitHub data:", error);
+				setError("Failed to load GitHub statistics. Please try again later.");
 				setLoading(false);
 			});
 	}, []);
 
 	if (loading) {
 		return (
-			<div 
+			<div
 				ref={ref}
 				className="flex flex-col items-center justify-center min-h-[25vh] py-12"
 			>
@@ -68,9 +81,13 @@ export default function Statistics() {
 					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
 					transition={{ duration: 0.2, ease: "easeInOut" }}
 				>
-					<TextFade words="Statistics" className="mb-3.5 text-2xl font-bold text-white/90" duration={1}/>
+					<TextFade
+						words="Statistics"
+						className="mb-3.5 text-2xl font-bold text-white/90"
+						duration={1}
+					/>
 				</motion.div>
-				
+
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -96,12 +113,18 @@ export default function Statistics() {
 										<div className="w-full min-w-[750px]">
 											<div className="flex justify-between mb-2">
 												{[...Array(12)].map((_, i) => (
-													<div key={i} className="h-3 w-6 bg-white/10 animate-pulse rounded" />
+													<div
+														key={i}
+														className="h-3 w-6 bg-white/10 animate-pulse rounded"
+													/>
 												))}
 											</div>
 											<div className="grid grid-flow-col auto-cols-min grid-rows-[repeat(7,_minmax(0,_1fr))] gap-1 md:gap-[3.5px]">
 												{[...Array(371)].map((_, i) => (
-													<div key={i} className="h-3 w-3 bg-white/10 animate-pulse rounded-sm" />
+													<div
+														key={i}
+														className="h-3 w-3 bg-white/10 animate-pulse rounded-sm"
+													/>
 												))}
 											</div>
 										</div>
@@ -128,7 +151,7 @@ export default function Statistics() {
 
 	if (error) {
 		return (
-			<div 
+			<div
 				ref={ref}
 				className="flex flex-col items-center justify-center min-h-[25vh] py-12"
 			>
@@ -137,9 +160,13 @@ export default function Statistics() {
 					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
 					transition={{ duration: 0.2, ease: "easeInOut" }}
 				>
-					<TextFade words="Statistics" className="mb-3.5 text-2xl font-bold text-white/90" duration={1}/>
+					<TextFade
+						words="Statistics"
+						className="mb-3.5 text-2xl font-bold text-white/90"
+						duration={1}
+					/>
 				</motion.div>
-				
+
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -177,12 +204,15 @@ export default function Statistics() {
 											onClick={() => {
 												setLoading(true);
 												setError(null);
-												fetch('/api/stats')
-													.then(res => {
-														if (!res.ok) throw new Error(`Error fetching GitHub stats: ${res.status}`);
+												fetch("/api/stats")
+													.then((res) => {
+														if (!res.ok)
+															throw new Error(
+																`Error fetching GitHub stats: ${res.status}`,
+															);
 														return res.json();
 													})
-													.then(data => {
+													.then((data) => {
 														if (data.error) throw new Error(data.error);
 														setContributions(data.contributions);
 														setTotal(data.total);
@@ -190,9 +220,11 @@ export default function Statistics() {
 														setError(null);
 														setLoading(false);
 													})
-													.catch(error => {
-														console.error('Error fetching GitHub data:', error);
-														setError('Failed to load GitHub statistics. Please try again later.');
+													.catch((error) => {
+														console.error("Error fetching GitHub data:", error);
+														setError(
+															"Failed to load GitHub statistics. Please try again later.",
+														);
 														setLoading(false);
 													});
 											}}
@@ -222,7 +254,7 @@ export default function Statistics() {
 	}
 
 	return (
-		<div 
+		<div
 			ref={ref}
 			className="flex flex-col items-center justify-center min-h-[25vh] py-12"
 		>
@@ -231,7 +263,11 @@ export default function Statistics() {
 				animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
 				transition={{ duration: 0.2, ease: "easeInOut" }}
 			>
-				<TextFade words="Statistics" className="mb-3.5 text-2xl font-bold text-white/90" duration={1}/>
+				<TextFade
+					words="Statistics"
+					className="mb-3.5 text-2xl font-bold text-white/90"
+					duration={1}
+				/>
 			</motion.div>
 
 			<motion.div
@@ -268,7 +304,7 @@ export default function Statistics() {
 								}}
 							>
 								<div className="group relative">
-									<Icon 
+									<Icon
 										icon="material-symbols:info-outline-rounded"
 										className="w-4 h-4 -ml-1 text-white/60 hover:text-white/80 transition-colors duration-200 self-center cursor-help"
 									/>
@@ -299,11 +335,11 @@ export default function Statistics() {
 											key={level}
 											className={`h-2.5 w-2.5 rounded-sm ${
 												[
-													'bg-white/10',
-													'bg-white/25',
-													'bg-white/50',
-													'bg-white/75',
-													'bg-white/90',
+													"bg-white/10",
+													"bg-white/25",
+													"bg-white/50",
+													"bg-white/75",
+													"bg-white/90",
 												][level]
 											}`}
 										/>
@@ -340,39 +376,51 @@ export default function Statistics() {
 												<div className="w-full relative" style={{ zIndex: 10 }}>
 													<div className="flex justify-between mb-2">
 														{months.map((month) => (
-															<span key={month} className="text-[10px] md:text-xs text-gray-400">{month}</span>
+															<span
+																key={month}
+																className="text-[10px] md:text-xs text-gray-400"
+															>
+																{month}
+															</span>
 														))}
 													</div>
 													<div className="grid grid-flow-col auto-cols-min grid-rows-[repeat(7,_minmax(0,_1fr))] gap-1 md:gap-[3.5px]">
 														{contributions.map(({ date, level, count }) => (
-															<motion.div
-																key={date}
-																className="relative"
-															>
-																<div className={`group relative h-3 w-3 rounded-sm ${
-																	[
-																		'bg-white/10 hover:bg-white/15',    
-																		'bg-white/25 hover:bg-white/30',    
-																		'bg-white/50 hover:bg-white/55',    
-																		'bg-white/75 hover:bg-white/80',    
-																		'bg-white/90 hover:bg-white/95',    
-																	][level]
-																}`}>
-																	<div className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 hidden group-hover:block" style={{ position: 'fixed' }}>
+															<motion.div key={date} className="relative">
+																<div
+																	className={`group relative h-3 w-3 rounded-sm ${
+																		[
+																			"bg-white/10 hover:bg-white/15",
+																			"bg-white/25 hover:bg-white/30",
+																			"bg-white/50 hover:bg-white/55",
+																			"bg-white/75 hover:bg-white/80",
+																			"bg-white/90 hover:bg-white/95",
+																		][level]
+																	}`}
+																>
+																	<div
+																		className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 hidden group-hover:block"
+																		style={{ position: "fixed" }}
+																	>
 																		<div className="relative bg-zinc-950/95 border border-white/10 text-white/90 text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-xl">
 																			{(() => {
 																				const day = new Date(date).getDate();
-																				const suffix = day % 10 === 1 && day !== 11 
-																					? 'st'
-																					: day % 10 === 2 && day !== 12
-																					? 'nd' 
-																					: day % 10 === 3 && day !== 13
-																					? 'rd'
-																					: 'th';
-																				const formattedDate = new Date(date).toLocaleDateString('en-US', { 
-																					month: 'long',
-																					day: 'numeric'
-																				}) + suffix;
+																				const suffix =
+																					day % 10 === 1 && day !== 11
+																						? "st"
+																						: day % 10 === 2 && day !== 12
+																							? "nd"
+																							: day % 10 === 3 && day !== 13
+																								? "rd"
+																								: "th";
+																				const formattedDate =
+																					new Date(date).toLocaleDateString(
+																						"en-US",
+																						{
+																							month: "long",
+																							day: "numeric",
+																						},
+																					) + suffix;
 																				return count === 1
 																					? `1 contribution on ${formattedDate}`
 																					: `${count} contributions on ${formattedDate}`;
@@ -396,17 +444,22 @@ export default function Statistics() {
 						>
 							<div className="flex flex-col gap-2">
 								{(() => {
-									const totalBytes = Object.values(languages).reduce((a, b) => a + b, 0);
+									const totalBytes = Object.values(languages).reduce(
+										(a, b) => a + b,
+										0,
+									);
 									return Object.entries(languages)
-										.sort(([,a], [,b]) => b - a)
+										.sort(([, a], [, b]) => b - a)
 										.filter(([, bytes]) => (bytes / totalBytes) * 100 >= 1)
 										.map(([lang, bytes]) => {
 											const percentage = (bytes / totalBytes) * 100;
 											return (
 												<div key={lang} className="flex items-center gap-2">
-													<span className="text-xs text-white/60 w-20 truncate">{lang}</span>
+													<span className="text-xs text-white/60 w-20 truncate">
+														{lang}
+													</span>
 													<div className="flex-1 h-3 bg-white/10 hover:bg-white/15 rounded-full overflow-hidden">
-														<motion.div 
+														<motion.div
 															className="h-full bg-white/80 rounded-full"
 															initial={{ width: "0%" }}
 															animate={{ width: `${percentage}%` }}
