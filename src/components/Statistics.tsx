@@ -69,6 +69,7 @@ export default function Statistics() {
 
 	return (
 		<div
+			id="Statistics"
 			ref={ref}
 			className="flex flex-col items-center justify-center min-h-[25vh] py-12"
 		>
@@ -80,7 +81,7 @@ export default function Statistics() {
 				<TextFade
 					words="Statistics"
 					className="mb-3.5 text-2xl font-bold text-white/90"
-					duration={1.90}
+					duration={2}
 				/>
 			</motion.div>
 
@@ -107,22 +108,24 @@ export default function Statistics() {
 											<div className="h-3 w-6 bg-white/10 animate-pulse rounded" />
 											<div className="h-3 w-6 bg-white/10 animate-pulse rounded" />
 										</div>
-										<div className="w-full min-w-[750px]">
-											<div className="flex justify-between mb-2">
-												{[...Array(12)].map((_, i) => (
-													<div
-														key={i}
-														className="h-3 w-6 bg-white/10 animate-pulse rounded"
-													/>
-												))}
-											</div>
-											<div className="grid grid-flow-col auto-cols-min grid-rows-[repeat(7,_minmax(0,_1fr))] gap-1 md:gap-[3.5px]">
-												{[...Array(371)].map((_, i) => (
-													<div
-														key={i}
-														className="h-3 w-3 bg-white/10 animate-pulse rounded-sm"
-													/>
-												))}
+										<div className="w-full overflow-x-auto">
+											<div className="min-w-[750px]">
+												<div className="flex justify-between mb-2 gap-[50px] md:gap-0">
+													{[...Array(12)].map((_, i) => (
+														<div
+															key={i}
+															className="h-3 w-6 bg-white/10 animate-pulse rounded"
+														/>
+													))}
+												</div>
+												<div className="grid grid-flow-col auto-cols-min grid-rows-[repeat(7,_minmax(0,_1fr))] gap-1 md:gap-[3.5px]">
+													{[...Array(371)].map((_, i) => (
+														<div
+															key={i}
+															className="h-3 w-3 bg-white/10 animate-pulse rounded-sm"
+														/>
+													))}
+												</div>
 											</div>
 										</div>
 									</div>
@@ -330,7 +333,7 @@ export default function Statistics() {
 														<span>Fri</span>
 													</div>
 													<div className="w-full relative" style={{ zIndex: 10 }}>
-														<div className="flex justify-between mb-2">
+														<div className="flex justify-between mb-2 gap-[50px] md:gap-0">
 															{months.map((month) => (
 																<span
 																	key={month.key}
@@ -358,17 +361,7 @@ export default function Statistics() {
 																		stiffness: 500,
 																		damping: 10,
 																		mass: 0.5,
-																	}}
-																	whileHover={{
-																		scale: 1.15,
-																		zIndex: 20,
-																		transition: { 
-																			type: "spring", 
-																			stiffness: 600,
-																			duration: 0.2
-																		}
-																	}}
-																>
+																	}}																>
 																	<div
 																		className={`group relative h-3 w-3 rounded-sm ${
 																			[

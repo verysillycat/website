@@ -60,7 +60,7 @@ export default function Projects() {
 			className="mt-10 flex flex-col items-center"
 		>
 			<TextFade
-				duration={2.10}
+				duration={2.25}
 				words="Projects"
 				className="text-xl font-bold text-white/90"
 			/>
