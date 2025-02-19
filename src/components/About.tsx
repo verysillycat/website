@@ -24,8 +24,8 @@ export default function About() {
 					transition={{ duration: 0.2, ease: "easeInOut" }}
 				>
 					<TextFade
-						fullLoadedDuration={1.85}
-						duration={1.65}
+						fullLoadedDuration={1.9}
+						duration={1.85}
 						words="About Me"
 						className="text-2xl font-bold text-white/90"
 					/>

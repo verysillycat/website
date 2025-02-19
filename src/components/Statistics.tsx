@@ -82,7 +82,7 @@ export default function Statistics() {
 					words="Statistics"
 					className="mb-3.5 text-2xl font-bold text-white/90"
 					fullLoadedDuration={2}
-					duration={1.65}
+					duration={1.85}
 				/>
 			</motion.div>
 
