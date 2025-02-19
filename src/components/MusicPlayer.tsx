@@ -476,8 +476,8 @@ export default function MusicPlayer() {
 												whileHover={{ scale: isAudioLoading ? 1 : 1.1 }}
 												whileTap={{ scale: isAudioLoading ? 1 : 0.9 }}
 												className={`text-zinc-400 transition-all ${
-													isAudioLoading 
-														? "opacity-50 cursor-not-allowed" 
+													isAudioLoading
+														? "opacity-50 cursor-not-allowed"
 														: "hover:text-zinc-200 hover:filter hover:drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]"
 												}`}
 												onClick={isAudioLoading ? undefined : togglePlayPause}
