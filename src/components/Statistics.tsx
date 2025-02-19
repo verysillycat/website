@@ -81,7 +81,8 @@ export default function Statistics() {
 				<TextFade
 					words="Statistics"
 					className="mb-3.5 text-2xl font-bold text-white/90"
-					duration={2}
+					fullLoadedDuration={2}
+					duration={1.65}
 				/>
 			</motion.div>
 

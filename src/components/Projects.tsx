@@ -60,7 +60,8 @@ export default function Projects() {
 			className="mt-10 flex flex-col items-center"
 		>
 			<TextFade
-				duration={2.25}
+				fullLoadedDuration={2.25}
+				duration={1.85}
 				words="Projects"
 				className="text-xl font-bold text-white/90"
 			/>
@@ -179,7 +180,8 @@ export default function Projects() {
 				}}
 			>
 				<TextFade
-					duration={1.4}
+					fullLoadedDuration={1.4}
+					duration={1}
 					words="... and have contributed to multiple frontend projects"
 					className="text-sm text-gray-400 mb-16 italic text-center w-full px-3"
 				/>

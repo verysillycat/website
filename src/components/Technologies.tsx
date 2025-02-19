@@ -73,6 +73,7 @@ export default function Technologies() {
 					transition={{ duration: 0.2, ease: "easeInOut" }}
 				>
 					<TextFade
+						fullLoadedDuration={1}
 						duration={1}
 						words="Technologies"
 						className="text-xl font-bold text-white/90"
