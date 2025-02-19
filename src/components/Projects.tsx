@@ -7,7 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { useInview } from "../lib/animateInscroll";
 
-export const projects = [
+const projects = [
 	{
 		name: "Equibop",
 		description:
@@ -26,25 +26,31 @@ export const projects = [
 	},
 ];
 
-interface RepoData {
-	stars: number;
-	description: string;
-	language: string;
-	name: string;
+interface GitHubRepo {
+	stargazers_count: number;
 }
 
 export default function Projects() {
-	const [repoData, setRepoData] = useState<{ [key: string]: RepoData }>({});
+	const [stars, setStars] = useState<{ [key: string]: number }>({});
 	const ref = useRef<HTMLDivElement>(null);
 	const isInView = useInview(ref);
 
 	useEffect(() => {
-		fetch('/api/projects')
-			.then((res) => res.json())
-			.then((data: { [key: string]: RepoData }) => {
-				setRepoData(data);
-			})
-			.catch(console.error);
+		projects.forEach((project) => {
+			const match = project.url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+			if (match) {
+				const [, owner, repo] = match;
+				fetch(`https://api.github.com/repos/${owner}/${repo}`)
+					.then((res) => res.json())
+					.then((data: GitHubRepo) => {
+						setStars((prev) => ({
+							...prev,
+							[project.url]: data.stargazers_count,
+						}));
+					})
+					.catch(console.error);
+			}
+		});
 	}, []);
 
 	return (
@@ -96,12 +102,10 @@ export default function Projects() {
 									<div>
 										<div className="flex items-center gap-3">
 											<h2 className="text-lg font-bold tracking-tight text-white">
-												{project.url.includes("github.com") && repoData[project.url]
-													? repoData[project.url].name
-													: project.name}
+												{project.name}
 											</h2>
 											{project.url.includes("github.com") &&
-												repoData[project.url] !== undefined && (
+												stars[project.url] !== undefined && (
 													<div className="border border-[#999a9e]/10 non-selectable flex items-center gap-1 text-sm text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-105 hover:shadow-[0_0_2px_rgba(255,255,255,0.08)]">
 														<svg
 															className="w-3.5 h-3.5 fill-current text-amber-400"
@@ -109,7 +113,7 @@ export default function Projects() {
 														>
 															<path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z" />
 														</svg>
-														{repoData[project.url].stars}
+														{stars[project.url]}
 													</div>
 												)}
 										</div>
@@ -149,23 +153,15 @@ export default function Projects() {
 							</CardHeader>
 							<CardBody className="px-4 py-0.5 pb-4">
 								<p className="text-gray-300 text-sm mb-3 -mt-2">
-									{project.url.includes("github.com") && repoData[project.url]
-										? repoData[project.url].description
-										: project.description}
+									{project.description}
 								</p>
-								{(project.url.includes("github.com") && repoData[project.url]
-									? repoData[project.url].language
-									: project.language) && (
+								{project.language && (
 									<div className="border border-[#999a9e]/10 non-selectable flex items-center gap-1 text-xs text-gray-400 bg-zinc-900/50 px-2 py-0.5 rounded-full w-fit transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-105 hover:shadow-[0_0_2px_rgba(255,255,255,0.08)]">
 										<Icon
-											icon={`devicon-plain:${(project.url.includes("github.com") && repoData[project.url]
-												? repoData[project.url].language
-												: project.language).toLowerCase()}`}
+											icon={`devicon-plain:${project.language.toLowerCase()}`}
 											className="w-3.5 h-4"
 										/>
-										<span>{project.url.includes("github.com") && repoData[project.url]
-											? repoData[project.url].language
-											: project.language}</span>
+										<span>{project.language}</span>
 									</div>
 								)}
 							</CardBody>

@@ -21,8 +21,9 @@ export default function Statistics() {
 			const current = new Date();
 			const months = [];
 			
-			for (let i = 11; i >= 0; i--) {
-				const monthIndex = (current.getMonth() - i + 12) % 12;
+			const startMonth = current.getMonth();
+			for (let i = 0; i <= 12; i++) {
+				const monthIndex = (startMonth + i) % 12;
 				months.push(monthNames[monthIndex]);
 			}
 			
@@ -64,7 +65,7 @@ export default function Statistics() {
 					animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
 					transition={{ duration: 0.5, ease: "easeInOut" }}
 				>
-					<Card className="w-[90%] md:w-auto bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#999a9e]/75 rounded-md">
+					<Card className="w-full max-w-[95vw] md:w-auto bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#999a9e]/75 rounded-md">
 						<CardHeader className="px-2 md:px-4 pt-2 md:pt-4 flex gap-3 justify-between items-center">
 							<div className="flex items-center gap-3">
 								<div className="h-7 w-64 bg-white/10 animate-pulse rounded-2xl" />
@@ -132,8 +133,8 @@ export default function Statistics() {
 				animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
 				transition={{ duration: 0.5, ease: "easeInOut" }}
 			>
-				<Card className="w-[90%] md:w-auto bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#999a9e]/75 rounded-md relative z-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02] hover:backdrop-blur-none">
-					<CardHeader className="px-2 md:px-4 pt-2 md:pt-4 flex gap-3 justify-between items-center">
+				<Card className="w-full max-w-[95vw] md:w-auto bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#999a9e]/75 rounded-md relative overflow-visible z-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02] hover:backdrop-blur-none">
+					<CardHeader className="px-2 md:px-4 pt-2 md:pt-4 flex gap-3 justify-between items-center relative z-[-1]">
 						<div className="flex items-center gap-3">
 							<motion.div
 								whileHover={{
@@ -167,7 +168,7 @@ export default function Statistics() {
 									/>
 									<div className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 hidden group-hover:block z-50">
 										<div className="relative bg-zinc-950/95 border border-white/10 text-white/90 text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-xl">
-											Total contributions include all GitHub activity across public repositories
+											All GitHub activity across public repositories
 										</div>
 									</div>
 								</div>
@@ -208,94 +209,80 @@ export default function Statistics() {
 					</CardHeader>
 					<CardBody>
 						<div className="w-full">
-							<motion.div
-								whileHover={{
-									scale: 1.005,
-									boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)",
-								}}
-								whileTap={{ scale: 0.98 }}
-								transition={{
-									type: "tween",
-									ease: [0.4, 0, 0.2, 1],
-									duration: 0.3,
-								}}
-								className="border border-white/[0.03] bg-white/[0.01] backdrop-blur-sm rounded-2xl shadow-lg p-4 overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
-							>
-								<div className="flex gap-2">
-									<div className="flex flex-col justify-between pt-6 pb-2 text-[10px] md:text-xs text-gray-400">
-										<span>Mon</span>
-										<span>Wed</span>
-										<span>Fri</span>
-									</div>
-									<div className="w-full">
-										<div className="flex justify-between mb-2 min-w-[750px]">
-											{months.map((month) => (
-												<span key={month} className="text-[10px] md:text-xs text-gray-400">{month}</span>
-											))}
-										</div>
-										<div className="grid grid-flow-col auto-cols-min grid-rows-[repeat(7,_minmax(0,_1fr))] gap-1 md:gap-[3.5px] min-w-[750px]">
-											{contributions.map(({ date, level, count }) => (
-												<motion.div
-													key={date}
-													initial={{ opacity: 0, scale: 0.8 }}
-													animate={{ 
-														opacity: 1, 
-														scale: 1,
-														transition: { 
-															duration: 0.3,
-															ease: "easeOut"
-														}
-													}}
-													whileHover={{
-														scale: 1.1,
-														transition: { 
-															duration: 0.15,
-															ease: "easeInOut"
-														}
-													}}
-													whileTap={{ 
-														scale: 0.95
-													}}
-													className={`group relative h-3 w-3 rounded-sm ${
-														[
-															'bg-white/10 hover:bg-white/15',    
-															'bg-white/25 hover:bg-white/30',    
-															'bg-white/50 hover:bg-white/55',    
-															'bg-white/75 hover:bg-white/80',    
-															'bg-white/90 hover:bg-white/95',    
-														][level]
-													}`}
-												>
-													<div className="pointer-events-none absolute bottom-[calc(100%+5px)] left-1/2 -translate-x-1/2 hidden group-hover:block z-50">
-														<div className="relative bg-zinc-950/95 border border-white/10 text-white/90 text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-xl">
-															{(() => {
-																const day = new Date(date).getDate();
-																const suffix = day % 10 === 1 && day !== 11 
-																	? 'st'
-																	: day % 10 === 2 && day !== 12
-																	? 'nd' 
-																	: day % 10 === 3 && day !== 13
-																	? 'rd'
-																	: 'th';
-																const formattedDate = new Date(date).toLocaleDateString('en-US', { 
-																	month: 'long',
-																	day: 'numeric'
-																
-																
-																}) + suffix;
-																return count === 1
-																	? `1 contribution on ${formattedDate}`
-																	: `${count} contributions on ${formattedDate}`;
-															})()}
-														</div>
+							<div className="w-full overflow-visible">
+								<motion.div
+									whileHover={{
+										scale: 1.005,
+										boxShadow: "0 0 2px rgba(255, 255, 255, 0.08)",
+									}}
+									whileTap={{ scale: 0.98 }}
+									transition={{
+										type: "tween",
+										ease: [0.4, 0, 0.2, 1],
+										duration: 0.3,
+									}}
+									className="relative border border-white/[0.03] bg-white/[0.01] backdrop-blur-sm rounded-2xl shadow-lg p-4 overflow-visible z-[1]"
+								>
+									<div className="overflow-x-auto pb-2 custom-scrollbar">
+										<div className="min-w-[750px]">
+											<div className="flex gap-2">
+												<div className="flex flex-col justify-between pt-6 pb-2 text-[10px] md:text-xs text-gray-400">
+													<span>Mon</span>
+													<span>Wed</span>
+													<span>Fri</span>
+												</div>
+												<div className="w-full relative" style={{ zIndex: 10 }}>
+													<div className="flex justify-between mb-2">
+														{months.map((month) => (
+															<span key={month} className="text-[10px] md:text-xs text-gray-400">{month}</span>
+														))}
 													</div>
-												</motion.div>
-											))}
-
+													<div className="grid grid-flow-col auto-cols-min grid-rows-[repeat(7,_minmax(0,_1fr))] gap-1 md:gap-[3.5px]">
+														{contributions.map(({ date, level, count }) => (
+															<motion.div
+																key={date}
+																className="relative"
+															>
+																<div className={`group relative h-3 w-3 rounded-sm ${
+																	[
+																		'bg-white/10 hover:bg-white/15',    
+																		'bg-white/25 hover:bg-white/30',    
+																		'bg-white/50 hover:bg-white/55',    
+																		'bg-white/75 hover:bg-white/80',    
+																		'bg-white/90 hover:bg-white/95',    
+																	][level]
+																}`}>
+																	<div className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 hidden group-hover:block" style={{ position: 'fixed' }}>
+																		<div className="relative bg-zinc-950/95 border border-white/10 text-white/90 text-xs px-2 py-1 rounded-md whitespace-nowrap shadow-xl">
+																			{(() => {
+																				const day = new Date(date).getDate();
+																				const suffix = day % 10 === 1 && day !== 11 
+																					? 'st'
+																					: day % 10 === 2 && day !== 12
+																					? 'nd' 
+																					: day % 10 === 3 && day !== 13
+																					? 'rd'
+																					: 'th';
+																				const formattedDate = new Date(date).toLocaleDateString('en-US', { 
+																					month: 'long',
+																					day: 'numeric'
+																				}) + suffix;
+																				return count === 1
+																					? `1 contribution on ${formattedDate}`
+																					: `${count} contributions on ${formattedDate}`;
+																			})()}
+																		</div>
+																	</div>
+																</div>
+															</motion.div>
+														))}
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</motion.div>
+								</motion.div>
+							</div>
 						</div>
 						<motion.div
 							whileHover={{ scale: 1.005 }}
