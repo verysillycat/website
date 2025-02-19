@@ -60,7 +60,7 @@ export default function Projects() {
 			className="mt-10 flex flex-col items-center"
 		>
 			<TextFade
-				duration={1.2}
+				duration={2.10}
 				words="Projects"
 				className="text-xl font-bold text-white/90"
 			/>
@@ -89,14 +89,14 @@ export default function Projects() {
 					>
 						<Card className="bg-black bg-opacity-25 backdrop-blur-[1.5px] border border-[#999a9e]/75 rounded-md relative z-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:shadow-[0_0_10px_rgba(35,32,32,15)] hover:border-opacity-60 hover:scale-[1.02] hover:backdrop-blur-none">
 							<CardHeader className="px-4 pt-4 flex gap-3 justify-between">
-								<div className="flex gap-3 items-center">
+								<div className="flex gap-2.5 items-center">
 									{project.icon && (
 										<Image
 											src={project.icon}
 											alt={`${project.name} icon`}
 											width={32}
 											height={32}
-											className="w-8 h-8 object-contain transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-110"
+											className="w-9 h-9 object-contain transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-110"
 										/>
 									)}
 									<div>
@@ -151,7 +151,7 @@ export default function Projects() {
 									)}
 								</a>
 							</CardHeader>
-							<CardBody className="px-4 py-0.5 pb-4">
+							<CardBody className="px-4 py-1 pb-4">
 								<p className="text-gray-300 text-sm mb-3 -mt-2">
 									{project.description}
 								</p>
