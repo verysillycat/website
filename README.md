@@ -12,7 +12,7 @@ pnpm i
 pnpm dev
 ```
 
-#### * Environment variables
+#### Environment variables:
 `GITHUB_TOKEN` is required for the Statistics page to work.
 
-<h6>inspired by alot of websites and components libraries</h6>
+* <h6>inspired by alot of websites and components libraries</h6>
