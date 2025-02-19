@@ -2,9 +2,10 @@ import "./globals.css";
 import { SocketProvider } from "@/hooks/SocketContext";
 
 export const metadata = {
-	title: "Cortex",
+	title: "Cortex's Portfolio",
 	description: "designer, developer and web artist",
 	openGraph: {
+		siteName: "portfolio",
 		title: "Cortex",
 		description: "designer, developer and web artist",
 		url: "https://cortex.rest",
